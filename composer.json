@@ -1,0 +1,12 @@
+{
+  "description" : "InvoicePlane 2",
+  "name" : "InvoicePlane/InvoicePlane-2",
+  "require": {
+    "php": ">=5.4",
+    "codeigniter/framework": "3.0.*",
+    "omnipay/omnipay": "^2.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0"
+  }
+}
