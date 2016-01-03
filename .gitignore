@@ -1,0 +1,8 @@
+/node_modules
+/themes/core/fonts/fontawesome
+/themes/core/js/*.min.js
+/themes/core/js/*.min.js.map
+/themes/InvoicePlane/css/*.min.css
+/themes/InvoicePlane/css/*.min.css.map
+/themes/vendor
+/vendor
