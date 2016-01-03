@@ -11,7 +11,7 @@ if (!defined('BASEPATH'))
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
  * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
+ * @license		https://invoiceplane.com/license-copyright
  * @link		https://invoiceplane.com
  * 
  */
