@@ -67,7 +67,7 @@ class Setup extends MX_Controller
         $this->layout->set('languages', $languages);
 
         $this->layout->buffer('content', 'setup/language');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     public function prerequisites()
@@ -90,7 +90,7 @@ class Setup extends MX_Controller
         );
 
         $this->layout->buffer('content', 'setup/prerequisites');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     public function configure_database()
@@ -122,7 +122,7 @@ class Setup extends MX_Controller
         $this->layout->set('database', $this->check_database());
         $this->layout->set('errors', $this->errors);
         $this->layout->buffer('content', 'setup/configure_database');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     public function install_tables()
@@ -146,7 +146,7 @@ class Setup extends MX_Controller
         );
 
         $this->layout->buffer('content', 'setup/install_tables');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     public function upgrade_tables()
@@ -175,7 +175,7 @@ class Setup extends MX_Controller
         );
 
         $this->layout->buffer('content', 'setup/upgrade_tables');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     public function create_user()
@@ -206,7 +206,7 @@ class Setup extends MX_Controller
             )
         );
         $this->layout->buffer('content', 'setup/create_user');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     public function complete()
@@ -235,7 +235,7 @@ class Setup extends MX_Controller
         $this->layout->set('update', $update);
 
         $this->layout->buffer('content', 'setup/complete');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     private function check_writables()
