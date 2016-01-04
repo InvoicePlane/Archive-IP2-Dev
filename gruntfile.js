@@ -42,6 +42,7 @@ module.exports = function (grunt) {
                 files: {
                     "themes/core/js/dependencies.min.js": [
                         "themes/vendor/jquery/dist/jquery.js",
+                        "themes/vendor/tether/dist/js/tether.js",
                         "themes/vendor/bootstrap/dist/js/bootstrap.js",
                         "themes/vendor/jqueryui/ui/core.js",
                         "themes/vendor/jqueryui/ui/widget.js",
@@ -62,14 +63,6 @@ module.exports = function (grunt) {
                     sourceMap: "themes/core/js/app.min.js.map",
                     sourceMappingURL: "/themes/core/js/app.min.js.map"
                 }
-            }
-        },
-        copy: {
-            fontawesome: {
-                expand: true,
-                cwd: "themes/vendor/fontawesome/fonts/",
-                src: ["**"],
-                dest: "themes/core/fonts/fontawesome"
             }
         },
         watch: {
@@ -103,8 +96,7 @@ module.exports = function (grunt) {
         "clean",
         "sass",
         "jshint",
-        "uglify",
-        "copy:fontawesome"
+        "uglify"
     ]);
     grunt.registerTask("dev", [
         "build",
