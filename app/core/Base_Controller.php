@@ -36,14 +36,14 @@ class Base_Controller extends MX_Controller
         $this->load->helper('url');
         $this->load->database();
 
-        // Check if database has been configured
+        // Check if database has been configured, if not show the welcome page
         if (empty($this->db->hostname)) {
 
             $this->load->helper('redirect');
             redirect('/welcome');
 
         } else {
-
+            // Load globally used libraries and helpers
             $this->load->library('form_validation');
             $this->load->helper('number');
             $this->load->helper('pager');
@@ -55,17 +55,23 @@ class Base_Controller extends MX_Controller
             $this->load->model('settings/mdl_settings');
             $this->mdl_settings->load_settings();
 
+            // Define the theme URL
+            if ($this->mdl_settings->setting('theme') != '') {
+                define('THEME_URL', base_url() . 'themes/' . $this->mdl_settings->setting('theme') . '/');
+            } else {
+                define('THEME_URL', base_url() . 'themes/InvoicePlane/');
+            }
+
+            // Load language strings
             $this->lang->load('ip', $this->mdl_settings->setting('default_language'));
             $this->lang->load('form_validation', $this->mdl_settings->setting('default_language'));
             $this->lang->load('custom', $this->mdl_settings->setting('default_language'));
-
             $this->load->helper('language');
 
+            // Load the layout module
             $this->load->module('layout');
 
         }
     }
 
 }
-
-?>

@@ -68,6 +68,7 @@ module.exports = function (grunt) {
         watch: {
             sass: {
                 files: [
+                    "themes/core/sass/*.scss",
                     "themes/InvoicePlane/*.scss"
                 ],
                 tasks: ["sass"]
