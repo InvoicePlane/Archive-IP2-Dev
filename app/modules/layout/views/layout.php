@@ -7,10 +7,6 @@
 
 <body>
 
-<noscript>
-    <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
-</noscript>
-
 <div id="modal-placeholder"></div>
 
 <div id="app">
@@ -19,13 +15,11 @@
         <?php $this->view('includes/sidebar') ?>
     </div>
 
-    <div class="sidebar-toggle-wrapper hidden-lg-up">
-        <a href="#" class="sidebar-toggle">
-            <i class="cursor-pointer fa fa-bars fa-margin-right hidden-lg-up"></i> <?php echo lang('menu'); ?>
-        </a>
-    </div>
+    <?php $this->view('includes/sidebar_toggle') ?>
 
     <div id="main">
+
+        <?php $this->view('includes/no_js_info') ?>
 
         <?php echo $content; ?>
 
