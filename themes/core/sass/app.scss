@@ -15,19 +15,8 @@
 @import "fonts/font-awesome";
 // Load modules
 @import "modules/upload";
-
-/*
-|   =========================================================
-|   Status variables
-|   =========================================================
-*/
-
-$color-status-draft: #999999;
-$color-status-sent: #3A87AD;
-$color-status-viewed: #F89406;
-$color-status-paid-approved: #468847;
-$color-status-rejected-overdue: #B94A48;
-$color-status-canceled: #333333;
+// Import core variables
+@import "core-vars";
 
 /*
 |   =========================================================
@@ -36,23 +25,35 @@ $color-status-canceled: #333333;
 */
 
 #app {
-  display: table;
   width: 100%;
-}
 
-#sidebar,
-#main {
-  display: table-cell;
-  vertical-align: top;
+  @media screen and (min-width: $screen-lg) {
+    display: table;
+  }
 }
 
 #sidebar {
-  width: 15%;
+  width: 320px;
   position: fixed;
   top: 0;
   bottom: 0;
   background: $gray-dark;
   color: $gray-lighter;
+  left: -320px;
+  z-index: $zindex-navbar;
+  @include transition-std(left);
+
+  &.show-sidebar {
+    left: 0;
+    @include transition-std(left);
+  }
+
+  @media screen and (min-width: $screen-lg) {
+    width: 15%;
+    display: table-cell;
+    vertical-align: top;
+    left: 0;
+  }
 
   a {
     color: $gray-lightest;
@@ -68,13 +69,25 @@ $color-status-canceled: #333333;
 }
 
 #main {
-  width: 85%;
+  width: 100%;
   padding: 1rem;
+
+  @media screen and (min-width: $screen-lg) {
+    display: table-cell;
+    vertical-align: top;
+    width: 85%;
+  }
+}
+
+.sidebar-toggle-wrapper {
+  padding: 1rem;
+  width: 100%;
+  border-bottom: 1px solid $gray-lighter;
 }
 
 /*
 |   =========================================================
-|   Menus
+|   Menu
 |   =========================================================
 */
 
@@ -167,11 +180,11 @@ $color-status-canceled: #333333;
 }
 
 .fa-margin-right {
-  margin-right: 1rem;
+  margin-right: 0.5rem;
 }
 
 .fa-margin-left {
-  margin-left: 1rem;
+  margin-left: 0.5rem;
 }
 
 /*
@@ -179,6 +192,10 @@ $color-status-canceled: #333333;
 |   Various other styles
 |   =========================================================
 */
+
+.cursor-pointer {
+  cursor: pointer;
+}
 
 ::-webkit-scrollbar {
   width: 1rem;

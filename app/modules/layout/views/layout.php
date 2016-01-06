@@ -19,6 +19,12 @@
         <?php $this->view('includes/sidebar') ?>
     </div>
 
+    <div class="sidebar-toggle-wrapper hidden-lg-up">
+        <a href="#" class="sidebar-toggle">
+            <i class="cursor-pointer fa fa-bars fa-margin-right hidden-lg-up"></i> <?php echo lang('menu'); ?>
+        </a>
+    </div>
+
     <div id="main">
 
         <?php echo $content; ?>

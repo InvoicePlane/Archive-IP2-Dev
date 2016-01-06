@@ -1,0 +1,30 @@
+/*
+|   =========================================================
+|   Core Variables
+|   =========================================================
+*/
+
+$screen-sm: 544px;
+$screen-md: 768px;
+$screen-lg: 992px;
+$screen-xl: 1200px;
+
+$color-status-draft: #999999;
+$color-status-sent: #3A87AD;
+$color-status-viewed: #F89406;
+$color-status-paid-approved: #468847;
+$color-status-rejected-overdue: #B94A48;
+$color-status-canceled: #333333;
+
+/*
+|   =========================================================
+|   Mixins
+|   =========================================================
+*/
+
+@mixin transition-std($transition) {
+  transition: $transition 0.2s ease-out;
+  -moz-transition: $transition 0.2s ease-out;
+  -webkit-transition: $transition 0.2s ease-out;
+  -o-transition: $transition 0.2s ease-out;
+}

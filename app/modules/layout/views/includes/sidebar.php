@@ -10,6 +10,7 @@
             }
             ?>
         </a>
+        <a href="#" class="sidebar-toggle pull-right"><i class="cursor-pointer fa fa-close hidden-lg-up"></i></a>
     </div>
 
     <ul class="menu">

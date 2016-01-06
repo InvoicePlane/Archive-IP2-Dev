@@ -182,4 +182,9 @@ $(document).ready(function () {
         $("#fullpage-loader").fadeIn(200);
         $("#loader-error").delay(10000).fadeIn(200);
     });
+
+    $(".sidebar-toggle").click(function(e){
+        e.preventDefault();
+        $("#sidebar").toggleClass("show-sidebar");
+    });
 });
