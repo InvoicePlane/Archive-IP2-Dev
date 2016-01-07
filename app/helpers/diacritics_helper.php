@@ -1,5 +1,12 @@
 <?php
+/**
+ * @package Helpers
+ */
 
+/**
+ * @param $str
+ * @return bool
+ */
 function diacritics_seems_utf8($str)
 {
     $length = strlen($str);
@@ -159,6 +166,11 @@ function diacritics_remove_accents($string)
     return $string;
 }
 
+/**
+ * Removes diacritics from characters with diacritics
+ * @param $text
+ * @return string
+ */
 function diacritics_remove_diacritics($text)
 {
     $trans = array(

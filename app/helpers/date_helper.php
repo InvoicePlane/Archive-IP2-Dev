@@ -1,9 +1,16 @@
 <?php
+/**
+ * @package Helpers
+ */
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
-
+/**
+ * Returns an array with all available date formats
+ * @return array
+ */
 function date_formats()
 {
     return array(
@@ -54,7 +61,13 @@ function date_formats()
     );
 }
 
-function date_from_mysql($date, $ignore_post_check = FALSE)
+/**
+ * Converts a given MySQL date to a formatted date
+ * @param $date
+ * @param bool $ignore_post_check
+ * @return DateTime|string
+ */
+function date_from_mysql($date, $ignore_post_check = false)
 {
     if ($date <> '0000-00-00') {
         if (!$_POST or $ignore_post_check) {
@@ -68,6 +81,11 @@ function date_from_mysql($date, $ignore_post_check = FALSE)
     return '';
 }
 
+/**
+ * Converts a given tmestamp date to a formatted date
+ * @param $timestamp
+ * @return string
+ */
 function date_from_timestamp($timestamp)
 {
     $CI = &get_instance();
@@ -77,6 +95,11 @@ function date_from_timestamp($timestamp)
     return $date->format($CI->mdl_settings->setting('date_format'));
 }
 
+/**
+ * Converts a given date date to a MySQL date
+ * @param $date
+ * @return string
+ */
 function date_to_mysql($date)
 {
     $CI = &get_instance();
@@ -85,6 +108,10 @@ function date_to_mysql($date)
     return $date->format('Y-m-d');
 }
 
+/**
+ * Returns the date format set by the user in the settings
+ * @return string
+ */
 function date_format_setting()
 {
     $CI = &get_instance();
@@ -96,6 +123,10 @@ function date_format_setting()
     return $date_formats[$date_format]['setting'];
 }
 
+/**
+ * Returns the date format set by the user in the settings for the datepicker
+ * @return string
+ */
 function date_format_datepicker()
 {
     $CI = &get_instance();
@@ -112,7 +143,7 @@ function date_format_datepicker()
  * To be used when date is being output back to user
  * @param $date - user formatted date
  * @param $increment - interval (1D, 2M, 1Y, etc)
- * @return user formatted date
+ * @return DateTime
  */
 function increment_user_date($date, $increment)
 {
@@ -130,7 +161,7 @@ function increment_user_date($date, $increment)
  * Adds interval to yyyy-mm-dd date and returns in same format
  * @param $date
  * @param $increment
- * @return date
+ * @return DateTime
  */
 function increment_date($date, $increment)
 {

@@ -1,9 +1,17 @@
 <?php
+/**
+ * @package Helpers
+ */
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Parses a template for veriables and returns the parsed content
+ * @param $object
+ * @param $body
+ * @return mixed
+ */
 function parse_template($object, $body)
 {
     if (preg_match_all('/{{{([^{|}]*)}}}/', $body, $template_vars)) {
@@ -50,6 +58,11 @@ function parse_template($object, $body)
     return $body;
 }
 
+/**
+ * Returns the invoice PDF template set in the settings
+ * @param $invoice
+ * @return mixed
+ */
 function select_pdf_invoice_template($invoice)
 {
     $CI =& get_instance();
@@ -66,6 +79,11 @@ function select_pdf_invoice_template($invoice)
     }
 }
 
+/**
+ * Returns the invoice email template set in the settings
+ * @param $invoice
+ * @return mixed
+ */
 function select_email_invoice_template($invoice)
 {
     $CI =& get_instance();

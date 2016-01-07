@@ -1,9 +1,16 @@
 <?php
+/**
+ * @package Helpers
+ */
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Formats an amount based on the format set in the settings with the currency
+ * @param $amount
+ * @return string
+ */
 function format_currency($amount)
 {
     global $CI;
@@ -21,6 +28,11 @@ function format_currency($amount)
     }
 }
 
+/**
+ * Formats an amount based on the format set in the settings
+ * @param null $amount
+ * @return null|string
+ */
 function format_amount($amount = NULL)
 {
     if ($amount) {
@@ -33,6 +45,11 @@ function format_amount($amount = NULL)
     return NULL;
 }
 
+/**
+ * Standardized an amount based on the set number format
+ * @param $amount
+ * @return mixed
+ */
 function standardize_amount($amount)
 {
     $CI =& get_instance();

@@ -1,9 +1,21 @@
 <?php
+/**
+ * @package Helpers
+ */
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Creates a PDF file based on the given variables
+ * @param $html
+ * @param $filename
+ * @param bool $stream
+ * @param null $password
+ * @param null $isInvoice
+ * @param null $isGuest
+ * @return string
+ */
 function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoice = NULL,$isGuest = NULL)
 {
     require_once(APPPATH . 'helpers/mpdf/mpdf.php');

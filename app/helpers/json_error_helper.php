@@ -1,9 +1,15 @@
 <?php
+/**
+ * @package Helpers
+ */
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Returns form errors as array
+ * @return array
+ */
 function json_errors()
 {
     // Ok, gotta think of a better name for this function. It doesn't return

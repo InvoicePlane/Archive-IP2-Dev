@@ -1,9 +1,17 @@
 <?php
+/**
+ * @package Helpers
+ */
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Custom pager function
+ * @param $base_url
+ * @param $model
+ * @return string
+ */
 function pager($base_url, $model)
 {
     $CI = &get_instance();

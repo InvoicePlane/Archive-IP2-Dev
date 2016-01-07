@@ -1,13 +1,17 @@
 <?php
+/**
+ * @package Helpers
+ */
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /**
  * Returns an array list of cldr => country, translated in the language $cldr.
  * If there is no translated country list, return the english one
  * @param $cldr
- * @return mixed
+ * @return string
  */
 function get_country_list($cldr)
 {
@@ -20,9 +24,10 @@ function get_country_list($cldr)
 }
 
 /**
- * Returns the countryname of a given $countrycode, , translated in the language $cldr
- * @param $cldr
- * @return mixed
+ * Returns the countryname of a given $countrycode, translated in the language $cldr
+ * @param string $cldr
+ * @param string $countrycode
+ * @return string
  */
 function get_country_name($cldr, $countrycode)
 {

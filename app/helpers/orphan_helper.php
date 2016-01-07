@@ -1,9 +1,14 @@
 <?php
+/**
+ * @package Helpers
+ */
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Deletes orphaned database entries
+ */
 function delete_orphans()
 {
     $CI =& get_instance();

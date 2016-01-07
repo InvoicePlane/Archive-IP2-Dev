@@ -1,5 +1,14 @@
 <?php
+/**
+ * @package Helpers
+ */
 
+/**
+ * Redirects the user to a given URL
+ * @param $fallback_url_string
+ * @param bool $redirect
+ * @return mixed
+ */
 function redirect_to($fallback_url_string, $redirect = TRUE)
 {
     $CI = &get_instance();
@@ -12,6 +21,9 @@ function redirect_to($fallback_url_string, $redirect = TRUE)
     return $redirect_url;
 }
 
+/**
+ *
+ */
 function redirect_to_set()
 {
     $CI = &get_instance();

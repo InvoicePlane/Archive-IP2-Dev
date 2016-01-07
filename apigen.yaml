@@ -9,6 +9,6 @@ exclude:
     - ./app/helpers/mpdf
 
 destination: ./docs
-theme: bootstrap
+templateTheme: bootstrap
 todo: true
 tree: true

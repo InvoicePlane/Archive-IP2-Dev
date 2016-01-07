@@ -1,9 +1,15 @@
 <?php
+/**
+ * @package Helpers
+ */
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Checks if the PHP Mailer was configured
+ * @return bool
+ */
 function mailer_configured()
 {
     $CI = &get_instance();
@@ -14,6 +20,19 @@ function mailer_configured()
     );
 }
 
+/**
+ * Sends an invoice based on the given variables
+ * @param $invoice_id
+ * @param $invoice_template
+ * @param $from
+ * @param $to
+ * @param $subject
+ * @param $body
+ * @param null $cc
+ * @param null $bcc
+ * @param null $attachments
+ * @return bool
+ */
 function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL,$attachments = NULL)
 {
     $CI = &get_instance();
@@ -36,6 +55,19 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
     return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc,$attachments);
 }
 
+/**
+ * Sends a quote based on the given variables
+ * @param $quote_id
+ * @param $quote_template
+ * @param $from
+ * @param $to
+ * @param $subject
+ * @param $body
+ * @param null $cc
+ * @param null $bcc
+ * @param null $attachments
+ * @return bool
+ */
 function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL,$attachments = NULL)
 {
     $CI = &get_instance();

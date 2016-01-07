@@ -1,9 +1,19 @@
 <?php
+/**
+ * @package Helpers
+ */
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Generates a PDF file based on the invoice id
+ * @param $invoice_id
+ * @param bool $stream
+ * @param null $invoice_template
+ * @param null $isGuest
+ * @return string
+ */
 function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL,$isGuest = NULL)
 {
     $CI = &get_instance();
@@ -37,6 +47,13 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
     return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream, $invoice->invoice_password,1,$isGuest);
 }
 
+/**
+ * Generates a PDF file based on the quote id
+ * @param $quote_id
+ * @param bool $stream
+ * @param null $quote_template
+ * @return string
+ */
 function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
 {
     $CI = &get_instance();
