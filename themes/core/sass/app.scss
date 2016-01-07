@@ -89,6 +89,14 @@
   cursor: pointer;
 }
 
+.login-logo {
+  padding: 2rem 0;
+
+  img {
+    max-width: 100%;
+  }
+}
+
 /*
 |   =========================================================
 |   Menu
@@ -168,13 +176,11 @@
       }
     }
   }
-
-
 }
 
 /*
 |   =========================================================
-|   Additional icon styles
+|   Additional icon and text styles
 |   =========================================================
 */
 
@@ -189,6 +195,18 @@
 
 .fa-margin-left {
   margin-left: 0.5rem;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
 }
 
 /*

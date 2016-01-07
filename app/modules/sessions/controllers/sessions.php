@@ -6,6 +6,33 @@ if (!defined('BASEPATH'))
 
 class Sessions extends Base_Controller
 {
+    public function __construct()
+    {
+        Base_Controller::__construct();
+    }
+
+    /**
+     * Authenticate function that checks if the given user credentials
+     * are correct.
+     *
+     * @param $email_address
+     * @param $password
+     * @return bool
+     */
+    public function authenticate($email_address, $password)
+    {
+        $this->load->model('mdl_sessions');
+
+        if ($this->mdl_sessions->auth($email_address, $password)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Controller: index
+     */
     public function index()
     {
         redirect('sessions/login');
@@ -17,13 +44,14 @@ class Sessions extends Base_Controller
             'login_logo' => $this->mdl_settings->setting('login_logo')
         );
 
+        // Check if the the form was submitted
         if ($this->input->post('btn_login')) {
 
+            // Check if the user exists
             $this->db->where('user_email', $this->input->post('email'));
             $query = $this->db->get('ip_users');
             $user = $query->row();
 
-            // Check if the user exists
             if (empty($user)) {
                 $this->session->set_flashdata('alert_error', lang('loginalert_user_not_found'));
             } else {
@@ -33,7 +61,12 @@ class Sessions extends Base_Controller
                     $this->session->set_flashdata('alert_error', lang('loginalert_user_inactive'));
                 } else {
 
-                    if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
+                    // Try to authenticate the user
+                    $email = $this->input->post('email');
+                    $password = $this->input->post('password');
+
+                    if ($this->authenticate($email, $password)) {
+                        // @TODO IP-366 - User roles
                         if ($this->session->userdata('user_type') == 1) {
                             redirect('dashboard');
                         } elseif ($this->session->userdata('user_type') == 2) {
@@ -42,14 +75,13 @@ class Sessions extends Base_Controller
                     } else {
                         $this->session->set_flashdata('alert_error', lang('loginalert_credentials_incorrect'));
                     }
-
                 }
-
             }
-
         }
 
-        $this->load->view('session_login', $view_data);
+        $this->layout->set($view_data);
+        $this->layout->buffer('content', 'sessions/session_login');
+        $this->layout->render('base');
     }
 
     public function logout()
@@ -59,18 +91,7 @@ class Sessions extends Base_Controller
         redirect('sessions/login');
     }
 
-    public function authenticate($email_address, $password)
-    {
-        $this->load->model('mdl_sessions');
-
-        if ($this->mdl_sessions->auth($email_address, $password)) {
-            return TRUE;
-        }
-
-        return FALSE;
-    }
-
-    public function passwordreset($token = NULL)
+    public function passwordreset($token = null)
     {
         // Check if a token was provided
         if ($token) {
@@ -150,7 +171,7 @@ class Sessions extends Base_Controller
                 $email_resetlink = base_url() . 'sessions/passwordreset/' . $token;
                 $email_message = $this->load->view('emails/passwordreset', array(
                     'resetlink' => $email_resetlink
-                ), TRUE);
+                ), true);
                 $email_from = 'system@' . preg_replace("/^[\w]{2,6}:\/\/([\w\d\.\-]+).*$/", "$1", base_url());
 
                 // Set email configuration
