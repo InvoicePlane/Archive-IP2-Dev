@@ -28,7 +28,7 @@
 
 </div>
 
-<?php echo $this->layout->load_view('layout/alerts'); ?>
+<?php echo $this->layout->load_view('layout/includes/alerts'); ?>
 
 <div id="content">
 

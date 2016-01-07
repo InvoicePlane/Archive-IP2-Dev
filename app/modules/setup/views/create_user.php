@@ -15,7 +15,7 @@
 
             <legend><?php echo lang('setup_create_user'); ?></legend>
 
-            <?php echo $this->layout->load_view('layout/alerts'); ?>
+            <?php echo $this->layout->load_view('layout/includes/alerts'); ?>
 
             <p><?php echo lang('setup_create_user_message'); ?></p>
 

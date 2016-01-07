@@ -182,7 +182,7 @@
 
 <div id="content">
 
-    <?php echo $this->layout->load_view('layout/alerts'); ?>
+    <?php echo $this->layout->load_view('layout/includes/alerts'); ?>
 
     <form id="quote_form">
 

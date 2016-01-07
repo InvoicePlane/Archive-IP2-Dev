@@ -232,7 +232,7 @@ if ($this->config->item('disable_read_only') == TRUE) {
 
 <div id="content">
 
-    <?php echo $this->layout->load_view('layout/alerts'); ?>
+    <?php echo $this->layout->load_view('layout/includes/alerts'); ?>
 
     <form id="invoice_form" class="form-horizontal">
 
