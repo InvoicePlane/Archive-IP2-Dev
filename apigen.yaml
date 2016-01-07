@@ -1,0 +1,14 @@
+source:
+    - ./app/core
+    - ./app/helpers
+    - ./app/libraries
+    - ./app/modules
+
+exclude:
+    - ./app/helpers/country-list
+    - ./app/helpers/mpdf
+
+destination: ./docs
+theme: bootstrap
+todo: true
+tree: true

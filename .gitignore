@@ -1,4 +1,5 @@
 /app/config/development
+/docs
 /node_modules
 /themes/core/fonts/fontawesome
 /themes/core/js/*.min.js
