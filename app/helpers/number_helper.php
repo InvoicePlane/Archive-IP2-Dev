@@ -10,39 +10,44 @@ if (!defined('BASEPATH'))
  * Formats an amount based on the format set in the settings with the currency
  * @param $amount
  * @return string
- */
-function format_currency($amount)
+*/
+function format_currency($amount, $decimals = 2)
 {
-    global $CI;
+    $CI =& get_instance();
+
     $currency_symbol = $CI->mdl_settings->setting('currency_symbol');
     $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
     $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
     $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
     if ($currency_symbol_placement == 'before') {
-        return $currency_symbol . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
+        return $currency_symbol . number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point,
+            $thousands_separator);
     } elseif ($currency_symbol_placement == 'afterspace') {
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . '&nbsp;' . $currency_symbol;
+        return number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point,
+            $thousands_separator) . '&nbsp;' . $currency_symbol;
     } else {
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . $currency_symbol;
+        return number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point,
+            $thousands_separator) . $currency_symbol;
     }
 }
 
 /**
  * Formats an amount based on the format set in the settings
  * @param null $amount
+ * @param int $decimals
  * @return null|string
  */
-function format_amount($amount = NULL)
+function format_amount($amount = null, $decimals = 2)
 {
     if ($amount) {
         $CI =& get_instance();
         $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
         $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
+        return number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point, $thousands_separator);
     }
-    return NULL;
+    return null;
 }
 
 /**
