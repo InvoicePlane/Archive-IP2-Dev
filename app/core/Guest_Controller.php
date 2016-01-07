@@ -3,12 +3,17 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Class Guest_Controller
+ * @package Core
+ */
 class Guest_Controller extends User_Controller
 {
-
     public $user_clients = array();
 
+    /**
+     * Guest_Controller constructor.
+     */
     public function __construct()
     {
         parent::__construct('user_type', 2);

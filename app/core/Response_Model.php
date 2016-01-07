@@ -3,10 +3,17 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Class Response_Model
+ * @package Core
+ */
 class Response_Model extends Form_Validation_Model
 {
-
+    /**
+     * @param int $id
+     * @param array $db_array
+     * @return int
+     */
     public function save($id = NULL, $db_array = NULL)
     {
 
@@ -21,6 +28,9 @@ class Response_Model extends Form_Validation_Model
         return $id;
     }
 
+    /**
+     * @param $id
+     */
     public function delete($id)
     {
         parent::delete($id);
@@ -29,5 +39,3 @@ class Response_Model extends Form_Validation_Model
     }
 
 }
-
-?>

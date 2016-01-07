@@ -3,12 +3,17 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Class Base_Controller
+ * @package Core
+ */
 class Base_Controller extends MX_Controller
 {
-
     public $ajax_controller = false;
 
+    /**
+     * Base_Controller constructor.
+     */
     public function __construct()
     {
         parent::__construct();
