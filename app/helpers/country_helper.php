@@ -3,19 +3,6 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-/*
- * InvoicePlane
- * 
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2016 InvoicePlane.com
- * @license		https://invoiceplane.com/license-copyright
- * @link		https://invoiceplane.com
- * 
- */
-
 /**
  * Returns an array list of cldr => country, translated in the language $cldr.
  * If there is no translated country list, return the english one
