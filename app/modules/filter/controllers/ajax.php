@@ -1,14 +1,20 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Ajax
+ * @package Modules\Filter\Controllers
+ */
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 
+    /**
+     * Returns a list of filtered invoices based on the given query
+     * @uses $_POST['filter_query']
+     */
     public function filter_invoices()
     {
         $this->load->model('invoices/mdl_invoices');
@@ -34,6 +40,10 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('invoices/partial_invoice_table', $data);
     }
 
+    /**
+     * Returns a list of filtered quotes based on the given query
+     * @uses $_POST['filter_query']
+     */
     public function filter_quotes()
     {
         $this->load->model('quotes/mdl_quotes');
@@ -59,6 +69,10 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('quotes/partial_quote_table', $data);
     }
 
+    /**
+     * Returns a list of filtered clients based on the given query
+     * @uses $_POST['filter_query']
+     */
     public function filter_clients()
     {
         $this->load->model('clients/mdl_clients');
@@ -83,6 +97,10 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('clients/partial_client_table', $data);
     }
 
+    /**
+     * Returns a list of filtered payments based on the given query
+     * @uses $_POST['filter_query']
+     */
     public function filter_payments()
     {
         $this->load->model('payments/mdl_payments');
@@ -106,5 +124,4 @@ class Ajax extends Admin_Controller
 
         $this->layout->load_view('payments/partial_payment_table', $data);
     }
-
 }
