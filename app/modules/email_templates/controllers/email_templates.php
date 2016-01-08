@@ -1,24 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-/*
- * InvoicePlane
- *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
- *
+/**
+ * Class Email_Templates
+ * @package Modules\Email_Templates\Controllers
  */
-
 class Email_Templates extends Admin_Controller
 {
+    /**
+     * Email_Templates constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -26,6 +19,9 @@ class Email_Templates extends Admin_Controller
         $this->load->model('mdl_email_templates');
     }
 
+    /**
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_email_templates->paginate(site_url('email_templates/index'), $page);
@@ -36,6 +32,12 @@ class Email_Templates extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the form
+     * If an ID was provided the form will be filled with the data of the email template
+     * for the given ID and can be used as an edit form.
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -79,10 +81,13 @@ class Email_Templates extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes an email template from the database based on the given ID
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_email_templates->delete($id);
         redirect('email_templates');
     }
-
 }
