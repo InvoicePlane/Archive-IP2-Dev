@@ -15,7 +15,7 @@
 
 <div id="content" class="table-content">
 
-    <?php echo $this->layout->load_view('layout/includes/alerts'); ?>
+    <?php echo $this->layout->load_view('layout/alerts'); ?>
 
     <table class="table table-striped">
 

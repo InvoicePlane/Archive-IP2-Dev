@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 
 class Mdl_Settings extends CI_Model
@@ -17,7 +18,7 @@ class Mdl_Settings extends CI_Model
         if ($query->row()) {
             return $query->row()->setting_value;
         } else {
-            return NULL;
+            return null;
         }
     }
 
@@ -28,7 +29,7 @@ class Mdl_Settings extends CI_Model
             'setting_value' => $value
         );
 
-        if ($this->get($key) !== NULL) {
+        if ($this->get($key) !== null) {
             $this->db->where('setting_key', $key);
             $this->db->update('ip_settings', $db_array);
         } else {

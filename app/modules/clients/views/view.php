@@ -41,7 +41,7 @@
         </a>
         <a href="#" class="btn btn-sm btn-default client-create-invoice"
            data-client-name="<?php echo $client->client_name; ?>"><i
-                class="fa fa-file-text""></i> <?php echo lang('create_invoice'); ?></a>
+                class="fa fa-file-text"></i> <?php echo lang('create_invoice'); ?></a>
         <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
            class="btn btn-sm btn-default">
             <i class="fa fa-edit"></i> <?php echo lang('edit'); ?>
@@ -78,10 +78,10 @@
                     <p>
                         <?php echo ($client->client_address_1) ? $client->client_address_1 . '<br>' : ''; ?>
                         <?php echo ($client->client_address_2) ? $client->client_address_2 . '<br>' : ''; ?>
-                        <?php echo ($client->client_city)      ? $client->client_city : ''; ?>
-                        <?php echo ($client->client_state)     ? $client->client_state : ''; ?>
-                        <?php echo ($client->client_zip)       ? $client->client_zip : ''; ?>
-                        <?php echo ($client->client_country)   ? '<br>' . $client->client_country : ''; ?>
+                        <?php echo ($client->client_city) ? $client->client_city : ''; ?>
+                        <?php echo ($client->client_state) ? $client->client_state : ''; ?>
+                        <?php echo ($client->client_zip) ? $client->client_zip : ''; ?>
+                        <?php echo ($client->client_country) ? '<br>' . $client->client_country : ''; ?>
                     </p>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
@@ -148,7 +148,7 @@
                         <?php if ($client->client_web) : ?>
                             <tr>
                                 <th><?php echo lang('web'); ?></th>
-                                <td><?php echo auto_link($client->client_web, 'url', TRUE); ?></td>
+                                <td><?php echo auto_link($client->client_web, 'url', true); ?></td>
                             </tr>
                         <?php endif; ?>
                     </table>

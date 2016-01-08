@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 
 class Mdl_Invoices_Recurring extends Response_Model
@@ -21,7 +22,8 @@ class Mdl_Invoices_Recurring extends Response_Model
         $this->db->select("SQL_CALC_FOUND_ROWS ip_invoices.*,
             ip_clients.client_name,
             ip_invoices_recurring.*,
-            IF(recur_end_date > date(NOW()) OR recur_end_date = '0000-00-00', 'active', 'inactive') AS recur_status", FALSE);
+            IF(recur_end_date > date(NOW()) OR recur_end_date = '0000-00-00', 'active', 'inactive') AS recur_status",
+            false);
     }
 
     public function default_join()
@@ -51,6 +53,16 @@ class Mdl_Invoices_Recurring extends Response_Model
                 'label' => lang('every'),
                 'rules' => 'required'
             ),
+            'recur_invoices_due_after' => array(
+                    'field' => 'recur_invoices_due_after',
+                    'label' => lang('invoices_due_after'),
+                    'rules' => 'required'
+            ),
+            'recur_email_invoice_template' => array(
+                    'field' => 'recur_email_invoice_template',
+                    'label' => lang('email_invoice_template'),
+                    'rules' => 'required'
+            )
         );
     }
 

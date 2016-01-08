@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 
 class Settings extends Admin_Controller
@@ -23,16 +24,46 @@ class Settings extends Admin_Controller
                 $this->db->query("ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT NULL");
             }
 
+            if ($settings['item_price_decimal_places'] <> $this->mdl_settings->setting('item_price_decimal_places')) {
+                $decimals = intval($settings['item_price_decimal_places']);
+                $precision = 8 + $decimals;
+                $higher_precision = 10 + $precision;
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_price` `item_price` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_price` `item_price` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_discount_amount` `item_discount_amount` DECIMAL( {$higher_precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_discount_amount` `item_discount_amount` DECIMAL( {$higher_precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_products` CHANGE `product_price` `product_price` FLOAT( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_products` CHANGE `purchase_price` `purchase_price` FLOAT( {$precision}, {$decimals} ) NOT NULL");
+            }
+
+            if ($settings['item_amount_decimal_places'] <> $this->mdl_settings->setting('item_amount_decimal_places')) {
+                $decimals = intval($settings['item_amount_decimal_places']);
+                $precision = 8 + $decimals;
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_quantity` `item_quantity` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_quantity` `item_quantity` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+            }
+
             // Save the submitted settings
+            $this->load->library('encrypt');
+            $this->load->library('form_validation');
+
             foreach ($settings as $key => $value) {
-                // Don't save empty passwords
-                if ($key == 'smtp_password' or $key == 'merchant_password') {
+                // Encrypt passwords but don't save empty passwords
+                if ($key == 'smtp_password' or strpos($key, 'gateway_password') === 0) {
                     if ($value <> '') {
-                        $this->load->library('encrypt');
                         $this->mdl_settings->save($key, $this->encrypt->encode($value));
                     }
                 } else {
-                    $this->mdl_settings->save($key, $value);
+                    if ($key == 'default_hourly_rate') {
+                        if ($value == '') {
+                            $value = '0.00';
+                        }
+                        if ($this->form_validation->integer($value) or $this->form_validation->decimal($value)) {
+                            $this->mdl_settings->save($key, sprintf("%01.2f", $value));
+                        }
+                    } else {
+                        $this->mdl_settings->save($key, $value);
+                    }
                 }
             }
 
@@ -72,6 +103,26 @@ class Settings extends Admin_Controller
                 $this->mdl_settings->save('login_logo', $upload_data['file_name']);
             }
 
+            $upload_pdf_config = array(
+                'upload_path' => './uploads/',
+                'allowed_types' => 'pdf',
+                'max_size' => '9999',
+            );
+
+            // Check for invoice background (pdf template) upload
+            if ($_FILES['invoice_background']['name']) {
+                $this->load->library('upload', $upload_pdf_config);
+
+                if (!$this->upload->do_upload('invoice_background')) {
+                    $this->session->set_flashdata('alert_error', $this->upload->display_errors());
+                    redirect('settings');
+                }
+
+                $upload_data = $this->upload->data();
+
+                $this->mdl_settings->save('invoice_background', $upload_data['file_name']);
+            }
+
             $this->session->set_flashdata('alert_success', lang('settings_successfully_saved'));
 
             redirect('settings');
@@ -88,7 +139,11 @@ class Settings extends Admin_Controller
         $this->load->helper('directory');
         $this->load->helper('country');
 
-        $this->load->library('merchant');
+        // Collect array of drivers allowed - just the defaults... minus dummy and other non-essentials
+        $omnipay = new \Omnipay\Omnipay();
+        $this->config->load('payment_gateways');
+        $allowed_drivers = $this->config->item('payment_gateways');
+        $gateway_drivers = array_intersect($omnipay->getFactory()->getSupportedGateways(), $allowed_drivers);
 
         // Collect the list of templates
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
@@ -97,7 +152,7 @@ class Settings extends Admin_Controller
         $public_quote_templates = $this->mdl_templates->get_quote_templates('public');
 
         // Collect the list of languages
-        $languages = directory_map(APPPATH . 'language', TRUE);
+        $languages = directory_map(APPPATH . 'language', true);
         sort($languages);
 
         // Get the current version
@@ -120,8 +175,8 @@ class Settings extends Admin_Controller
                 'current_date' => new DateTime(),
                 'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
                 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'merchant_drivers' => $this->merchant->valid_drivers(),
-                'merchant_currency_codes' => Merchant::$NUMERIC_CURRENCY_CODES,
+                'gateway_drivers' => $gateway_drivers,
+                'gateway_currency_codes' => \Omnipay\Common\Currency::all(),
                 'current_version' => $current_version,
                 'first_days_of_weeks' => array("0" => lang("sunday"), "1" => lang("monday"))
             )
@@ -142,4 +197,15 @@ class Settings extends Admin_Controller
         redirect('settings');
     }
 
+    public function remove_background()
+    {
+        // Maybe merge this with remove_logo and rename is to a more generic function
+        unlink('./uploads/' . $this->mdl_settings->setting('invoice_background'));
+
+        $this->mdl_settings->save('invoice_background', '');
+
+        $this->session->set_flashdata('alert_success', lang('invoice_background_removed'));
+
+        redirect('settings');
+    }
 }

@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 
 class Setup extends MX_Controller
@@ -48,14 +49,14 @@ class Setup extends MX_Controller
 
         $this->load->helper('directory');
 
-        $languages = directory_map(APPPATH . '/language', TRUE);
+        $languages = directory_map(APPPATH . '/language', true);
 
         sort($languages);
 
         $this->layout->set('languages', $languages);
 
         $this->layout->buffer('content', 'setup/language');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function prerequisites()
@@ -78,7 +79,7 @@ class Setup extends MX_Controller
         );
 
         $this->layout->buffer('content', 'setup/prerequisites');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function configure_database()
@@ -97,20 +98,21 @@ class Setup extends MX_Controller
                 redirect('setup/install_tables');
             } else {
                 // This appears to be an upgrade
-                $this->session->set_userdata('is_upgrade', TRUE);
+                $this->session->set_userdata('is_upgrade', true);
                 $this->session->set_userdata('install_step', 'upgrade_tables');
                 redirect('setup/upgrade_tables');
             }
         }
 
         if ($this->input->post('db_hostname')) {
-            $this->write_database_config($this->input->post('db_hostname'), $this->input->post('db_username'), $this->input->post('db_password'), $this->input->post('db_database'));
+            $this->write_database_config($this->input->post('db_hostname'), $this->input->post('db_username'),
+                $this->input->post('db_password'), $this->input->post('db_database'));
         }
 
         $this->layout->set('database', $this->check_database());
         $this->layout->set('errors', $this->errors);
         $this->layout->buffer('content', 'setup/configure_database');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function install_tables()
@@ -134,7 +136,7 @@ class Setup extends MX_Controller
         );
 
         $this->layout->buffer('content', 'setup/install_tables');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function upgrade_tables()
@@ -163,7 +165,7 @@ class Setup extends MX_Controller
         );
 
         $this->layout->buffer('content', 'setup/upgrade_tables');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function create_user()
@@ -182,7 +184,7 @@ class Setup extends MX_Controller
             $db_array = $this->mdl_users->db_array();
             $db_array['user_type'] = 1;
 
-            $this->mdl_users->save(NULL, $db_array);
+            $this->mdl_users->save(null, $db_array);
 
             $this->session->set_userdata('install_step', 'complete');
             redirect('setup/complete');
@@ -194,7 +196,7 @@ class Setup extends MX_Controller
             )
         );
         $this->layout->buffer('content', 'setup/create_user');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function complete()
@@ -223,7 +225,7 @@ class Setup extends MX_Controller
         $this->layout->set('update', $update);
 
         $this->layout->buffer('content', 'setup/complete');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     private function check_writables()
@@ -345,10 +347,14 @@ class Setup extends MX_Controller
     {
         $db_file = read_file(APPPATH . 'config/database_empty.php');
 
-        $db_file = str_replace('$db[\'default\'][\'hostname\'] = \'\'', '$db[\'default\'][\'hostname\'] = \'' . addcslashes($hostname, '\'\\') . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'username\'] = \'\'', '$db[\'default\'][\'username\'] = \'' . addcslashes($username, '\'\\') . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'password\'] = \'\'', '$db[\'default\'][\'password\'] = \'' . addcslashes($password, '\'\\') . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'database\'] = \'\'', '$db[\'default\'][\'database\'] = \'' . addcslashes($database, '\'\\') . '\'', $db_file);
+        $db_file = str_replace('$db[\'default\'][\'hostname\'] = \'\'',
+            '$db[\'default\'][\'hostname\'] = \'' . addcslashes($hostname, '\'\\') . '\'', $db_file);
+        $db_file = str_replace('$db[\'default\'][\'username\'] = \'\'',
+            '$db[\'default\'][\'username\'] = \'' . addcslashes($username, '\'\\') . '\'', $db_file);
+        $db_file = str_replace('$db[\'default\'][\'password\'] = \'\'',
+            '$db[\'default\'][\'password\'] = \'' . addcslashes($password, '\'\\') . '\'', $db_file);
+        $db_file = str_replace('$db[\'default\'][\'database\'] = \'\'',
+            '$db[\'default\'][\'database\'] = \'' . addcslashes($database, '\'\\') . '\'', $db_file);
 
         write_file(APPPATH . 'config/database.php', $db_file);
     }

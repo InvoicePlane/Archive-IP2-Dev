@@ -1,12 +1,13 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 
 class Ajax extends Admin_Controller
 {
-    public $ajax_controller = TRUE;
+    public $ajax_controller = true;
 
     public function save_user_client()
     {
@@ -25,10 +26,11 @@ class Ajax extends Admin_Controller
             if ($user_id) {
                 // Existing user - go ahead and save the entries
 
-                $user_client = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)->where('ip_user_clients.client_id', $client_id)->get();
+                $user_client = $this->mdl_user_clients->where('ip_user_clients.user_id',
+                    $user_id)->where('ip_user_clients.client_id', $client_id)->get();
 
                 if (!$user_client->num_rows()) {
-                    $this->mdl_user_clients->save(NULL, array('user_id' => $user_id, 'client_id' => $client_id));
+                    $this->mdl_user_clients->save(null, array('user_id' => $user_id, 'client_id' => $client_id));
                 }
             } else {
                 // New user - assign the entries to a session variable until user record is saved
@@ -47,15 +49,17 @@ class Ajax extends Admin_Controller
             $this->load->model('clients/mdl_clients');
 
             $data = array(
-                'id' => NULL,
-                'user_clients' => $this->mdl_clients->where_in('ip_clients.client_id', $session_user_clients)->get()->result()
+                'id' => null,
+                'user_clients' => $this->mdl_clients->where_in('ip_clients.client_id',
+                    $session_user_clients)->get()->result()
             );
         } else {
             $this->load->model('users/mdl_user_clients');
 
             $data = array(
                 'id' => $this->input->post('user_id'),
-                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $this->input->post('user_id'))->get()->result()
+                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id',
+                    $this->input->post('user_id'))->get()->result()
             );
         }
 

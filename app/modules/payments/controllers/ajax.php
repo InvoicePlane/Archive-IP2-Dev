@@ -1,12 +1,13 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 
 class Ajax extends Admin_Controller
 {
-    public $ajax_controller = TRUE;
+    public $ajax_controller = true;
 
     public function add()
     {

@@ -15,7 +15,7 @@
 
             <legend><?php echo lang('setup_create_user'); ?></legend>
 
-            <?php echo $this->layout->load_view('layout/includes/alerts'); ?>
+            <?php echo $this->layout->load_view('layout/alerts'); ?>
 
             <p><?php echo lang('setup_create_user_message'); ?></p>
 
@@ -147,8 +147,8 @@
                     <?php echo lang('web'); ?>
                 </label>
                 <input type="text" name="user_web" id="user_web" class="form-control"
-                        value="<?php echo $this->mdl_users->form_value('user_web'); ?>"
-                        placeholder="<?php echo lang('optional'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_web'); ?>"
+                       placeholder="<?php echo lang('optional'); ?>">
             </div>
 
             <input type="submit" class="btn btn-success" name="btn_continue"

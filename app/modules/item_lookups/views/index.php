@@ -14,7 +14,7 @@
 
 <div id="content" class="table-content">
 
-    <?php echo $this->layout->load_view('layout/includes/alerts'); ?>
+    <?php echo $this->layout->load_view('layout/alerts'); ?>
 
     <div class="table-responsive">
         <table class="table table-striped">
@@ -33,7 +33,7 @@
                 <tr>
                     <td><?php echo $item_lookup->item_name; ?></td>
                     <td><?php echo $item_lookup->item_description; ?></td>
-                    <td><?php echo format_currency($item_lookup->item_price); ?></td>
+                    <td><?php echo format_currency($item_lookup->item_price, $this->mdl_settings->setting('item_price_decimal_places')); ?></td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"

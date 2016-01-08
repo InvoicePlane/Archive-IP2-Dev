@@ -1,8 +1,21 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
+/*
+ * InvoicePlane
+ *
+ * A free and open source web based invoicing system
+ *
+ * @package     InvoicePlane
+ * @author      Kovah (www.kovah.de)
+ * @copyright   Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
+ *
+ */
 
 class Upload extends Admin_Controller
 {
@@ -61,13 +74,14 @@ class Upload extends Admin_Controller
 
     public function create_dir($path, $chmod = '0777')
     {
-        if (!(is_dir($path) OR is_link($path)))
+        if (!(is_dir($path) OR is_link($path))) {
             return mkdir($path, $chmod);
-        else
+        } else {
             return false;
+        }
     }
 
-    public function show_files($url_key, $customerId = NULL)
+    public function show_files($url_key, $customerId = null)
     {
 
         $result = array();

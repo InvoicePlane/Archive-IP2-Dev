@@ -1,8 +1,21 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
+/*
+ * InvoicePlane
+ *
+ * A free and open source web based invoicing system
+ *
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
+ *
+ */
 
 class Mdl_Invoices extends Response_Model
 {
@@ -69,7 +82,7 @@ class Mdl_Invoices extends Response_Model
             (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,4) AND DATEDIFF(NOW(), invoice_date_due) > 0 THEN 1 ELSE 0 END) is_overdue,
 			DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
             (CASE (SELECT COUNT(*) FROM ip_invoices_recurring WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date <> '0000-00-00') WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
-			ip_invoices.*", FALSE);
+			ip_invoices.*", false);
     }
 
     public function default_order_by()
@@ -152,10 +165,10 @@ class Mdl_Invoices extends Response_Model
         );
     }
 
-    public function create($db_array = NULL, $include_invoice_tax_rates = TRUE)
+    public function create($db_array = null, $include_invoice_tax_rates = true)
     {
 
-        $invoice_id = parent::save(NULL, $db_array);
+        $invoice_id = parent::save(null, $db_array);
 
         // Create an invoice amount record
         $db_array = array(
@@ -209,7 +222,7 @@ class Mdl_Invoices extends Response_Model
                 'item_order' => $invoice_item->item_order
             );
 
-            $this->mdl_items->save($target_id, NULL, $db_array);
+            $this->mdl_items->save($target_id, null, $db_array);
         }
 
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
@@ -222,7 +235,15 @@ class Mdl_Invoices extends Response_Model
                 'invoice_tax_rate_amount' => $invoice_tax_rate->invoice_tax_rate_amount
             );
 
-            $this->mdl_invoice_tax_rates->save($target_id, NULL, $db_array);
+            $this->mdl_invoice_tax_rates->save($target_id, null, $db_array);
+        }
+
+        $this->load->model('custom_fields/mdl_invoice_custom');
+        $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->row_array();
+        if (count($db_array) > 2) {
+            unset($db_array['invoice_custom_id']);
+            $db_array['invoice_id'] = $target_id;
+            $this->mdl_invoice_custom->save_custom($target_id, $db_array);
         }
     }
 
@@ -248,7 +269,7 @@ class Mdl_Invoices extends Response_Model
                 'item_order' => $invoice_item->item_order
             );
 
-            $this->mdl_items->save($target_id, NULL, $db_array);
+            $this->mdl_items->save($target_id, null, $db_array);
         }
 
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
@@ -261,7 +282,15 @@ class Mdl_Invoices extends Response_Model
                 'invoice_tax_rate_amount' => -$invoice_tax_rate->invoice_tax_rate_amount
             );
 
-            $this->mdl_invoice_tax_rates->save($target_id, NULL, $db_array);
+            $this->mdl_invoice_tax_rates->save($target_id, null, $db_array);
+        }
+
+        $this->load->model('custom_fields/mdl_invoice_custom');
+        $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->row_array();
+        if (count($db_array) > 2) {
+            unset($db_array['invoice_custom_id']);
+            $db_array['invoice_id'] = $target_id;
+            $this->mdl_invoice_custom->save_custom($target_id, $db_array);
         }
     }
 
@@ -295,10 +324,13 @@ class Mdl_Invoices extends Response_Model
         return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
     }
 
-    public function get_date_due($invoice_date_created)
+    public function get_date_due($invoice_date_created, $invoices_due_after = null)
     {
+        if ($invoices_due_after == null) {
+            $invoices_due_after = $this->mdl_settings->setting('invoices_due_after');
+        }
         $invoice_date_due = new DateTime($invoice_date_created);
-        $invoice_date_due->add(new DateInterval('P' . $this->mdl_settings->setting('invoices_due_after') . 'D'));
+        $invoice_date_due->add(new DateInterval('P' . $invoices_due_after . 'D'));
         return $invoice_date_due->format('Y-m-d');
     }
 
@@ -374,7 +406,7 @@ class Mdl_Invoices extends Response_Model
             }
 
             // Set the invoice to read-only if feature is not disabled and setting is view
-            if ($this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'viewed') {
+            if ($this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'viewed') {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');
@@ -397,7 +429,7 @@ class Mdl_Invoices extends Response_Model
             }
 
             // Set the invoice to read-only if feature is not disabled and setting is sent
-            if ($this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'sent') {
+            if ($this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'sent') {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');

@@ -1,8 +1,21 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
+/*
+ * InvoicePlane
+ *
+ * A free and open source web based invoicing system
+ *
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
+ *
+ */
 
 class Mdl_Email_Templates extends Response_Model
 {
@@ -11,7 +24,7 @@ class Mdl_Email_Templates extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *', FALSE);
+        $this->db->select('SQL_CALC_FOUND_ROWS *', false);
     }
 
     public function default_order_by()
@@ -30,6 +43,10 @@ class Mdl_Email_Templates extends Response_Model
             'email_template_type' => array(
                 'field' => 'email_template_pdf_quote_template',
                 'label' => lang('type')
+            ),
+            'email_template_to_email' => array(
+                'field' => 'email_template_to_email',
+                'label' => lang('to_email')
             ),
             'email_template_subject' => array(
                 'field' => 'email_template_subject',
@@ -54,6 +71,14 @@ class Mdl_Email_Templates extends Response_Model
             'email_template_pdf_template' => array(
                 'field' => 'email_template_pdf_template',
                 'label' => lang('default_pdf_template')
+            ),
+            'email_template_send_pdf' => array(
+                'field' => 'email_template_send_pdf',
+                'label' => lang('send_pdf')
+            ),
+            'email_template_send_attachments' => array(
+               'field' => 'email_template_send_attachments',
+               'label' => lang('send_attachments')
             ),
             'email_template_body' => array(
                 'field' => 'email_template_body',

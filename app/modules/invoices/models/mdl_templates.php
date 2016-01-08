@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 
 class Mdl_Templates extends CI_Model
@@ -11,9 +12,9 @@ class Mdl_Templates extends CI_Model
         $this->load->helper('directory');
 
         if ($type == 'pdf') {
-            $templates = directory_map(APPPATH . '/views/invoice_templates/pdf', TRUE);
+            $templates = directory_map(APPPATH . '/views/invoice_templates/pdf', true);
         } elseif ($type == 'public') {
-            $templates = directory_map(APPPATH . '/views/invoice_templates/public', TRUE);
+            $templates = directory_map(APPPATH . '/views/invoice_templates/public', true);
         }
 
         $templates = $this->remove_extension($templates);
@@ -26,9 +27,9 @@ class Mdl_Templates extends CI_Model
         $this->load->helper('directory');
 
         if ($type == 'pdf') {
-            $templates = directory_map(APPPATH . '/views/quote_templates/pdf', TRUE);
+            $templates = directory_map(APPPATH . '/views/quote_templates/pdf', true);
         } elseif ($type == 'public') {
-            $templates = directory_map(APPPATH . '/views/quote_templates/public', TRUE);
+            $templates = directory_map(APPPATH . '/views/quote_templates/public', true);
         }
 
         $templates = $this->remove_extension($templates);

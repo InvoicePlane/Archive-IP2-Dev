@@ -1,12 +1,21 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 
-function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $cc = NULL, $bcc = NULL, $more_attachments = NULL)
-{
-    require 'phpmailer/PHPMailerAutoload.php';
+function phpmail_send(
+    $from,
+    $to,
+    $subject,
+    $message,
+    $attachment_path = null,
+    $cc = null,
+    $bcc = null,
+    $more_attachments = null
+) {
+    require_once(APPPATH . 'modules/mailer/helpers/phpmailer/class.phpmailer.php');
 
     $CI = &get_instance();
     $CI->load->library('encrypt');
@@ -14,7 +23,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
     // Create the basic mailer object
     $mail = new PHPMailer();
     $mail->CharSet = 'UTF-8';
-    $mail->isHTML();
+    $mail->IsHtml();
 
     switch ($CI->mdl_settings->setting('email_send_method')) {
         case 'smtp':
@@ -26,7 +35,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
 
             // Is SMTP authentication required?
             if ($CI->mdl_settings->setting('smtp_authentication')) {
-                $mail->SMTPAuth = TRUE;
+                $mail->SMTPAuth = true;
                 $mail->Username = $CI->mdl_settings->setting('smtp_username');
                 $mail->Password = $CI->encrypt->decode($CI->mdl_settings->setting('smtp_password'));
             }
@@ -52,10 +61,10 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
 
     if (is_array($from)) {
         // This array should be address, name
-        $mail->setFrom($from[0], $from[1]);
+        $mail->SetFrom($from[0], $from[1]);
     } else {
         // This is just an address
-        $mail->setFrom($from);
+        $mail->SetFrom($from);
     }
 
     // Allow multiple recipients delimited by comma or semicolon
@@ -63,7 +72,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
 
     // Add the addresses
     foreach ($to as $address) {
-        $mail->addAddress($address);
+        $mail->AddAddress($address);
     }
 
     if ($cc) {
@@ -72,7 +81,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
 
         // Add the CC's
         foreach ($cc as $address) {
-            $mail->addCC($address);
+            $mail->AddCC($address);
         }
     }
 
@@ -82,7 +91,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
         $bcc = (strpos($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
         // Add the BCC's
         foreach ($bcc as $address) {
-            $mail->addBCC($address);
+            $mail->AddBCC($address);
         }
 
     }
@@ -92,28 +101,28 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
         $CI->load->model('users/mdl_users');
         $CI->db->where('user_id', 1);
         $admin = $CI->db->get('ip_users')->row();
-        $mail->addBCC($admin->user_email);
+        $mail->AddBCC($admin->user_email);
     }
 
     // Add the attachment if supplied
     if ($attachment_path && $CI->mdl_settings->setting('email_pdf_attachment')) {
-        $mail->addAttachment($attachment_path);
+        $mail->AddAttachment($attachment_path);
     }
     // Add the other attachments if supplied
     if ($more_attachments) {
 
         foreach ($more_attachments as $paths) {
-            $mail->addAttachment($paths['path'], $paths['filename']);
+            $mail->AddAttachment($paths['path'], $paths['filename']);
         }
     }
 
     // And away it goes...
-    if ($mail->send()) {
+    if ($mail->Send()) {
         $CI->session->set_flashdata('alert_success', 'The email has been sent');
-        return TRUE;
+        return true;
     } else {
         // Or not...
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
-        return FALSE;
+        return false;
     }
 }
