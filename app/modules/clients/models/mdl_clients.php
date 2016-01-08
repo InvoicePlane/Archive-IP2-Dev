@@ -1,6 +1,6 @@
 <?php
 /**
- * @packages Modules\Clients\Models
+ * @package Modules\Clients\Models
  */
 
 if (!defined('BASEPATH')) {
