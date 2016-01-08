@@ -1,14 +1,11 @@
 <?php
-/**
- * @package Modules\Clients\Controllers
- */
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /**
  * Class Clients
+ * @package Modules\Clients\Controllers
  */
 class Clients extends Admin_Controller
 {

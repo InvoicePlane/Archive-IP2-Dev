@@ -1,14 +1,11 @@
 <?php
-/**
- * @package Modules\Clients\Models
- */
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /**
  * Class Mdl_Clients
+ * @package Modules\Clients\Models
  */
 class Mdl_Clients extends Response_Model
 {

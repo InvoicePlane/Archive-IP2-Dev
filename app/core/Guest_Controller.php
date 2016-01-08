@@ -1,7 +1,7 @@
 <?php
-
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /**
  * Class Guest_Controller
@@ -32,5 +32,3 @@ class Guest_Controller extends User_Controller
     }
 
 }
-
-?>

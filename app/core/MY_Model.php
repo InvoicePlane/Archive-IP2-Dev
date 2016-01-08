@@ -20,10 +20,28 @@ class MY_Model extends CI_Model
     public $date_created_field;
     public $date_modified_field;
     public $native_methods = array(
-        'select', 'select_max', 'select_min', 'select_avg', 'select_sum', 'join',
-        'where', 'or_where', 'where_in', 'or_where_in', 'where_not_in', 'or_where_not_in',
-        'like', 'or_like', 'not_like', 'or_not_like', 'group_by', 'distinct', 'having',
-        'or_having', 'order_by', 'limit'
+        'select',
+        'select_max',
+        'select_min',
+        'select_avg',
+        'select_sum',
+        'join',
+        'where',
+        'or_where',
+        'where_in',
+        'or_where_in',
+        'where_not_in',
+        'or_where_not_in',
+        'like',
+        'or_like',
+        'not_like',
+        'or_not_like',
+        'group_by',
+        'distinct',
+        'having',
+        'or_having',
+        'order_by',
+        'limit'
     );
     public $total_pages = 0;
     public $current_page;
@@ -125,9 +143,9 @@ class MY_Model extends CI_Model
         $this->next_offset = $this->offset + $per_page;
 
         $config = array(
-            'base_url'   => $base_url,
+            'base_url' => $base_url,
             'total_rows' => $this->total_rows,
-            'per_page'   => $per_page
+            'per_page' => $per_page
         );
 
         $this->last_offset = ($this->total_pages * $per_page) - $per_page;
@@ -149,7 +167,7 @@ class MY_Model extends CI_Model
         return $this->where($this->primary_key, $id)->get()->row();
     }
 
-    public function save($id = NULL, $db_array = NULL)
+    public function save($id = null, $db_array = null)
     {
         if (!$db_array) {
             $db_array = $this->db_array();
@@ -276,7 +294,7 @@ class MY_Model extends CI_Model
      * @param int $id
      * @return boolean
      */
-    public function prep_form($id = NULL)
+    public function prep_form($id = null)
     {
         if (!$_POST and ($id)) {
             $row = $this->get_by_id($id);
@@ -285,11 +303,11 @@ class MY_Model extends CI_Model
                 foreach ($row as $key => $value) {
                     $this->form_values[$key] = $value;
                 }
-                return TRUE;
+                return true;
             }
-            return FALSE;
+            return false;
         } elseif (!$id) {
-            return TRUE;
+            return true;
         }
     }
 
@@ -300,7 +318,7 @@ class MY_Model extends CI_Model
      * @param string $validation_rules
      * @return boolean
      */
-    public function run_validation($validation_rules = NULL)
+    public function run_validation($validation_rules = null)
     {
         if (!$validation_rules) {
             $validation_rules = $this->default_validation_rules;
@@ -346,5 +364,3 @@ class MY_Model extends CI_Model
     }
 
 }
-
-?>

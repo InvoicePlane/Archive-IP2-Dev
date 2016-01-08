@@ -1,10 +1,11 @@
 <?php
-
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /**
  * Class User_Controller
+ * @package Core
  */
 class User_Controller extends Base_Controller
 {

@@ -1,14 +1,11 @@
 <?php
-/**
- * @package Modules\Clients\Controllers
- */
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /**
  * Class Ajax
+ * @package Modules\Clients\Controllers
  */
 class Ajax extends Admin_Controller
 {
