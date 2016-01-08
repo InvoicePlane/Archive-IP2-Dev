@@ -1,19 +1,32 @@
 <?php
+/**
+ * @packages Modules\Clients\Models
+ */
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
-
+/**
+ * Class Mdl_Client_Notes
+ */
 class Mdl_Client_Notes extends Response_Model
 {
     public $table = 'ip_client_notes';
     public $primary_key = 'ip_client_notes.client_note_id';
 
+    /**
+     * Default order directive that will be used on every query
+     */
     public function default_order_by()
     {
         $this->db->order_by('ip_client_notes.client_note_date DESC');
     }
 
+    /**
+     * The validation rules for client notes
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -30,6 +43,10 @@ class Mdl_Client_Notes extends Response_Model
         );
     }
 
+    /**
+     * Returns the prepared database array
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -38,5 +55,4 @@ class Mdl_Client_Notes extends Response_Model
 
         return $db_array;
     }
-
 }

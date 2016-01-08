@@ -1,9 +1,15 @@
 <?php
+/**
+ * @packages Modules\Clients\Models
+ */
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
-
+/**
+ * Class Mdl_Clients
+ */
 class Mdl_Clients extends Response_Model
 {
     public $table = 'ip_clients';
@@ -11,21 +17,34 @@ class Mdl_Clients extends Response_Model
     public $date_created_field = 'client_date_created';
     public $date_modified_field = 'client_date_modified';
 
+    /**
+     * The default select directive used in every query
+     */
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS ip_client_custom.*, ip_clients.*', false);
     }
 
+    /**
+     * The default join directive used in every query
+     */
     public function default_join()
     {
         $this->db->join('ip_client_custom', 'ip_client_custom.client_id = ip_clients.client_id', 'left');
     }
 
+    /**
+     * The default order directive used in every query
+     */
     public function default_order_by()
     {
         $this->db->order_by('ip_clients.client_name');
     }
 
+    /**
+     * Returns the validation rules for clients
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -79,6 +98,10 @@ class Mdl_Clients extends Response_Model
         );
     }
 
+    /**
+     * Returns the prepared database array
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -90,6 +113,10 @@ class Mdl_Clients extends Response_Model
         return $db_array;
     }
 
+    /**
+     * Deletes the client form the database and all orphaned entries
+     * @param $id
+     */
     public function delete($id)
     {
         parent::delete($id);
@@ -118,6 +145,10 @@ class Mdl_Clients extends Response_Model
         return $client_id;
     }
 
+    /**
+     * Query to get the total amount for this client
+     * @return $this
+     */
     public function with_total()
     {
         $this->filter_select('IFNULL((SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_total',
@@ -125,6 +156,10 @@ class Mdl_Clients extends Response_Model
         return $this;
     }
 
+    /**
+     * Query to get the total paid amount for this client
+     * @return $this
+     */
     public function with_total_paid()
     {
         $this->filter_select('IFNULL((SELECT SUM(invoice_paid) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_paid',
@@ -132,6 +167,10 @@ class Mdl_Clients extends Response_Model
         return $this;
     }
 
+    /**
+     * Query to get the total balance for this client
+     * @return $this
+     */
     public function with_total_balance()
     {
         $this->filter_select('IFNULL((SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_balance',
@@ -139,12 +178,20 @@ class Mdl_Clients extends Response_Model
         return $this;
     }
 
+    /**
+     * Query filter used ot determine if the client is active
+     * @return $this
+     */
     public function is_active()
     {
         $this->filter_where('client_active', 1);
         return $this;
     }
 
+    /**
+     * Query filter used ot determine if the client is inactive
+     * @return $this
+     */
     public function is_inactive()
     {
         $this->filter_where('client_active', 0);

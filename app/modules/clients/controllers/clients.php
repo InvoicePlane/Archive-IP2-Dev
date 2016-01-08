@@ -1,12 +1,20 @@
 <?php
+/**
+ * @packages Modules\Clients\Controllers
+ */
 
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Clients
+ */
 class Clients extends Admin_Controller
 {
+    /**
+     * Clients constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,12 +22,21 @@ class Clients extends Admin_Controller
         $this->load->model('mdl_clients');
     }
 
+    /**
+     * Index page, redirects to 'clients/status/active'
+     */
     public function index()
     {
         // Display active clients by default
         redirect('clients/status/active');
     }
 
+    /**
+     * Returns all clients based on the given status and page no.
+     * Example: 'clients/status/active' returns all active clients
+     * @param string $status
+     * @param int $page
+     */
     public function status($status = 'active', $page = 0)
     {
         if (is_numeric(array_search($status, array('active', 'inactive')))) {
@@ -43,6 +60,12 @@ class Clients extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the form
+     * If an ID was provided the form will be filled with the data of the client
+     * for the given ID and can be used as an edit form.
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -108,6 +131,10 @@ class Clients extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the details page for a client for the given ID
+     * @param $client_id
+     */
     public function view($client_id)
     {
         $this->load->model('clients/mdl_client_notes');
@@ -164,6 +191,10 @@ class Clients extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes a client from the database based on the given ID
+     * @param $client_id
+     */
     public function delete($client_id)
     {
         $this->mdl_clients->delete($client_id);
