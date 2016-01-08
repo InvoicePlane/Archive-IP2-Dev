@@ -1,20 +1,29 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Custom_Fields
+ * @package Modules\Custom_Fields\Models
+ */
 class Mdl_Custom_Fields extends MY_Model
 {
     public $table = 'ip_custom_fields';
     public $primary_key = 'ip_custom_fields.custom_field_id';
 
+    /**
+     * The default select directive used in every query
+     */
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS *', false);
     }
 
+    /**
+     * Returns the table names that are used to store the custom fields
+     * @return array
+     */
     public function custom_tables()
     {
         return array(
@@ -26,6 +35,10 @@ class Mdl_Custom_Fields extends MY_Model
         );
     }
 
+    /**
+     * Returns all available field types
+     * @return array
+     */
     public function custom_types()
     {
         return array(
@@ -34,6 +47,10 @@ class Mdl_Custom_Fields extends MY_Model
         );
     }
 
+    /**
+     * Returns the validation rules for custom fields
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -55,6 +72,10 @@ class Mdl_Custom_Fields extends MY_Model
         );
     }
 
+    /**
+     * Returns the prepared database array
+     * @return array
+     */
     public function db_array()
     {
         // Get the default db array
@@ -86,6 +107,12 @@ class Mdl_Custom_Fields extends MY_Model
         return $db_array;
     }
 
+    /**
+     * Overrides the basic save function to allow custom functions
+     * @param null $id
+     * @param null $db_array
+     * @return null
+     */
     public function save($id = null, $db_array = null)
     {
         if ($id) {
@@ -113,6 +140,11 @@ class Mdl_Custom_Fields extends MY_Model
         return $id;
     }
 
+    /**
+     * Adds a new column to a custom field table
+     * @param $table_name
+     * @param $column_name
+     */
     private function add_column($table_name, $column_name)
     {
         $this->load->dbforge();
@@ -126,6 +158,12 @@ class Mdl_Custom_Fields extends MY_Model
         $this->dbforge->add_column($table_name, $column);
     }
 
+    /**
+     * Renameds a column in a custom field table
+     * @param $table_name
+     * @param $old_column_name
+     * @param $new_column_name
+     */
     private function rename_column($table_name, $old_column_name, $new_column_name)
     {
         $this->load->dbforge();
@@ -140,6 +178,10 @@ class Mdl_Custom_Fields extends MY_Model
         $this->dbforge->modify_column($table_name, $column);
     }
 
+    /**
+     * Deletes the custom field form the database
+     * @param $id
+     */
     public function delete($id)
     {
         $custom_field = $this->get_by_id($id);
@@ -152,6 +194,11 @@ class Mdl_Custom_Fields extends MY_Model
         parent::delete($id);
     }
 
+    /**
+     * Query filter used to specify the working table
+     * @param $table
+     * @return $this
+     */
     public function by_table($table)
     {
         $this->filter_where('custom_field_table', $table);

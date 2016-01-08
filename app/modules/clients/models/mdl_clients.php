@@ -186,7 +186,7 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
-     * Query filter used ot determine if the client is inactive
+     * Query filter used to determine if the client is inactive
      * @return $this
      */
     public function is_inactive()
