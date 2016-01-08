@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Dashboard
+ * @package Modules\Dashboard\Controllers
+ */
 class Dashboard extends Admin_Controller
 {
+    /**
+     * Loads the dashboard
+     */
     public function index()
     {
         $this->load->model('invoices/mdl_invoice_amounts');
@@ -34,5 +39,4 @@ class Dashboard extends Admin_Controller
         $this->layout->buffer('content', 'dashboard/index');
         $this->layout->render();
     }
-
 }
