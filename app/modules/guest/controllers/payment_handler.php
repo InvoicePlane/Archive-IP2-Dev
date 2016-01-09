@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Payment_Handler
+ * @package Modules\Guest\Controllers
+ */
 class Payment_Handler extends Base_Controller
 {
+    /**
+     * Payment_Handler constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -16,15 +21,21 @@ class Payment_Handler extends Base_Controller
         $this->load->model('invoices/mdl_invoices');
     }
 
+    /**
+     * Function to start the payment process started via the payment information controller.
+     * The function initializes the Omnipay payment library and contacts the selected payment
+     * gateway with all needed information
+     *
+     * @TODO Currently not working for payment gateways with redirect like PayPal, needs implementation of the redirect method! Stripe is working without problems. - Kovah <mail@kovah.de>
+     *
+     * @uses $_POST['invoice_url_key']
+     */
     public function make_payment()
     {
         // Attempt to get the invoice
         $invoice = $this->mdl_invoices->where('invoice_url_key', $this->input->post('invoice_url_key'))->get();
 
         if ($invoice->num_rows() == 1) {
-
-            // @todo Currently not working for websites with redirect like PayPal, needs implementation of the redirect method! Stripe is working without problems. - Kovah <mail@kovah.de>
-
             // Get the invoice data and load the encrypt library
             $invoice = $invoice->row();
             $this->load->library('encrypt');
@@ -58,7 +69,7 @@ class Payment_Handler extends Base_Controller
             }
 
             // Set up the api data
-            // @todo Redirect URLs are missing - Kovah <mail@kovah.de>
+            /** @TODO Redirect URLs are missing - Kovah <mail@kovah.de> */
             $request = array(
                 'amount' => $invoice->invoice_balance,
                 'currency' => $driver_currency,
@@ -103,7 +114,7 @@ class Payment_Handler extends Base_Controller
             } elseif ($response->isRedirect()) {
 
                 // Redirect to offsite payment gateway
-                //@todo redirect is not handled at the moment - Kovah <mail@kovah.de>
+                /** @TODO redirect is not handled at the moment - Kovah <mail@kovah.de> */
                 $response->redirect();
 
             } else {

@@ -4,9 +4,15 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Payment_Information
+ * @package Modules\Guest\Controllers
+ */
 class Payment_Information extends Guest_Controller
 {
+    /**
+     * Payment_Information constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,6 +20,12 @@ class Payment_Information extends Guest_Controller
         $this->load->model('invoices/mdl_invoices');
     }
 
+    /**
+     * Returns the form
+     * The form will be filled with the data of the invoice for the given URL key
+     * and redirects to the payment_handler controller
+     * @param $invoice_url_key
+     */
     public function form($invoice_url_key)
     {
         $disable_form = false;
@@ -67,5 +79,4 @@ class Payment_Information extends Guest_Controller
         $this->layout->render('layout_guest');
 
     }
-
 }

@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Invoices
+ * @package Modules\Guest\Controllers
+ */
 class Invoices extends Guest_Controller
 {
+    /**
+     * Invoices constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,12 +19,21 @@ class Invoices extends Guest_Controller
         $this->load->model('invoices/mdl_invoices');
     }
 
+    /**
+     * Index page, redirects to 'guest/invoices/status/open'
+     */
     public function index()
     {
         // Display open invoices by default
         redirect('guest/invoices/status/open');
     }
 
+    /**
+     * Returns all invoices based on the given status and page no.
+     * Example: 'guest/invoices/status/open' returns all open invoices
+     * @param string $status
+     * @param int $page
+     */
     public function status($status = 'open', $page = 0)
     {
         // Determine which group of invoices to load
@@ -47,6 +61,10 @@ class Invoices extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
+    /**
+     * Returns the view page for the given invoice ID
+     * @param $invoice_id
+     */
     public function view($invoice_id)
     {
         $this->load->model('invoices/mdl_items');
@@ -79,6 +97,12 @@ class Invoices extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
+    /**
+     * Returns the generated PDF of the invoice based on the given ID
+     * @param $invoice_id
+     * @param bool $stream
+     * @param null $invoice_template
+     */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
         $this->load->helper('pdf');
@@ -87,5 +111,4 @@ class Invoices extends Guest_Controller
 
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, 1);
     }
-
 }

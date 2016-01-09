@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Guest
+ * @package Modules\Guest\Controllers
+ */
 class Guest extends Guest_Controller
 {
+    /**
+     * Returns the guest dashboard that displays his quotes and invoices
+     */
     public function index()
     {
         $this->load->model('quotes/mdl_quotes');
@@ -26,5 +31,4 @@ class Guest extends Guest_Controller
         $this->layout->buffer('content', 'guest/index');
         $this->layout->render('layout_guest');
     }
-
 }

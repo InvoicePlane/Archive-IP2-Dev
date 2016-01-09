@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Quotes
+ * @package Modules\Guest\Controllers
+ */
 class Quotes extends Guest_Controller
 {
+    /**
+     * Quotes constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,12 +19,21 @@ class Quotes extends Guest_Controller
         $this->load->model('quotes/mdl_quotes');
     }
 
+    /**
+     * Index page, redirects to 'guest/quotes/status/open'
+     */
     public function index()
     {
         // Display open quotes by default
         redirect('guest/quotes/status/open');
     }
 
+    /**
+     * Returns all quotes based on the given status and page no.
+     * Example: 'guest/quotes/status/open' returns all open quotes
+     * @param string $status
+     * @param int $page
+     */
     public function status($status = 'open', $page = 0)
     {
         redirect_to_set();
@@ -47,6 +61,10 @@ class Quotes extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
+    /**
+     * Returns the details page for a quote for the given ID
+     * @param $quote_id
+     */
     public function view($quote_id)
     {
         redirect_to_set();
@@ -76,6 +94,12 @@ class Quotes extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
+    /**
+     * Returns the generated PDF of the quote based on the given ID
+     * @param $quote_id
+     * @param bool $stream
+     * @param null $quote_template
+     */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
         $this->load->helper('pdf');
@@ -92,6 +116,10 @@ class Quotes extends Guest_Controller
         }
     }
 
+    /**
+     * Marks a quote as approved
+     * @param $quote_id
+     */
     public function approve($quote_id)
     {
         $this->load->model('quotes/mdl_quotes');
@@ -103,6 +131,10 @@ class Quotes extends Guest_Controller
         redirect_to('guest/quotes');
     }
 
+    /**
+     * Marks a quote as rejected
+     * @param $quote_id
+     */
     public function reject($quote_id)
     {
         $this->load->model('quotes/mdl_quotes');
@@ -113,5 +145,4 @@ class Quotes extends Guest_Controller
 
         redirect_to('guest/quotes');
     }
-
 }
