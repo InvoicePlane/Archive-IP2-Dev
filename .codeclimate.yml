@@ -1,0 +1,19 @@
+engines:
+  phpcodesniffer:
+    enabled: true
+  phpmd:
+    enabled: true
+  fixme:
+    enabled: true
+  duplication:
+    enabled: true
+  csslint:
+    enabled: true
+ratings:
+  paths:
+  - app/**
+exclude_paths:
+- app/helpers/country-list/**/*
+- app/helpers/mpdf/**/*
+- app/third_party/MX/**/*
+- data/**/*
