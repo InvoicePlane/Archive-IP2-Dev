@@ -3,12 +3,9 @@ source:
     - ./app/helpers
     - ./app/libraries
     - ./app/modules
-
 exclude:
-    - ./app/helpers/country-list
-    - ./app/helpers/mpdf
-
+    - country-list/*
+    - mpdf/*
 destination: ./docs
 templateTheme: bootstrap
 todo: true
-tree: true
