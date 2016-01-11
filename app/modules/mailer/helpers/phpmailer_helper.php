@@ -1,10 +1,21 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Sends an email via the PHP Mailer helper
+ * @param $from
+ * @param $to
+ * @param $subject
+ * @param $message
+ * @param null $attachment_path
+ * @param null $cc
+ * @param null $bcc
+ * @param null $more_attachments
+ * @return bool
+ * @throws phpmailerException
+ */
 function phpmail_send(
     $from,
     $to,

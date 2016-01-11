@@ -1,26 +1,19 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-/*
- * InvoicePlane
- *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
- *
+/**
+ * Class Mailer
+ * @package Modules\Mailer\Controllers
  */
-
 class Mailer extends Admin_Controller
 {
     private $mailer_configured;
 
+    /**
+     * Mailer constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -35,6 +28,10 @@ class Mailer extends Admin_Controller
         }
     }
 
+    /**
+     * Shows the form to configure the invoice mail
+     * @param $invoice_id
+     */
     public function invoice($invoice_id)
     {
         if (!$this->mailer_configured) {
@@ -68,6 +65,10 @@ class Mailer extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Shows the form to configure the quote mail
+     * @param $quote_id
+     */
     public function quote($quote_id)
     {
         if (!$this->mailer_configured) {
@@ -99,6 +100,20 @@ class Mailer extends Admin_Controller
 
     }
 
+    /**
+     * Sends an invoice mail
+     * @param $invoice_id
+     * @uses $_POST['from_email']
+     * @uses $_POST['from_name']
+     * @uses $_POST['pdf_template']
+     * @uses $_POST['to_email']
+     * @uses $_POST['subject']
+     * @uses $_POST['body']
+     * @uses $_POST['cc']
+     * @uses $_POST['bcc']
+     * @uses $_POST['send_pdf']
+     * @uses $_POST['send_attachments']
+     */
     public function send_invoice($invoice_id)
     {
         if ($this->input->post('btn_cancel')) {
@@ -139,6 +154,20 @@ class Mailer extends Admin_Controller
         }
     }
 
+    /**
+     * Sends an invoice mail
+     * @param $quote_id
+     * @uses $_POST['from_email']
+     * @uses $_POST['from_name']
+     * @uses $_POST['pdf_template']
+     * @uses $_POST['to_email']
+     * @uses $_POST['subject']
+     * @uses $_POST['body']
+     * @uses $_POST['cc']
+     * @uses $_POST['bcc']
+     * @uses $_POST['send_pdf']
+     * @uses $_POST['send_attachments']
+     */
     public function send_quote($quote_id)
     {
         if ($this->input->post('btn_cancel')) {
