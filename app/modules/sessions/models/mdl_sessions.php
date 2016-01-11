@@ -1,11 +1,19 @@
 <?php
-
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Class Mdl_Sessions
+ * @package Modules\Sessions\Models
+ */
 class Mdl_Sessions extends CI_Model
 {
+    /**
+     * Handles the user authentification
+     * @param string $email
+     * @param string $password
+     * @return bool
+     */
     public function auth($email, $password)
     {
         $this->db->where('user_email', $email);
@@ -70,5 +78,4 @@ class Mdl_Sessions extends CI_Model
 
         return false;
     }
-
 }

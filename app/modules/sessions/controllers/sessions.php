@@ -1,19 +1,23 @@
 <?php
-
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Class Sessions
+ * @package Modules\Sessions\Controllers
+ */
 class Sessions extends Base_Controller
 {
+    /**
+     * Sessions constructor.
+     */
     public function __construct()
     {
         Base_Controller::__construct();
     }
 
     /**
-     * Authenticate function that checks if the given user credentials
-     * are correct.
+     * Authenticate function that checks if the given user credentials are correct
      *
      * @param $email_address
      * @param $password
@@ -31,13 +35,16 @@ class Sessions extends Base_Controller
     }
 
     /**
-     * Controller: index
+     * Index page, redirects to sessions/login
      */
     public function index()
     {
         redirect('sessions/login');
     }
 
+    /**
+     * Returns the login form
+     */
     public function login()
     {
         $view_data = array(
@@ -84,6 +91,9 @@ class Sessions extends Base_Controller
         $this->layout->render('base');
     }
 
+    /**
+     * Loggs out the user and redirects to the login page
+     */
     public function logout()
     {
         $this->session->sess_destroy();
@@ -91,6 +101,11 @@ class Sessions extends Base_Controller
         redirect('sessions/login');
     }
 
+    /**
+     * Handles the password reset form
+     * @param null $token
+     * @return mixed
+     */
     public function passwordreset($token = null)
     {
         // Check if a token was provided
@@ -195,5 +210,4 @@ class Sessions extends Base_Controller
 
         return $this->load->view('session_passwordreset');
     }
-
 }
