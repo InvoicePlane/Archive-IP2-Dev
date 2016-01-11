@@ -1,10 +1,12 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Users
+ * @package Modules\Users\Models
+ */
 class Mdl_Users extends Response_Model
 {
     public $table = 'ip_users';
@@ -12,6 +14,10 @@ class Mdl_Users extends Response_Model
     public $date_created_field = 'user_date_created';
     public $date_modified_field = 'user_date_modified';
 
+    /**
+     * Returns an array with all available user types
+     * @return array
+     */
     public function user_types()
     {
         return array(
@@ -20,21 +26,34 @@ class Mdl_Users extends Response_Model
         );
     }
 
+    /**
+     * The default select directive used in every query
+     */
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS ip_user_custom.*, ip_users.*', false);
     }
 
+    /**
+     * The default join directive used in every query
+     */
     public function default_join()
     {
         $this->db->join('ip_user_custom', 'ip_user_custom.user_id = ip_users.user_id', 'left');
     }
 
+    /**
+     * The default oder by directive used in every query
+     */
     public function default_order_by()
     {
         $this->db->order_by('ip_users.user_name');
     }
 
+    /**
+     * Returns the validation rules for users
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -106,6 +125,10 @@ class Mdl_Users extends Response_Model
         );
     }
 
+    /**
+     * Returns the validation rules for existing users
+     * @return array
+     */
     public function validation_rules_existing()
     {
         return array(
@@ -168,6 +191,10 @@ class Mdl_Users extends Response_Model
         );
     }
 
+    /**
+     * Returns the validation rules for a password change for an user
+     * @return array
+     */
     public function validation_rules_change_password()
     {
         return array(
@@ -184,6 +211,10 @@ class Mdl_Users extends Response_Model
         );
     }
 
+    /**
+     * Returns the prepared database array
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -202,6 +233,11 @@ class Mdl_Users extends Response_Model
         return $db_array;
     }
 
+    /**
+     * Saves the changed password to the database
+     * @param $user_id
+     * @param $password
+     */
     public function save_change_password($user_id, $password)
     {
         $this->load->library('crypt');
@@ -220,6 +256,12 @@ class Mdl_Users extends Response_Model
         $this->session->set_flashdata('alert_success', 'Password Successfully Changed');
     }
 
+    /**
+     * Saves an user to the database
+     * @param null $id
+     * @param null $db_array
+     * @return int|null
+     */
     public function save($id = null, $db_array = null)
     {
         $id = parent::save($id, $db_array);
@@ -237,6 +279,10 @@ class Mdl_Users extends Response_Model
         return $id;
     }
 
+    /**
+     * Deletes an user from the database
+     * @param $id
+     */
     public function delete($id)
     {
         parent::delete($id);
@@ -244,5 +290,4 @@ class Mdl_Users extends Response_Model
         $this->load->helper('orphan');
         delete_orphans();
     }
-
 }

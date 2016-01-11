@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Users
+ * @package Modules\Users\Controllers
+ */
 class Users extends Admin_Controller
 {
+    /**
+     * Users constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,6 +19,10 @@ class Users extends Admin_Controller
         $this->load->model('mdl_users');
     }
 
+    /**
+     * Index page, returns all users
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_users->paginate(site_url('users/index'), $page);
@@ -25,6 +34,12 @@ class Users extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the form
+     * If an ID was provided the form will be filled with the data of the user
+     * for the given ID and can be used as an edit form.
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -90,6 +105,10 @@ class Users extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Change the password for a user
+     * @param $user_id
+     */
     public function change_password($user_id)
     {
         if ($this->input->post('btn_cancel')) {
@@ -105,6 +124,10 @@ class Users extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes an user from the database
+     * @param $id
+     */
     public function delete($id)
     {
         if ($id <> 1) {
@@ -113,6 +136,11 @@ class Users extends Admin_Controller
         redirect('users');
     }
 
+    /**
+     * Removes a client from an user
+     * @param $user_id
+     * @param $user_client_id
+     */
     public function delete_user_client($user_id, $user_client_id)
     {
         $this->load->model('mdl_user_clients');
@@ -121,5 +149,4 @@ class Users extends Admin_Controller
 
         redirect('users/form/' . $user_id);
     }
-
 }

@@ -1,14 +1,21 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Users_Ajax
+ * @package Modules\Users\Controllers
+ */
 class Users_Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 
+    /**
+     * Adds a client to a user
+     * @uses $_POST['user_id']
+     * @uses $_POST['client_name']
+     */
     public function save_user_client()
     {
         $user_id = $this->input->post('user_id');
@@ -43,6 +50,10 @@ class Users_Ajax extends Admin_Controller
         }
     }
 
+    /**
+     * Loads the client table for the user
+     * @uses $_POST['user_id']
+     */
     public function load_user_client_table()
     {
         if ($session_user_clients = $this->session->userdata('user_clients')) {
@@ -65,5 +76,4 @@ class Users_Ajax extends Admin_Controller
 
         $this->layout->load_view('users/partial_user_client_table', $data);
     }
-
 }
