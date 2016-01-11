@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Invoice_Groups
+ * @package Modules\Invoice_Groups\Controllers
+ */
 class Invoice_Groups extends Admin_Controller
 {
+    /**
+     * Invoice_Groups constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,6 +19,10 @@ class Invoice_Groups extends Admin_Controller
         $this->load->model('mdl_invoice_groups');
     }
 
+    /**
+     * Index page, returns all invoice groups
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_invoice_groups->paginate(site_url('invoice_groups/index'), $page);
@@ -24,6 +33,12 @@ class Invoice_Groups extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the form
+     * If an ID was provided the form will be filled with the data of the invoice group
+     * for the given ID and can be used as an edit form.
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -48,10 +63,13 @@ class Invoice_Groups extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes a client from the database based on the given ID
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_invoice_groups->delete($id);
         redirect('invoice_groups');
     }
-
 }

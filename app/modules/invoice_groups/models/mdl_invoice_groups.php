@@ -1,25 +1,37 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Invoice_Groups
+ * @package Modules\Invoice_Groups\Models
+ */
 class Mdl_Invoice_Groups extends Response_Model
 {
     public $table = 'ip_invoice_groups';
     public $primary_key = 'ip_invoice_groups.invoice_group_id';
 
+    /**
+     * The default select directive used in every query
+     */
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS *', false);
     }
 
+    /**
+     * The default order by directive used in every query
+     */
     public function default_order_by()
     {
         $this->db->order_by('ip_invoice_groups.invoice_group_name');
     }
 
+    /**
+     * Returns the validation rules for invoice groups
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -46,6 +58,12 @@ class Mdl_Invoice_Groups extends Response_Model
         );
     }
 
+    /**
+     * Generates an invoice number based on the given invoice group ID
+     * @param $invoice_group_id
+     * @param bool $set_next
+     * @return string
+     */
     public function generate_invoice_number($invoice_group_id, $set_next = true)
     {
         $invoice_group = $this->get_by_id($invoice_group_id);
@@ -63,6 +81,13 @@ class Mdl_Invoice_Groups extends Response_Model
         return $invoice_identifier;
     }
 
+    /**
+     * Returns the parsed format for the invoice number
+     * @param $identifier_format
+     * @param $next_id
+     * @param $left_pad
+     * @return string
+     */
     private function parse_identifier_format($identifier_format, $next_id, $left_pad)
     {
         if (preg_match_all('/{{{([^{|}]*)}}}/', $identifier_format, $template_vars)) {
@@ -91,11 +116,14 @@ class Mdl_Invoice_Groups extends Response_Model
         return $identifier_format;
     }
 
+    /**
+     * Sets the next invoice number for the given invoice group ID
+     * @param $invoice_group_id
+     */
     public function set_next_invoice_number($invoice_group_id)
     {
         $this->db->where($this->primary_key, $invoice_group_id);
         $this->db->set('invoice_group_next_id', 'invoice_group_next_id+1', false);
         $this->db->update($this->table);
     }
-
 }
