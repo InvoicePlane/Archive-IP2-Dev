@@ -1,10 +1,12 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Import
+ * @package Modules\Import\Models
+ */
 class Mdl_Import extends Response_Model
 {
     public $table = 'ip_imports';
@@ -50,6 +52,7 @@ class Mdl_Import extends Response_Model
             'payment_note'
         )
     );
+
     public $primary_keys = array(
         'ip_clients' => 'client_id',
         'ip_invoices' => 'invoice_id',
@@ -57,12 +60,18 @@ class Mdl_Import extends Response_Model
         'ip_payments' => 'payment_id'
     );
 
+    /**
+     * Mdl_Import constructor.
+     */
     public function __construct()
     {
         // Provides better line ending detection
         ini_set("auto_detect_line_endings", true);
     }
 
+    /**
+     * The default select directive used in every query
+     */
     public function default_select()
     {
         $this->db->select("SQL_CALC_FOUND_ROWS ip_imports.*,
@@ -73,11 +82,18 @@ class Mdl_Import extends Response_Model
             false);
     }
 
+    /**
+     * The default order by directive used in every query
+     */
     public function default_order_by()
     {
         $this->db->order_by('ip_imports.import_date DESC');
     }
 
+    /**
+     * Saves an import to the database
+     * @return int
+     */
     public function start_import()
     {
         $db_array = array(
@@ -89,6 +105,12 @@ class Mdl_Import extends Response_Model
         return $this->db->insert_id();
     }
 
+    /**
+     * Imports data for a specified file and table
+     * @param $file
+     * @param $table
+     * @return array|bool
+     */
     public function import_data($file, $table)
     {
         // Open the file
@@ -140,6 +162,11 @@ class Mdl_Import extends Response_Model
         return $ids;
     }
 
+    /**
+     * Function to import invoices
+     * @uses file uploads/import/invoices.csv
+     * @return array|bool
+     */
     public function import_invoices()
     {
         // Open the file
@@ -219,6 +246,11 @@ class Mdl_Import extends Response_Model
         return $ids;
     }
 
+    /**
+     * Function to import invoice items
+     * @uses file uploads/import/invoice_items.csv
+     * @return array|bool
+     */
     public function import_invoice_items()
     {
         // Open the file
@@ -288,6 +320,11 @@ class Mdl_Import extends Response_Model
         return $ids;
     }
 
+    /**
+     * Function to import payments
+     * @uses file uploads/import/payments.csv
+     * @return array|bool
+     */
     public function import_payments()
     {
         $handle = fopen('./uploads/import/payments.csv', 'r');
@@ -348,6 +385,13 @@ class Mdl_Import extends Response_Model
         return $ids;
     }
 
+    /**
+     * Saves information about the import process to the database
+     * @param $import_id
+     * @param $table_name
+     * @param $import_lang_key
+     * @param $ids
+     */
     public function record_import_details($import_id, $table_name, $import_lang_key, $ids)
     {
         foreach ($ids as $id) {
@@ -362,6 +406,10 @@ class Mdl_Import extends Response_Model
         }
     }
 
+    /**
+     * Deletes an import process from the database based on the given ID
+     * @param $import_id
+     */
     public function delete($import_id)
     {
         // Gather the import details
@@ -383,5 +431,4 @@ class Mdl_Import extends Response_Model
         $this->load->helper('orphan');
         delete_orphans();
     }
-
 }

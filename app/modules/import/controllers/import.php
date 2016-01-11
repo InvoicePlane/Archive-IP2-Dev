@@ -1,10 +1,12 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Import
+ * @package Modules\Import\Controllers
+ */
 class Import extends Admin_Controller
 {
     private $allowed_files = array(
@@ -14,6 +16,9 @@ class Import extends Admin_Controller
         3 => 'payments.csv'
     );
 
+    /**
+     * Import constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -21,6 +26,10 @@ class Import extends Admin_Controller
         $this->load->model('mdl_import');
     }
 
+    /**
+     * Index page, returns a list of all imports
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_import->paginate(site_url('import/index'), $page);
@@ -31,6 +40,13 @@ class Import extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Retruns the form for importing data
+     * If the submit button was pressed the script checks for all import files and tries
+     * to import data from it
+     *
+     * @uses import files from uploads/import directory
+     */
     public function form()
     {
         if (!$this->input->post('btn_submit')) {
@@ -92,10 +108,13 @@ class Import extends Admin_Controller
         }
     }
 
+    /**
+     * Deletes an import from the database based on the given ID
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_import->delete($id);
         redirect('import');
     }
-
 }
