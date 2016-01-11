@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Payment_Methods
+ * @package Modules\PaymentMethods\Controllers
+ */
 class Payment_Methods extends Admin_Controller
 {
+    /**
+     * Payment_Methods constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,6 +19,10 @@ class Payment_Methods extends Admin_Controller
         $this->load->model('mdl_payment_methods');
     }
 
+    /**
+     * Index page, returns all payment methods
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_payment_methods->paginate(site_url('payment_methods/index'), $page);
@@ -24,6 +33,12 @@ class Payment_Methods extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the form
+     * If an ID was provided the form will be filled with the data of the payment methods
+     * for the given ID and can be used as an edit form.
+     * @param null|int $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -55,10 +70,13 @@ class Payment_Methods extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes a payment method from the database
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_payment_methods->delete($id);
         redirect('payment_methods');
     }
-
 }
