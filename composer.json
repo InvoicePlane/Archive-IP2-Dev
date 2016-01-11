@@ -4,7 +4,8 @@
   "require": {
     "php": ">=5.4",
     "codeigniter/framework": "3.0.*",
-    "omnipay/omnipay": "^2.3"
+    "omnipay/omnipay": "^2.3",
+    "phpmailer/phpmailer": "~5.2"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.0",

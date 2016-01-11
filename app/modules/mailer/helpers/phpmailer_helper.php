@@ -15,7 +15,7 @@ function phpmail_send(
     $bcc = null,
     $more_attachments = null
 ) {
-    require_once(APPPATH . 'modules/mailer/helpers/phpmailer/class.phpmailer.php');
+    require_once(FCPATH . '/vendor/phpmailer/phpmailer/class.phpmailer.php');
 
     $CI = &get_instance();
     $CI->load->library('encrypt');
