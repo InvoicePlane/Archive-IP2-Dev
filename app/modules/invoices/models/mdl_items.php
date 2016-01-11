@@ -1,16 +1,27 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Items
+ * @package Modules\Invoices\Models
+ */
 class Mdl_Items extends Response_Model
 {
     public $table = 'ip_invoice_items';
     public $primary_key = 'ip_invoice_items.item_id';
     public $date_created_field = 'item_date_added';
 
+    /**
+     * Returns all items for the given invoice ID
+     * 
+     * @TODO check occurrence and implement / mark as deprecated
+     * 
+     * @param $invoice_id
+     * @param string $invoice_date_created
+     * @return array
+     */
     public function get_items_and_replace_vars($invoice_id, $invoice_date_created = 'now')
     {
         $items = array();
@@ -24,17 +35,30 @@ class Mdl_Items extends Response_Model
         return $items;
     }
 
+    /**
+     * Parses the item for specific formatting
+     * 
+     * @TODO check occurrence and implement / mark as deprecated
+     * 
+     * @param $string
+     * @param $invoice_date_created
+     * @return mixed
+     */
     private function parse_item($string, $invoice_date_created)
     {
-        if (preg_match_all('/{{{(?<format>[yYmMdD])(?:(?<=[Yy])ear|(?<=[Mm])onth|(?<=[Dd])ay)(?:(?<operation>[-+])(?<amount>[1-9]+))?}}}/m',
-            $string, $template_vars, PREG_SET_ORDER)) {
+        if (preg_match_all(
+            '/{{{(?<format>[yYmMdD])(?:(?<=[Yy])ear|(?<=[Mm])onth|(?<=[Dd])ay)(?:(?<operation>[-+])(?<amount>[1-9]+))?}}}/m',
+            $string,
+            $template_vars,
+            PREG_SET_ORDER)) {
             try {
                 $formattedDate = new DateTime($invoice_date_created);
-            } catch (Exception $e) { // If creating a date based on the invoice_date_created isn't possible, use current date
+            } catch (Exception $e) {
+                // If creating a date based on the invoice_date_created isn't possible, use current date
                 $formattedDate = new DateTime();
             }
 
-            /* Calculate the date first, before starting replacing the variables */
+            // Calculate the date first, before starting replacing the variables
             foreach ($template_vars as $var) {
                 if (!isset($var['operation'], $var['amount'])) {
                     continue;
@@ -49,7 +73,7 @@ class Mdl_Items extends Response_Model
                 }
             }
 
-            /* Let's replace all variables */
+            // Let's replace all variables
             foreach ($template_vars as $var) {
                 $string = str_replace($var[0], $formattedDate->format($var['format']), $string);
             }
@@ -58,16 +82,25 @@ class Mdl_Items extends Response_Model
         return $string;
     }
 
+    /**
+     * The default select directive used in every query
+     */
     public function default_select()
     {
         $this->db->select('ip_invoice_item_amounts.*, ip_invoice_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
     }
 
+    /**
+     * The default oder by directive used in every query
+     */
     public function default_order_by()
     {
         $this->db->order_by('ip_invoice_items.item_order');
     }
 
+    /**
+     * The default join directive used in every query
+     */
     public function default_join()
     {
         $this->db->join('ip_invoice_item_amounts', 'ip_invoice_item_amounts.item_id = ip_invoice_items.item_id',
@@ -76,6 +109,10 @@ class Mdl_Items extends Response_Model
             'item_tax_rates.tax_rate_id = ip_invoice_items.item_tax_rate_id', 'left');
     }
 
+    /**
+     * Returns the validation rules for invoice items
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -110,6 +147,13 @@ class Mdl_Items extends Response_Model
         );
     }
 
+    /**
+     * Saves an invoice item to the database
+     * @param int|null $invoice_id
+     * @param null $id
+     * @param null $db_array
+     * @return int|null
+     */
     public function save($invoice_id, $id = null, $db_array = null)
     {
         $id = parent::save($id, $db_array);
@@ -123,6 +167,11 @@ class Mdl_Items extends Response_Model
         return $id;
     }
 
+    /**
+     * Deletes an invoice from the database
+     * @param $item_id
+     * @return null
+     */
     public function delete($item_id)
     {
         // Get item:

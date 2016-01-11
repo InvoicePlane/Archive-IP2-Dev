@@ -1,31 +1,38 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Invoice_Amounts
+ * @package Modules\Invoices\Models
+ */
 class Mdl_Invoice_Amounts extends CI_Model
 {
     /**
-     * IP_INVOICE_AMOUNTS
-     * invoice_amount_id
-     * invoice_id
-     * invoice_item_subtotal    SUM(item_subtotal)
-     * invoice_item_tax_total    SUM(item_tax_total)
-     * invoice_tax_total
-     * invoice_total            invoice_item_subtotal + invoice_item_tax_total + invoice_tax_total
-     * invoice_paid
-     * invoice_balance            invoice_total - invoice_paid
-     *
-     * IP_INVOICE_ITEM_AMOUNTS
-     * item_amount_id
-     * item_id
-     * item_tax_rate_id
-     * item_subtotal            item_quantity * item_price
-     * item_tax_total            item_subtotal * tax_rate_percent
-     * item_total                item_subtotal + item_tax_total
-     *
+     * Calculates the basic amounts for the invoice for the given ID
+     *  
+     * **IP_INVOICE_AMOUNTS**  
+     * 
+     * * invoice_amount_id  
+     * * invoice_id  
+     * * invoice_item_subtotal = SUM(item_subtotal)  
+     * * invoice_item_tax_total = SUM(item_tax_total)  
+     * * invoice_tax_total  
+     * * invoice_total = invoice_item_subtotal + invoice_item_tax_total + invoice_tax_total  
+     * * invoice_paid  
+     * * invoice_balance = invoice_total - invoice_paid  
+     *   
+     * **IP_INVOICE_ITEM_AMOUNTS**  
+     * 
+     * * item_amount_id  
+     * * item_id  
+     * * item_tax_rate_id  
+     * * item_subtotal = item_quantity * item_price  
+     * * item_tax_total = item_subtotal * tax_rate_percent  
+     * * item_total = item_subtotal + item_tax_total  
+     *  
+     * @param $invoice_id
      */
     public function calculate($invoice_id)
     {
@@ -95,6 +102,10 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
+    /**
+     * Calculates the taxes for the invoice for the given ID
+     * @param $invoice_id
+     */
     public function calculate_invoice_taxes($invoice_id)
     {
         // First check to see if there are any invoice taxes applied
@@ -167,6 +178,12 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
+    /**
+     * Calculates the discounts for the invoice for the given ID
+     * @param $invoice_id
+     * @param $invoice_total
+     * @return float
+     */
     public function calculate_discount($invoice_id, $invoice_total)
     {
         $this->db->where('invoice_id', $invoice_id);
@@ -182,6 +199,11 @@ class Mdl_Invoice_Amounts extends CI_Model
         return $total;
     }
 
+    /**
+     * Returns the total amounts for the dashboard overview based on the given period
+     * @param null $period
+     * @return mixed
+     */
     public function get_total_invoiced($period = null)
     {
         switch ($period) {
@@ -218,6 +240,11 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
+    /**
+     * Returns the total paid amounts for the dashboard overview based on the given period
+     * @param null $period
+     * @return mixed
+     */
     public function get_total_paid($period = null)
     {
         switch ($period) {
@@ -251,6 +278,11 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
+    /**
+     * Returns the total balance for the dashboard overview based on the given period
+     * @param null $period
+     * @return mixed
+     */
     public function get_total_balance($period = null)
     {
         switch ($period) {
@@ -283,6 +315,11 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
+    /**
+     * Returns the amounts for each status for the dashboard overview based on the given period
+     * @param string $period
+     * @return array
+     */
     public function get_status_totals($period = '')
     {
         switch ($period) {
@@ -360,5 +397,4 @@ class Mdl_Invoice_Amounts extends CI_Model
 
         return $return;
     }
-
 }

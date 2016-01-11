@@ -1,14 +1,31 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
-class Ajax extends Admin_Controller
+/**
+ * Class Invoices_Ajax
+ * @package Modules\Invoices\Controllers
+ */
+class Invoices_Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 
+    /**
+     * Saves a note to a given client ID and returns the result
+     * @uses $_POST['invoice_id']
+     * @uses $_POST['items']
+     * @uses $_POST['invoice_status_id']
+     * @uses $_POST['invoice_discount_amount']
+     * @uses $_POST['invoice_discount_percent']
+     * @uses $_POST['invoice_number']
+     * @uses $_POST['invoice_terms']
+     * @uses $_POST['invoice_date_created']
+     * @uses $_POST['invoice_date_due']
+     * @uses $_POST['invoice_password']
+     * @uses $_POST['payment_method']
+     * @uses $_POST['invoice_custom']
+     */
     public function save()
     {
         $this->load->model('invoices/mdl_items');
@@ -137,6 +154,12 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Saves the tax rate for an invoice and returns the result
+     * @uses $_POST['invoice_id']
+     * @uses $_POST['tax_rate_name']
+     * @uses $_POST['tax_rate_percent']
+     */
     public function save_invoice_tax_rate()
     {
         $this->load->model('invoices/mdl_invoice_tax_rates');
@@ -157,6 +180,17 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Creates a new invoice to the database that can be used to store items
+     * @uses $_POST['client_name']
+     * @uses $_POST['invoice_date_created']
+     * @uses $_POST['invoice_time_created']
+     * @uses $_POST['invoice_group_id']
+     * @uses $_POST['invoice_password']
+     * @uses $_POST['user_id']
+     * @uses $_POST['payment_method']
+     * @see Mdl_Invoices::validation_rules()
+     */
     public function create()
     {
         $this->load->model('invoices/mdl_invoices');
@@ -179,6 +213,16 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Creates a recurring invoice for an invoice and returns the result
+     * @uses $_POST['invoice_id']
+     * @uses $_POST['recur_start_date']
+     * @uses $_POST['recur_end_date']
+     * @uses $_POST['recur_frequency']
+     * @uses $_POST['recur_invoices_due_after']
+     * @uses $_POST['recur_email_invoice_template']
+     * @see Mdl_Invoices_Recurring::validation_rules()
+     */
     public function create_recurring()
     {
         $this->load->model('invoices/mdl_invoices_recurring');
@@ -200,6 +244,10 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Returns an item based on the given item ID
+     * @uses $_POST['item_id']
+     */
     public function get_item()
     {
         $this->load->model('invoices/mdl_items');
@@ -209,6 +257,9 @@ class Ajax extends Admin_Controller
         echo json_encode($item);
     }
 
+    /**
+     * Returns the modal that can be used to create an invoice
+     */
     public function modal_create_invoice()
     {
         $this->load->module('layout');
@@ -227,6 +278,10 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('invoices/modal_create_invoice', $data);
     }
 
+    /**
+     * Returns the modal that can be used to make an invoice recurring
+     * @uses $_POST['invoice_id']
+     */
     public function modal_create_recurring()
     {
         $this->load->module('layout');
@@ -243,6 +298,11 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('invoices/modal_create_recurring', $data);
     }
 
+    /**
+     * Returns the start date for an invoice
+     * @uses $_POST['invoice_date']
+     * @uses $_POST['recur_frequency']
+     */
     public function get_recur_start_date()
     {
         $invoice_date = $this->input->post('invoice_date');
@@ -251,6 +311,11 @@ class Ajax extends Admin_Controller
         echo increment_user_date($invoice_date, $recur_frequency);
     }
 
+    /**
+     * Returns the modal that can be used to change the client for an invoice
+     * @uses $_POST['client_name']
+     * @uses $_POST['invoice_id']
+     */
     public function modal_change_client()
     {
         $this->load->module('layout');
@@ -265,6 +330,11 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('invoices/modal_change_client', $data);
     }
 
+    /**
+     * Changes the client for an invoice and returns the result
+     * @uses $_POST['client_name']
+     * @uses $_POST['invoice_id']
+     */
     public function change_client()
     {
         $this->load->model('invoices/mdl_invoices');
@@ -300,6 +370,10 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Returns the modal that can be used to copy an invoice
+     * @uses $_POST['invoice_id']
+     */
     public function modal_copy_invoice()
     {
         $this->load->module('layout');
@@ -319,6 +393,11 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('invoices/modal_copy_invoice', $data);
     }
 
+    /**
+     * Creates a duplicate / copy of a given invoice and returns the result
+     * @uses $_POST['invoice_id']
+     * @see Mdl_Invoices::validation_rules()
+     */
     public function copy_invoice()
     {
         $this->load->model('invoices/mdl_invoices');
@@ -346,6 +425,11 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Returns the modal that can be used to create a credit invoice from an invoice
+     * @uses $_POST['invoice_id']
+     * @see Mdl_Invoices::validation_rules()
+     */
     public function modal_create_credit()
     {
         $this->load->module('layout');
@@ -365,6 +449,13 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('invoices/modal_create_credit', $data);
     }
 
+    /**
+     * Creates a credit invoice for a given invoice and returns the result
+     * @uses $_POST['invoice_id']
+     * @see Mdl_Invoices::validation_rules()
+     * @see Mdl_Items::validation_rules()
+     * @see Mdl_Invoice_Tax_Rates::validation_rules()
+     */
     public function create_credit()
     {
         $this->load->model('invoices/mdl_invoices');

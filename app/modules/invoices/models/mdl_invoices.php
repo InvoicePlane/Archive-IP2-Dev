@@ -1,28 +1,23 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-/*
- * InvoicePlane
- *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
- *
+/**
+ * Class Mdl_Invoices
+ * @package Modules\Invoices\Models
  */
-
 class Mdl_Invoices extends Response_Model
 {
     public $table = 'ip_invoices';
     public $primary_key = 'ip_invoices.invoice_id';
     public $date_modified_field = 'invoice_date_modified';
 
+    /**
+     * Returns an array that holds all available status codes with
+     * their label, class and href
+     * @return array
+     */
     public function statuses()
     {
         return array(
@@ -49,6 +44,9 @@ class Mdl_Invoices extends Response_Model
         );
     }
 
+    /**
+     * The default select directive used in every query
+     */
     public function default_select()
     {
         $this->db->select("
@@ -85,11 +83,17 @@ class Mdl_Invoices extends Response_Model
 			ip_invoices.*", false);
     }
 
+    /**
+     * The default order directive used in every query
+     */
     public function default_order_by()
     {
         $this->db->order_by('ip_invoices.invoice_id DESC');
     }
 
+    /**
+     * The default join directive used in every query
+     */
     public function default_join()
     {
         $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
@@ -100,6 +104,10 @@ class Mdl_Invoices extends Response_Model
         $this->db->join('ip_invoice_custom', 'ip_invoice_custom.invoice_id = ip_invoices.invoice_id', 'left');
     }
 
+    /**
+     * Returns the validation rules for invoices
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -137,6 +145,10 @@ class Mdl_Invoices extends Response_Model
         );
     }
 
+    /**
+     * Returns the validation rules for invoices which already exist
+     * @return array
+     */
     public function validation_rules_save_invoice()
     {
         return array(
@@ -165,6 +177,12 @@ class Mdl_Invoices extends Response_Model
         );
     }
 
+    /**
+     * Creates an invoice
+     * @param null $db_array
+     * @param bool $include_invoice_tax_rates
+     * @return int
+     */
     public function create($db_array = null, $include_invoice_tax_rates = true)
     {
 
@@ -194,6 +212,10 @@ class Mdl_Invoices extends Response_Model
         return $invoice_id;
     }
 
+    /**
+     * Returns a random string for the URL key
+     * @return string
+     */
     public function get_url_key()
     {
         $this->load->helper('string');
@@ -294,6 +316,10 @@ class Mdl_Invoices extends Response_Model
         }
     }
 
+    /**
+     * Returns the prepared database array
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -318,12 +344,24 @@ class Mdl_Invoices extends Response_Model
         return $db_array;
     }
 
+    /**
+     * Returns the generated invoice number based on the invoice group ID
+     * @see Mdl_Invoice_Groups::generate_invoice_number()
+     * @param $invoice_group_id
+     * @return mixed
+     */
     public function get_invoice_number($invoice_group_id)
     {
         $this->load->model('invoice_groups/mdl_invoice_groups');
         return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
     }
 
+    /**
+     * Returns the calculated dua date based on the date created
+     * @param $invoice_date_created
+     * @param null $invoices_due_after
+     * @return string
+     */
     public function get_date_due($invoice_date_created, $invoices_due_after = null)
     {
         if ($invoices_due_after == null) {
@@ -334,6 +372,10 @@ class Mdl_Invoices extends Response_Model
         return $invoice_date_due->format('Y-m-d');
     }
 
+    /**
+     * Deletes an invoice from the database and all orphaned entries
+     * @param $invoice_id
+     */
     public function delete($invoice_id)
     {
         parent::delete($invoice_id);
@@ -342,55 +384,91 @@ class Mdl_Invoices extends Response_Model
         delete_orphans();
     }
 
-    // Used from the guest module, excludes draft and paid
+    /**
+     * Query to get the invoices which are open
+     * @return $this
+     */
     public function is_open()
     {
         $this->filter_where_in('invoice_status_id', array(2, 3));
         return $this;
     }
 
+    /**
+     * Query to get the invoices which are visible to the guest
+     * @return $this
+     */
     public function guest_visible()
     {
         $this->filter_where_in('invoice_status_id', array(2, 3, 4));
         return $this;
     }
 
+    /**
+     * Query to get the invoices which are drafts
+     * @return $this
+     */
     public function is_draft()
     {
         $this->filter_where('invoice_status_id', 1);
         return $this;
     }
 
+    /**
+     * Query to get the invoices which are marked as sent
+     * @return $this
+     */
     public function is_sent()
     {
         $this->filter_where('invoice_status_id', 2);
         return $this;
     }
 
+    /**
+     * Query to get the invoices which are marked as viewed
+     * @return $this
+     */
     public function is_viewed()
     {
         $this->filter_where('invoice_status_id', 3);
         return $this;
     }
 
+    /**
+     * Query to get the invoices which are marked as paid
+     * @return $this
+     */
     public function is_paid()
     {
         $this->filter_where('invoice_status_id', 4);
         return $this;
     }
 
+    /**
+     * Query to get the invoices which are overdue
+     * @return $this
+     */
     public function is_overdue()
     {
         $this->filter_having('is_overdue', 1);
         return $this;
     }
 
+    /**
+     * Query to get the invoices by client
+     * @param $client_id
+     * @return $this
+     */
     public function by_client($client_id)
     {
         $this->filter_where('ip_invoices.client_id', $client_id);
         return $this;
     }
 
+    /**
+     * Marks an invoice as viewed based in the given Id
+     * @param $invoice_id
+     */
     public function mark_viewed($invoice_id)
     {
         $this->db->select('invoice_status_id');
@@ -414,6 +492,10 @@ class Mdl_Invoices extends Response_Model
         }
     }
 
+    /**
+     * Marks an invoice as sent based in the given Id
+     * @param $invoice_id
+     */
     public function mark_sent($invoice_id)
     {
         $this->db->select('invoice_status_id');
@@ -436,5 +518,4 @@ class Mdl_Invoices extends Response_Model
             }
         }
     }
-
 }

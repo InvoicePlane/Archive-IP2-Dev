@@ -1,10 +1,12 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Invoices_Recurring
+ * @package Modules\Invoices\Models
+ */
 class Mdl_Invoices_Recurring extends Response_Model
 {
     public $table = 'ip_invoices_recurring';
@@ -17,6 +19,9 @@ class Mdl_Invoices_Recurring extends Response_Model
         '6M' => 'six_months'
     );
 
+    /**
+     * The default select directive used in every query
+     */
     public function default_select()
     {
         $this->db->select("SQL_CALC_FOUND_ROWS ip_invoices.*,
@@ -26,12 +31,19 @@ class Mdl_Invoices_Recurring extends Response_Model
             false);
     }
 
+    /**
+     * The default join directive used in every query
+     */
     public function default_join()
     {
         $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_invoices_recurring.invoice_id');
         $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
     }
 
+    /**
+     * Returns the validation rules for recurring invoices
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -66,6 +78,10 @@ class Mdl_Invoices_Recurring extends Response_Model
         );
     }
 
+    /**
+     * Returns the prepared database array
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -82,6 +98,10 @@ class Mdl_Invoices_Recurring extends Response_Model
         return $db_array;
     }
 
+    /**
+     * Stop a recurring invoice
+     * @param $invoice_recurring_id
+     */
     public function stop($invoice_recurring_id)
     {
         $db_array = array(
@@ -94,7 +114,7 @@ class Mdl_Invoices_Recurring extends Response_Model
     }
 
     /**
-     * Sets filter to only recurring invoices which should be generated now
+     * Query to get the current active invoices
      * @return \Mdl_Invoices_Recurring
      */
     public function active()
@@ -103,6 +123,10 @@ class Mdl_Invoices_Recurring extends Response_Model
         return $this;
     }
 
+    /**
+     * Sets the next recurring date for a recurring invoice
+     * @param $invoice_recurring_id
+     */
     public function set_next_recur_date($invoice_recurring_id)
     {
         $invoice_recurring = $this->where('invoice_recurring_id', $invoice_recurring_id)->get()->row();
@@ -116,5 +140,4 @@ class Mdl_Invoices_Recurring extends Response_Model
         $this->db->where('invoice_recurring_id', $invoice_recurring_id);
         $this->db->update('ip_invoices_recurring', $db_array);
     }
-
 }

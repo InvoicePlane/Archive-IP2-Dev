@@ -1,12 +1,19 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Templates
+ * @package Modules\Invoices\Models
+ */
 class Mdl_Templates extends CI_Model
 {
+    /**
+     * Get the invoice templates
+     * @param string $type
+     * @return array
+     */
     public function get_invoice_templates($type = 'pdf')
     {
         $this->load->helper('directory');
@@ -22,6 +29,11 @@ class Mdl_Templates extends CI_Model
         return $templates;
     }
 
+    /**
+     * Get the quote templates
+     * @param string $type
+     * @return array
+     */
     public function get_quote_templates($type = 'pdf')
     {
         $this->load->helper('directory');
@@ -37,6 +49,11 @@ class Mdl_Templates extends CI_Model
         return $templates;
     }
 
+    /**
+     * Remove the extension from the template files
+     * @param $files
+     * @return mixed
+     */
     private function remove_extension($files)
     {
         foreach ($files as $key => $file) {
@@ -45,5 +62,4 @@ class Mdl_Templates extends CI_Model
 
         return $files;
     }
-
 }

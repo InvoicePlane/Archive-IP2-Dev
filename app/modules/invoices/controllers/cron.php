@@ -1,12 +1,18 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Cron
+ * @package Modules\Invoices\Controllers
+ */
 class Cron extends Base_Controller
 {
+    /**
+     * Processes the open recurring invoices
+     * @param null string $cron_key
+     */
     public function recur($cron_key = null)
     {
         if ($cron_key == $this->mdl_settings->setting('cron_key')) {

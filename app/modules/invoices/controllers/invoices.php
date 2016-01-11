@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Invoices
+ * @package Modules\Invoices\Controllers
+ */
 class Invoices extends Admin_Controller
 {
+    /**
+     * Invoices constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,12 +19,21 @@ class Invoices extends Admin_Controller
         $this->load->model('mdl_invoices');
     }
 
+    /**
+     * Index page, redirects to invoices/status/all
+     */
     public function index()
     {
         // Display all invoices by default
         redirect('invoices/status/all');
     }
 
+    /**
+     * Returns all invoices based on the given status and page no.
+     * Example: 'invoices/status/sent' returns all sent invoices
+     * @param string $status
+     * @param int $page
+     */
     public function status($status = 'all', $page = 0)
     {
         // Determine which group of invoices to load
@@ -59,6 +73,9 @@ class Invoices extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Displays the invoice archive
+     */
     public function archive()
     {
         $invoice_array = array();
@@ -85,6 +102,10 @@ class Invoices extends Admin_Controller
         }
     }
 
+    /**
+     * Downloads the PDF from the invoice archive
+     * @param $invoice
+     */
     public function download($invoice)
     {
         header('Content-type: application/pdf');
@@ -92,6 +113,10 @@ class Invoices extends Admin_Controller
         readfile('./uploads/archive/' . urldecode(basename($invoice)));
     }
 
+    /**
+     * Returns the details page for an invoice for the given ID
+     * @param $invoice_id
+     */
     public function view($invoice_id)
     {
         $this->load->model(
@@ -159,6 +184,10 @@ class Invoices extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes an invoice from the database based on the given ID
+     * @param $invoice_id
+     */
     public function delete($invoice_id)
     {
         // Get the status of the invoice
@@ -181,6 +210,11 @@ class Invoices extends Admin_Controller
         redirect('invoices/index');
     }
 
+    /**
+     * Deletes an invoice item from the database based on the given ID
+     * @param $invoice_id
+     * @param $item_id
+     */
     public function delete_item($invoice_id, $item_id)
     {
         // Delete invoice item
@@ -197,6 +231,12 @@ class Invoices extends Admin_Controller
         redirect('invoices/view/' . $invoice_id);
     }
 
+    /**
+     * Generates the PDF for an invoice based on the given ID
+     * @param $invoice_id
+     * @param bool $stream
+     * @param null $invoice_template
+     */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
         $this->load->helper('pdf');
@@ -208,6 +248,11 @@ class Invoices extends Admin_Controller
         generate_invoice_pdf($invoice_id, $stream, $invoice_template);
     }
 
+    /**
+     * Removes the invoice tax from an invoice based on the given ID
+     * @param $invoice_id
+     * @param $invoice_tax_rate_id
+     */
     public function delete_invoice_tax($invoice_id, $invoice_tax_rate_id)
     {
         $this->load->model('mdl_invoice_tax_rates');
@@ -219,6 +264,9 @@ class Invoices extends Admin_Controller
         redirect('invoices/view/' . $invoice_id);
     }
 
+    /**
+     * Recalculates the amounts for all invoices
+     */
     public function recalculate_all_invoices()
     {
         $this->db->select('invoice_id');
