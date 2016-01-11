@@ -4,7 +4,10 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Lib_mysql
+ * @deprecated Needs to be removed
+ */
 class Lib_mysql
 {
     function connect($server, $username, $password)

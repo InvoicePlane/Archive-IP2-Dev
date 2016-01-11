@@ -4,11 +4,21 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Setup
+ * @package Modules\Setup\Models
+ */
 class Mdl_Setup extends CI_Model
 {
     public $errors = array();
 
+    /**
+     * Installs the basic tables
+     * 
+     * @TODO read_file() is deprecated
+     * 
+     * @return bool
+     */
     public function install_tables()
     {
         $file_contents = read_file(APPPATH . 'modules/setup/sql/000_1.0.0.sql');
@@ -28,6 +38,13 @@ class Mdl_Setup extends CI_Model
         return true;
     }
 
+    /**
+     * Runs all upgrades on the database
+     * 
+     * @TODO read_file() is deprecated
+     * 
+     * @return bool
+     */
     public function upgrade_tables()
     {
         // Collect the available SQL files
@@ -74,6 +91,13 @@ class Mdl_Setup extends CI_Model
         return true;
     }
 
+    /**
+     * Executes the SQL files
+     * 
+     * @TODO mysql_error() is deprecated
+     * 
+     * @param $contents
+     */
     private function execute_contents($contents)
     {
         $commands = explode(';', $contents);
@@ -87,6 +111,9 @@ class Mdl_Setup extends CI_Model
         }
     }
 
+    /**
+     * Inserts the default data that is needed to run properly
+     */
     public function install_default_data()
     {
         $this->db->insert('ip_invoice_groups',
@@ -98,6 +125,9 @@ class Mdl_Setup extends CI_Model
         ));
     }
 
+    /**
+     * Inserts the default settings that is needed to run properly
+     */
     private function install_default_settings()
     {
         $this->load->helper('string');
@@ -140,6 +170,10 @@ class Mdl_Setup extends CI_Model
         }
     }
 
+    /**
+     * Saves the version for a SQL file
+     * @param $sql_file
+     */
     private function save_version($sql_file)
     {
         $version_db_array = array(
@@ -157,38 +191,14 @@ class Mdl_Setup extends CI_Model
      * public function upgrade_010_1_0_1() { ... }
      */
 
-    public function upgrade_001_1_0_1()
-    {
-        // Nothing to do here
-    }
-
-    public function upgrade_002_1_0_1()
-    {
-        // Nothing to do here
-    }
-
-    public function upgrade_003_1_1_0()
-    {
-        // Nothing to do here
-    }
-
-    public function upgrade_004_1_1_1()
-    {
-        // Nothing to do here
-    }
-
-    public function upgrade_005_1_1_2()
-    {
-        // Nothing to do here
-    }
-
+    /**
+     * Update alert to notify about the changes with invoice deletion and credit invoices
+     * but only display the warning when the previous version is 1.1.2 or lower and it's an update
+     * therefore check if it's an update, if the time difference between v1.1.2 and v1.2.0 is
+     * greater than 100 and if v1.2.0 was not installed within this update process
+     */
     public function upgrade_006_1_2_0()
     {
-        /* Update alert to notify about the changes with invoice deletion and credit invoices
-         * but only display the warning when the previous version is 1.1.2 or lower and it's an update
-         * therefore check if it's an update, if the time difference between v1.1.2 and v1.2.0 is
-         * greater than 100 and if v1.2.0 was not installed within this update process
-         */
         $this->db->where_in("version_file", array("006_1.2.0.sql", "005_1.1.2.sql"));
         $versions = $this->db->get('ip_versions')->result();
         $upgrade_diff = $versions[1]->version_date_applied - $versions[0]->version_date_applied;
@@ -202,14 +212,11 @@ class Mdl_Setup extends CI_Model
         }
     }
 
-    public function upgrade_007_1_2_1()
-    {
-        // Nothing to do here
-    }
-
+    /**
+     * Copy Email invoice template from settings to each recuring invoice
+     */
     public function upgrade_016_1_5_0()
     {
-        // Copy Email invoice template from settings to each recuring invoice
         $settings = $this->db->where('setting_key', 'email_invoice_template')->get('ip_settings')->result();
         if ($settings[0]->setting_key == 'email_invoice_template') {
             $this->db->update('ip_invoices_recurring', ['recur_email_invoice_template' => $settings[0]->setting_value]);

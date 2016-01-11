@@ -1,14 +1,19 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Setup
+ * @package Modules\Setup\Controllers
+ */
 class Setup extends MX_Controller
 {
     public $errors = 0;
 
+    /**
+     * Setup constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -31,11 +36,17 @@ class Setup extends MX_Controller
         $this->lang->load('ip', $this->session->userdata('ip_lang'));
     }
 
+    /**
+     * Index page, redirects to setup/language
+     */
     public function index()
     {
         redirect('setup/language');
     }
 
+    /**
+     * Setup step to set the language
+     */
     public function language()
     {
         if ($this->input->post('btn_continue')) {
@@ -59,6 +70,9 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
+    /**
+     * Setup step to check the pre requisites
+     */
     public function prerequisites()
     {
         if ($this->session->userdata('install_step') <> 'prerequisites') {
@@ -82,6 +96,9 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
+    /**
+     * Setup step to configure the database
+     */
     public function configure_database()
     {
         if ($this->session->userdata('install_step') <> 'configure_database') {
@@ -115,6 +132,9 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
+    /**
+     * Setup step to install the basic database tables
+     */
     public function install_tables()
     {
         if ($this->session->userdata('install_step') <> 'install_tables') {
@@ -139,6 +159,9 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
+    /**
+     * Setup step to upgrade all database tables
+     */
     public function upgrade_tables()
     {
         if ($this->session->userdata('install_step') <> 'upgrade_tables') {
@@ -168,6 +191,9 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
+    /**
+     * Setup step to create the initial user
+     */
     public function create_user()
     {
         if ($this->session->userdata('install_step') <> 'create_user') {
@@ -199,6 +225,9 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
+    /**
+     * Setup step to confirm the setup ran successfully
+     */
     public function complete()
     {
         if ($this->session->userdata('install_step') <> 'complete') {
@@ -228,6 +257,10 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
+    /**
+     * Returns directories or files that need to be writable
+     * @return array
+     */
     private function check_writables()
     {
         $checks = array();
@@ -263,6 +296,13 @@ class Setup extends MX_Controller
         return $checks;
     }
 
+    /**
+     * Checks if the database connection can be established
+     * 
+     * @TODO lib_mysql is deprecated and should be removed
+     * 
+     * @return array
+     */
     private function check_database()
     {
         $this->load->library('lib_mysql');
@@ -305,11 +345,15 @@ class Setup extends MX_Controller
         );
     }
 
+    /**
+     * Runs basic checks like the PHP version, timezone,...
+     * @return array
+     */
     private function check_basics()
     {
         $checks = array();
 
-        $php_required = '5.3';
+        $php_required = '5.4';
         $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 
         if ($php_installed < $php_required) {
@@ -343,6 +387,16 @@ class Setup extends MX_Controller
         return $checks;
     }
 
+    /**
+     * Writes the database configuration to the configuration file
+     * 
+     * @TODO read_file() is deprecated
+     * 
+     * @param $hostname
+     * @param $username
+     * @param $password
+     * @param $database
+     */
     private function write_database_config($hostname, $username, $password, $database)
     {
         $db_file = read_file(APPPATH . 'config/database_empty.php');
@@ -359,10 +413,11 @@ class Setup extends MX_Controller
         write_file(APPPATH . 'config/database.php', $db_file);
     }
 
+    /**
+     * Loads the database instance
+     */
     private function load_ci_database()
     {
         $this->load->database();
-        // $this->db->db_debug = 0;
     }
-
 }
