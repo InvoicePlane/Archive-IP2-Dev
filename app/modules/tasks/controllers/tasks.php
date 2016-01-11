@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Tasks
+ * @package Modules\Tasks\Controllers
+ */
 class Tasks extends Admin_Controller
 {
+    /**
+     * Tasks constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,6 +19,10 @@ class Tasks extends Admin_Controller
         $this->load->model('mdl_tasks');
     }
 
+    /**
+     * Index page, returns all tasks
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_tasks->paginate(site_url('tasks/index'), $page);
@@ -25,6 +34,12 @@ class Tasks extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the form
+     * If an ID was provided the form will be filled with the data of the task
+     * for the given ID and can be used as an edit form.
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -57,15 +72,13 @@ class Tasks extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes a task from the database
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_tasks->delete($id);
         redirect('tasks');
-    }
-
-    public function is_overdue()
-    {
-        $this->filter_having('is_overdue', 1);
-        return $this;
     }
 }

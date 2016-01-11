@@ -1,12 +1,18 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Tasks_Ajax
+ * @package Modules\Tasks\Controllers
+ */
 class Tasks_Ajax extends Admin_Controller
 {
+    /**
+     * Returns the modal that can be used to lookup tasks
+     * @param null $invoice_id
+     */
     public function modal_task_lookups($invoice_id = null)
     {
         $data['tasks'] = array();
@@ -18,6 +24,10 @@ class Tasks_Ajax extends Admin_Controller
         $this->layout->load_view('tasks/modal_task_lookups', $data);
     }
 
+    /**
+     * Returns all tasks that were selected
+     * @uses $_POST['task_ids']
+     */
     public function process_task_selections()
     {
         $this->load->model('mdl_tasks');

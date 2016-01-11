@@ -1,15 +1,20 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Tasks
+ * @package Modules\Tasks\Models
+ */
 class Mdl_Tasks extends Response_Model
 {
     public $table = 'ip_tasks';
     public $primary_key = 'ip_tasks.task_id';
 
+    /**
+     * The default order directive used in every query
+     */
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS *,
@@ -17,22 +22,36 @@ class Mdl_Tasks extends Response_Model
         ', false);
     }
 
+    /**
+     * The default order directive used in every query
+     */
     public function default_order_by()
     {
         $this->db->order_by('ip_projects.project_name, ip_tasks.task_name');
     }
 
+    /**
+     * The default order directive used in every query
+     */
     public function default_join()
     {
         $this->db->join('ip_projects', 'ip_projects.project_id = ip_tasks.project_id', 'left');
     }
 
+    /**
+     * Query to get a task by its name
+     * @param $match
+     */
     public function by_task($match)
     {
         $this->db->like('task_name', $match);
         $this->db->or_like('task_description', $match);
     }
 
+    /**
+     * Returns the validation rules for tasks
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -73,7 +92,10 @@ class Mdl_Tasks extends Response_Model
         );
     }
 
-
+    /**
+     * Returns the prepared database array
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -84,6 +106,11 @@ class Mdl_Tasks extends Response_Model
         return $db_array;
     }
 
+    /**
+     * Prepares the form with a date and price
+     * @param null $id
+     * @return bool
+     */
     public function prep_form($id = null)
     {
         if (!parent::prep_form($id)) {
@@ -98,6 +125,11 @@ class Mdl_Tasks extends Response_Model
         return true;
     }
 
+    /**
+     * Returns an array that holds all available status codes with
+     * their label and class
+     * @return array
+     */
     public function statuses()
     {
         return array(
@@ -120,6 +152,11 @@ class Mdl_Tasks extends Response_Model
         );
     }
 
+    /**
+     * Returns all tasks that are associated with the invoice Id
+     * @param $invoice_id
+     * @return array
+     */
     public function get_tasks_to_invoice($invoice_id)
     {
         $result = array();
@@ -143,6 +180,11 @@ class Mdl_Tasks extends Response_Model
         return $result;
     }
 
+    /**
+     * Updates the status for a task with the given ID
+     * @param $new_status
+     * @param $task_id
+     */
     public function update_status($new_status, $task_id)
     {
         $statuses_ok = $this->statuses();
@@ -151,6 +193,10 @@ class Mdl_Tasks extends Response_Model
         }
     }
 
+    /**
+     * Updates the status of all tasks when the corresponding invoice gets deleted
+     * @param $invoice_id
+     */
     public function update_on_invoice_delete($invoice_id)
     {
         if (!$invoice_id) {
@@ -165,5 +211,15 @@ class Mdl_Tasks extends Response_Model
         foreach ($query->result() as $task) {
             $this->update_status(3, $task->task_id);
         }
+    }
+
+    /**
+     * Query to get all overdue tasks
+     * @return $this
+     */
+    public function is_overdue()
+    {
+        $this->filter_having('is_overdue', 1);
+        return $this;
     }
 }
