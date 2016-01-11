@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * Class Quotes
+ * Class Guest_Quotes
  * @package Modules\Guest\Controllers
  */
-class Quotes extends Guest_Controller
+class Guest_Quotes extends Guest_Controller
 {
     /**
      * Quotes constructor.

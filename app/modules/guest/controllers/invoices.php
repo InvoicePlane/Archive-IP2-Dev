@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * Class Invoices
+ * Class Guest_Invoices
  * @package Modules\Guest\Controllers
  */
-class Invoices extends Guest_Controller
+class Guest_Invoices extends Guest_Controller
 {
     /**
      * Invoices constructor.
