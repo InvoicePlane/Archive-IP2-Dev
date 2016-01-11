@@ -1,14 +1,21 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Settings
+ * @package Modules\Settings\Models
+ */
 class Mdl_Settings extends CI_Model
 {
     public $settings = array();
 
+    /**
+     * Get a settings value by its key
+     * @param $key
+     * @return null
+     */
     public function get($key)
     {
         $this->db->select('setting_value');
@@ -22,6 +29,11 @@ class Mdl_Settings extends CI_Model
         }
     }
 
+    /**
+     * Save a settings value by key
+     * @param $key
+     * @param $value
+     */
     public function save($key, $value)
     {
         $db_array = array(
@@ -37,12 +49,19 @@ class Mdl_Settings extends CI_Model
         }
     }
 
+    /**
+     * Deletes a settings value by key
+     * @param $key
+     */
     public function delete($key)
     {
         $this->db->where('setting_key', $key);
         $this->db->delete('ip_settings');
     }
 
+    /**
+     * Loads the settings for the current session
+     */
     public function load_settings()
     {
         $ip_settings = $this->db->get('ip_settings')->result();
@@ -52,14 +71,23 @@ class Mdl_Settings extends CI_Model
         }
     }
 
+    /**
+     * Returns a settings key if it's available
+     * @param $key
+     * @return string
+     */
     public function setting($key)
     {
         return (isset($this->settings[$key])) ? $this->settings[$key] : '';
     }
 
+    /**
+     * Overrides a settings value fo the current session
+     * @param $key
+     * @param $value
+     */
     public function set_setting($key, $value)
     {
         $this->settings[$key] = $value;
     }
-
 }

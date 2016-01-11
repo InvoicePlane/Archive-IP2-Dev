@@ -1,14 +1,19 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Settings_Ajax
+ * @package Modules\Settings\Controllers
+ */
 class Settings_Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 
+    /**
+     * Returns a random cron string
+     */
     public function get_cron_key()
     {
         echo random_string('alnum', 16);
@@ -32,7 +37,7 @@ class Settings_Ajax extends Admin_Controller
     /**
      * Renders element for payment merchant form
      *
-     * @todo Cleanup, allow values to be passed through
+     * @TODO Cleanup, allow values to be passed through
      * @param $element
      * @param $type
      */
@@ -52,5 +57,4 @@ class Settings_Ajax extends Admin_Controller
                     <option value="1">' . lang('yes') . '</option></select>';
         }
     }
-
 }

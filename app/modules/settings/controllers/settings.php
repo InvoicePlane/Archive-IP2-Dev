@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Settings
+ * @package Modules\Settings\Controllers
+ */
 class Settings extends Admin_Controller
 {
+    /**
+     * Settings constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,6 +19,9 @@ class Settings extends Admin_Controller
         $this->load->model('mdl_settings');
     }
 
+    /**
+     * Index page, returns the settings page
+     */
     public function index()
     {
         if ($this->input->post('settings')) {
@@ -186,6 +194,10 @@ class Settings extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Removes the old login / invoice logo
+     * @param $type
+     */
     public function remove_logo($type)
     {
         unlink('./uploads/' . $this->mdl_settings->setting($type . '_logo'));
@@ -197,6 +209,9 @@ class Settings extends Admin_Controller
         redirect('settings');
     }
 
+    /**
+     * Removes the background from the invoices
+     */
     public function remove_background()
     {
         // Maybe merge this with remove_logo and rename is to a more generic function
