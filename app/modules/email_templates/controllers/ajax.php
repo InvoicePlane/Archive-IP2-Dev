@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * Class Ajax
+ * Class Email_Templates_Ajax
  * @package Modules\EmailTemplates\Controllers
  */
-class Ajax extends Admin_Controller
+class Email_Templates_Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 

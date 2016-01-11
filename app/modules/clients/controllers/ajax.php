@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * Class Ajax
+ * Class Clients_Ajax
  * @package Modules\Clients\Controllers
  */
-class Ajax extends Admin_Controller
+class Clients_Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 

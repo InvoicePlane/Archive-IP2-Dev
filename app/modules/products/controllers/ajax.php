@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 }
 
 
-class Ajax extends Admin_Controller
+class Products_Ajax extends Admin_Controller
 {
     //public $ajax_controller = TRUE;
     public function modal_product_lookups()

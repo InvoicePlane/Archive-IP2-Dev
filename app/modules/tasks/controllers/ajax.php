@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 }
 
 
-class Ajax extends Admin_Controller
+class Tasks_Ajax extends Admin_Controller
 {
     public function modal_task_lookups($invoice_id = null)
     {

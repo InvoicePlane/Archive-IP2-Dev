@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 }
 
 
-class Ajax extends Admin_Controller
+class Payments_Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 
