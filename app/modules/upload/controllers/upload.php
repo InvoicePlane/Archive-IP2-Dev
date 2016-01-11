@@ -1,34 +1,32 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-/*
- * InvoicePlane
- *
- * A free and open source web based invoicing system
- *
- * @package     InvoicePlane
- * @author      Kovah (www.kovah.de)
- * @copyright   Copyright (c) 2012 - 2015 InvoicePlane.com
- * @license     https://invoiceplane.com/license.txt
- * @link        https://invoiceplane.com
- *
+/**
+ * Class Upload
+ * @package Modules\Upload\Controllers
  */
-
 class Upload extends Admin_Controller
 {
     public $targetPath;
 
+    /**
+     * Upload constructor.
+     */
     public function __construct()
     {
         parent::__construct();
         $this->load->model('upload/mdl_uploads');
         $this->targetPath = getcwd() . '/uploads/customer_files';
-
     }
 
+    /**
+     * Uploads a file 
+     * @param $customerId
+     * @param $url_key
+     * @return bool
+     */
     public function upload_file($customerId, $url_key)
     {
         Upload::create_dir($this->targetPath . '/');
@@ -59,9 +57,14 @@ class Upload extends Admin_Controller
         } else {
             return Upload::show_files($url_key, $customerId);
         }
+        
+        return false;
     }
 
-    // public function file_delete($customerId,$id,$fileName)
+    /**
+     * Deletes a file by the given URL key
+     * @param $url_key
+     */
     public function delete_file($url_key)
     {
         $path = $this->targetPath;
@@ -72,6 +75,12 @@ class Upload extends Admin_Controller
 
     }
 
+    /**
+     * Creates a directory
+     * @param $path
+     * @param string $chmod
+     * @return bool
+     */
     public function create_dir($path, $chmod = '0777')
     {
         if (!(is_dir($path) OR is_link($path))) {
@@ -81,9 +90,14 @@ class Upload extends Admin_Controller
         }
     }
 
+    /**
+     * Shows the files for a given URL key
+     * @param $url_key
+     * @param null $customerId
+     * @return bool
+     */
     public function show_files($url_key, $customerId = null)
     {
-
         $result = array();
         $path = $this->targetPath;
 
@@ -102,7 +116,7 @@ class Upload extends Admin_Controller
 
             return false;
         }
+        
         echo json_encode($result);
     }
-
 }
