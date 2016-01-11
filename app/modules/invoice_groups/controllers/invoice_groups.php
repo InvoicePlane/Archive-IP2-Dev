@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Invoice_Groups
- * @package Modules\Invoice_Groups\Controllers
+ * @package Modules\InvoiceGroups\Controllers
  */
 class Invoice_Groups extends Admin_Controller
 {

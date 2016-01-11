@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Mdl_Invoice_Custom
- * @package Modules\Custom_Fields\Models
+ * @package Modules\CustomFields\Models
  */
 class Mdl_Invoice_Custom extends MY_Model
 {

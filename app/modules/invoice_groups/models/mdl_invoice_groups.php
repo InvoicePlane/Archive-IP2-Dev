@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Mdl_Invoice_Groups
- * @package Modules\Invoice_Groups\Models
+ * @package Modules\InvoiceGroups\Models
  */
 class Mdl_Invoice_Groups extends Response_Model
 {

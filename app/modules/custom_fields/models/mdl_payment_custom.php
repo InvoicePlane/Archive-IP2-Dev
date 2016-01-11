@@ -6,7 +6,7 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Mdl_Payment_Custom
- * @package Modules\Custom_Fields\Models
+ * @package Modules\CustomFields\Models
  */
 class Mdl_Payment_Custom extends MY_Model
 {

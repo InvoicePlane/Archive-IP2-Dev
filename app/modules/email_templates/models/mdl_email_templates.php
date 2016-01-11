@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Mdl_Email_Templates
- * @package Modules\Email_Templates\Models
+ * @package Modules\EmailTemplates\Models
  */
 class Mdl_Email_Templates extends Response_Model
 {

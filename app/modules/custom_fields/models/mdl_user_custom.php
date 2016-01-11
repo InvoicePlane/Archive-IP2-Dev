@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Mdl_User_Custom
- * @package Modules\Custom_Fields\Models
+ * @package Modules\CustomFields\Models
  */
 class Mdl_User_Custom extends MY_Model
 {

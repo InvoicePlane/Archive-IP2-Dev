@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Email_Templates
- * @package Modules\Email_Templates\Controllers
+ * @package Modules\EmailTemplates\Controllers
  */
 class Email_Templates extends Admin_Controller
 {

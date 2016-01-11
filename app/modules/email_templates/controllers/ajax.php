@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Ajax
- * @package Modules\Email_Templates\Controllers
+ * @package Modules\EmailTemplates\Controllers
  */
 class Ajax extends Admin_Controller
 {
