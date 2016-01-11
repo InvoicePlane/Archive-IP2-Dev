@@ -1,13 +1,19 @@
 <?php
-
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+/**
+ * Class Layout
+ * @package Modules\Layout\Controllers
+ */
 class Layout extends MX_Controller
 {
     public $view_data = array();
 
+    /**
+     * Pre-loads the view
+     * @return $this
+     */
     public function buffer()
     {
         $args = func_get_args();
@@ -30,6 +36,10 @@ class Layout extends MX_Controller
         return $this;
     }
 
+    /**
+     * Sets the view data
+     * @return $this
+     */
     public function set()
     {
         $args = func_get_args();
@@ -44,14 +54,18 @@ class Layout extends MX_Controller
         return $this;
     }
 
+    /**
+     * Renders the layout and appends the view data
+     * @param string $view
+     */
     public function render($view = 'layout')
     {
         $this->load->view('layout/' . $view, $this->view_data);
     }
 
     /**
-     * Simple function to load a view directly using the assigned template
-     * Does not use buffering or rendering
+     * Simple function to load a view directly using the assigned template,
+     * does not use buffering or rendering
      * @param string $view
      * @param array $data
      */
@@ -59,5 +73,4 @@ class Layout extends MX_Controller
     {
         $this->load->view($view, $data);
     }
-
 }
