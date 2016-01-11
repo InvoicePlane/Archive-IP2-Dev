@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Quotes
+ * @package Modules\Quotes\Controllers
+ */
 class Quotes extends Admin_Controller
 {
+    /**
+     * Quotes constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,12 +19,21 @@ class Quotes extends Admin_Controller
         $this->load->model('mdl_quotes');
     }
 
+    /**
+     * Index page, redirects to quotes/status/all
+     */
     public function index()
     {
         // Display all quotes by default
         redirect('quotes/status/all');
     }
 
+    /**
+     * Returns all quotes based on the given status and page no.
+     * Example: 'quotes/status/viewed' returns all viewed quotes
+     * @param string $status
+     * @param int $page
+     */
     public function status($status = 'all', $page = 0)
     {
         // Determine which group of quotes to load
@@ -62,6 +76,10 @@ class Quotes extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the details page for a quote for the given ID
+     * @param $quote_id
+     */
     public function view($quote_id)
     {
         $this->load->model('mdl_quote_items');
@@ -118,6 +136,10 @@ class Quotes extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes a quote from the database
+     * @param $quote_id
+     */
     public function delete($quote_id)
     {
         // Delete the quote
@@ -127,6 +149,11 @@ class Quotes extends Admin_Controller
         redirect('quotes/index');
     }
 
+    /**
+     * Deletes an item from q given quote
+     * @param $quote_id
+     * @param $item_id
+     */
     public function delete_item($quote_id, $item_id)
     {
         // Delete quote item
@@ -137,6 +164,12 @@ class Quotes extends Admin_Controller
         redirect('quotes/view/' . $quote_id);
     }
 
+    /**
+     * Generate the quote PDF
+     * @param $quote_id
+     * @param bool $stream
+     * @param null $quote_template
+     */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
         $this->load->helper('pdf');
@@ -148,6 +181,11 @@ class Quotes extends Admin_Controller
         generate_quote_pdf($quote_id, $stream, $quote_template);
     }
 
+    /**
+     * Removes the quote tax from a quote
+     * @param $quote_id
+     * @param $quote_tax_rate_id
+     */
     public function delete_quote_tax($quote_id, $quote_tax_rate_id)
     {
         $this->load->model('mdl_quote_tax_rates');
@@ -159,6 +197,9 @@ class Quotes extends Admin_Controller
         redirect('quotes/view/' . $quote_id);
     }
 
+    /**
+     * Recalculates the amounts for all quotes
+     */
     public function recalculate_all_quotes()
     {
         $this->db->select('quote_id');
@@ -170,5 +211,4 @@ class Quotes extends Admin_Controller
             $this->mdl_quote_amounts->calculate($quote_id->quote_id);
         }
     }
-
 }

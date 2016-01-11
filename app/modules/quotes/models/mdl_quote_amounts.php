@@ -1,29 +1,35 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Quote_Amounts
+ * @package Modules\Quotes\Models
+ */
 class Mdl_Quote_Amounts extends CI_Model
 {
     /**
-     * IP_QUOTE_AMOUNTS
-     * quote_amount_id
-     * quote_id
-     * quote_item_subtotal    SUM(item_subtotal)
-     * quote_item_tax_total    SUM(item_tax_total)
-     * quote_tax_total
-     * quote_total            quote_item_subtotal + quote_item_tax_total + quote_tax_total
+     * Calculates the basic amounts for the quote for the given ID
+     * **IP_QUOTE_AMOUNTS**
      *
-     * IP_QUOTE_ITEM_AMOUNTS
-     * item_amount_id
-     * item_id
-     * item_tax_rate_id
-     * item_subtotal            item_quantity * item_price
-     * item_tax_total            item_subtotal * tax_rate_percent
-     * item_total                item_subtotal + item_tax_total
+     * * quote_amount_id
+     * * quote_id
+     * * quote_item_subtotal = SUM(item_subtotal)
+     * * quote_item_tax_total = SUM(item_tax_total)
+     * * quote_tax_total
+     * * quote_total = quote_item_subtotal + quote_item_tax_total + quote_tax_total
      *
+     * **IP_QUOTE_ITEM_AMOUNTS**
+     *
+     * * item_amount_id
+     * * item_id
+     * * item_tax_rate_id
+     * * item_subtotal = item_quantity * item_price
+     * * item_tax_total = item_subtotal * tax_rate_percent
+     * * item_total = item_subtotal + item_tax_total
+     * 
+     * @param $quote_id
      */
     public function calculate($quote_id)
     {
@@ -66,6 +72,10 @@ class Mdl_Quote_Amounts extends CI_Model
         $this->calculate_quote_taxes($quote_id);
     }
 
+    /**
+     * Calculates the taxes for the quotes for the given ID
+     * @param $quote_id
+     */
     public function calculate_quote_taxes($quote_id)
     {
         // First check to see if there are any quote taxes applied
@@ -125,6 +135,12 @@ class Mdl_Quote_Amounts extends CI_Model
         }
     }
 
+    /**
+     * Calculates the discounts for the quote for the given ID
+     * @param $quote_id
+     * @param $quote_total
+     * @return float
+     */
     public function calculate_discount($quote_id, $quote_total)
     {
         $this->db->where('quote_id', $quote_id);
@@ -140,6 +156,11 @@ class Mdl_Quote_Amounts extends CI_Model
         return $total;
     }
 
+    /**
+     * Returns the total amounts for the dashboard overview based on the given period
+     * @param null $period
+     * @return mixed
+     */
     public function get_total_quoted($period = null)
     {
         switch ($period) {
@@ -176,6 +197,11 @@ class Mdl_Quote_Amounts extends CI_Model
         }
     }
 
+    /**
+     * Returns the total paid amounts for the dashboard overview based on the given period
+     * @param string $period
+     * @return array
+     */
     public function get_status_totals($period = '')
     {
         switch ($period) {
@@ -265,5 +291,4 @@ class Mdl_Quote_Amounts extends CI_Model
 
         return $return;
     }
-
 }

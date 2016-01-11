@@ -1,14 +1,32 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Quotes_Ajax
+ * @package Modules\Quotes\Controllers
+ */
 class Quotes_Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 
+    /**
+     * Saves a quote and returns the result
+     * @uses $_POST['quote_id']
+     * @uses $_POST['items']
+     * @uses $_POST['quote_discount_amount']
+     * @uses $_POST['quote_discount_percent']
+     * @uses $_POST['quote_number']
+     * @uses $_POST['quote_date_created']
+     * @uses $_POST['quote_date_expires']
+     * @uses $_POST['quote_status_id']
+     * @uses $_POST['quote_password']
+     * @uses $_POST['notes']
+     * @uses $_POST['custom']
+     * @see Mdl_Quotes::validation_rules()
+     * @see Mdl_Quote_Items::validation_rules()
+     */
     public function save()
     {
         $this->load->model('quotes/mdl_quote_items');
@@ -89,6 +107,10 @@ class Quotes_Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Saves the tax rate for a quote and returns the redirect
+     * @see Mdl_Quote_Tax_Rates::validation_rules()
+     */
     public function save_quote_tax_rate()
     {
         $this->load->model('quotes/mdl_quote_tax_rates');
@@ -109,6 +131,10 @@ class Quotes_Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Creates a new quote to the database that can be used to store items
+     * @see Mdl_Quotes::validation_rules()
+     */
     public function create()
     {
         $this->load->model('quotes/mdl_quotes');
@@ -131,6 +157,11 @@ class Quotes_Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Returns the modal that can be used to change the client for a quote
+     * @uses $_POST['client_name']
+     * @uses $_POST['quote_id']
+     */
     public function modal_change_client()
     {
         $this->load->module('layout');
@@ -145,6 +176,11 @@ class Quotes_Ajax extends Admin_Controller
         $this->layout->load_view('quotes/modal_change_client', $data);
     }
 
+    /**
+     * Changes the cleint for a quote
+     * @uses $_POST['client_name']
+     * @uses $_POST['quote_id']
+     */
     public function change_client()
     {
         $this->load->model('quotes/mdl_quotes');
@@ -180,6 +216,10 @@ class Quotes_Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Get an item by its ID
+     * @uses $_POST['item_id']
+     */
     public function get_item()
     {
         $this->load->model('quotes/mdl_quote_items');
@@ -189,6 +229,9 @@ class Quotes_Ajax extends Admin_Controller
         echo json_encode($item);
     }
 
+    /**
+     * Returns the modal that can be used to create a quote
+     */
     public function modal_create_quote()
     {
         $this->load->module('layout');
@@ -207,6 +250,9 @@ class Quotes_Ajax extends Admin_Controller
         $this->layout->load_view('quotes/modal_create_quote', $data);
     }
 
+    /**
+     * Returns the modal that can be used to copy a quote
+     */
     public function modal_copy_quote()
     {
         $this->load->module('layout');
@@ -225,6 +271,10 @@ class Quotes_Ajax extends Admin_Controller
         $this->layout->load_view('quotes/modal_copy_quote', $data);
     }
 
+    /**
+     * Creates a duplicate / copy of a given quote and returns the result
+     * @uses $_POST['quote_id']
+     */
     public function copy_quote()
     {
         $this->load->model('quotes/mdl_quotes');
@@ -252,6 +302,10 @@ class Quotes_Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Returns the modal that can be used to create an invoice from a quote 
+     * @param $quote_id
+     */
     public function modal_quote_to_invoice($quote_id)
     {
         $this->load->model('invoice_groups/mdl_invoice_groups');
@@ -266,6 +320,10 @@ class Quotes_Ajax extends Admin_Controller
         $this->load->view('quotes/modal_quote_to_invoice', $data);
     }
 
+    /**
+     * Creates an invoice based on a quote and returns the resul
+     * @uses $_POST['quote_id']
+     */
     public function quote_to_invoice()
     {
         $this->load->model(
@@ -330,5 +388,4 @@ class Quotes_Ajax extends Admin_Controller
 
         echo json_encode($response);
     }
-
 }

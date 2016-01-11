@@ -1,26 +1,37 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Quote_Items
+ * @package Modules\Quotes\Models
+ */
 class Mdl_Quote_Items extends Response_Model
 {
     public $table = 'ip_quote_items';
     public $primary_key = 'ip_quote_items.item_id';
     public $date_created_field = 'item_date_added';
 
+    /**
+     * The default select directive used in every query
+     */
     public function default_select()
     {
         $this->db->select('ip_quote_item_amounts.*, ip_quote_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
     }
 
+    /**
+     * The default order by directive used in every query
+     */
     public function default_order_by()
     {
         $this->db->order_by('ip_quote_items.item_order');
     }
 
+    /**
+     * The default join directive used in every query
+     */
     public function default_join()
     {
         $this->db->join('ip_quote_item_amounts', 'ip_quote_item_amounts.item_id = ip_quote_items.item_id', 'left');
@@ -28,6 +39,10 @@ class Mdl_Quote_Items extends Response_Model
             'item_tax_rates.tax_rate_id = ip_quote_items.item_tax_rate_id', 'left');
     }
 
+    /**
+     * Returns the validation rules for quotes items
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -62,6 +77,13 @@ class Mdl_Quote_Items extends Response_Model
         );
     }
 
+    /**
+     * Saves a quote item to the database
+     * @param int|null $quote_id
+     * @param null $id
+     * @param null $db_array
+     * @return int|null
+     */
     public function save($quote_id, $id = null, $db_array = null)
     {
         $id = parent::save($id, $db_array);
@@ -75,6 +97,10 @@ class Mdl_Quote_Items extends Response_Model
         return $id;
     }
 
+    /**
+     * Deletes a quote item from the database
+     * @param $item_id
+     */
     public function delete($item_id)
     {
         // Get the quote id so we can recalculate quote amounts
@@ -93,5 +119,4 @@ class Mdl_Quote_Items extends Response_Model
         $this->load->model('quotes/mdl_quote_amounts');
         $this->mdl_quote_amounts->calculate($quote_id);
     }
-
 }
