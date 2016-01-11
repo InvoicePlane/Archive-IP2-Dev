@@ -30,7 +30,6 @@ class Invoices_Ajax extends Admin_Controller
     {
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoices');
-        $this->load->model('item_lookups/mdl_item_lookups');
 
         $invoice_id = $this->input->post('invoice_id');
 
@@ -50,7 +49,6 @@ class Invoices_Ajax extends Admin_Controller
                     $item->item_discount_amount = standardize_amount($item->item_discount_amount);
 
                     $item_id = ($item->item_id) ?: null;
-                    unset($item->item_id, $item->save_item_as_lookup);
                     if (!$item->item_task_id) {
                         unset($item->item_task_id);
                     } else {

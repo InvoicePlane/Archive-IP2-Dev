@@ -49,26 +49,6 @@ CREATE TABLE IF NOT EXISTS `ip_products` (
   ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
-# Move lookup items to products
-INSERT INTO ip_products (
-  family_id,
-  product_sku,
-  product_name,
-  product_description,
-  product_price,
-  purchase_price,
-  tax_rate_id
-)
-  SELECT
-    0 as family_id, -- default to 0 (no family)
-    concat('sku-',item_lookup_id) as product_sku, -- use ip_item_lookup primary key as new SKU
-    item_name,
-    item_description,
-    item_price,
-    0 as product_purchase_price, -- default purchase price to 0
-    0 as tax_rate_id -- default tax rate ID
-  FROM ip_item_lookups;
-
 /* Add the Invoice Sign */
 ALTER TABLE `ip_invoice_amounts`
   ADD `invoice_sign` ENUM('1', '-1') NOT NULL DEFAULT '1'

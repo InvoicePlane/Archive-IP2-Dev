@@ -195,16 +195,6 @@ CREATE TABLE `ip_invoices_recurring` (
   ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
-CREATE TABLE `ip_item_lookups` (
-  `item_lookup_id`   INT(11)        NOT NULL AUTO_INCREMENT,
-  `item_name`        VARCHAR(100)   NOT NULL DEFAULT '',
-  `item_description` LONGTEXT       NOT NULL,
-  `item_price`       DECIMAL(10, 2) NOT NULL,
-  PRIMARY KEY (`item_lookup_id`)
-)
-  ENGINE = MyISAM
-  DEFAULT CHARSET = utf8;
-
 CREATE TABLE `ip_merchant_responses` (
   `merchant_response_id`        INT(11)      NOT NULL AUTO_INCREMENT,
   `invoice_id`                  INT(11)      NOT NULL,

@@ -13,7 +13,6 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quotes');
-        $this->load->model('item_lookups/mdl_item_lookups');
         $this->load->library('encrypt');
 
         $quote_id = $this->input->post('quote_id');
@@ -31,21 +30,7 @@ class Ajax extends Admin_Controller
 
                     $item_id = ($item->item_id) ?: null;
 
-                    $save_item_as_lookup = (isset($item->save_item_as_lookup)) ? $item->save_item_as_lookup : 0;
-
-                    unset($item->item_id, $item->save_item_as_lookup);
-
                     $this->mdl_quote_items->save($quote_id, $item_id, $item);
-
-                    if ($save_item_as_lookup) {
-                        $db_array = array(
-                            'item_name' => $item->item_name,
-                            'item_description' => $item->item_description,
-                            'item_price' => $item->item_price
-                        );
-
-                        $this->mdl_item_lookups->save(null, $db_array);
-                    }
                 }
             }
 
