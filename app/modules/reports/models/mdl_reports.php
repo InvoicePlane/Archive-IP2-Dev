@@ -1,13 +1,20 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Mdl_Reports
+ * @package Modules\Reports\Modules
+ */
 class Mdl_Reports extends CI_Model
 {
-
+    /**
+     * Processes the sales by client report
+     * @param null $from_date
+     * @param null $to_date
+     * @return mixed
+     */
     public function sales_by_client($from_date = null, $to_date = null)
     {
         $this->db->select('client_name');
@@ -32,6 +39,12 @@ class Mdl_Reports extends CI_Model
         return $this->db->get('ip_clients')->result();
     }
 
+    /**
+     * Processes the payment history report
+     * @param null $from_date
+     * @param null $to_date
+     * @return mixed
+     */
     public function payment_history($from_date = null, $to_date = null)
     {
         $this->load->model('payments/mdl_payments');
@@ -47,6 +60,10 @@ class Mdl_Reports extends CI_Model
         return $this->mdl_payments->get()->result();
     }
 
+    /**
+     * Processes the invoice aging report
+     * @return mixed
+     */
     public function invoice_aging()
     {
         $this->db->select('client_name');
@@ -67,6 +84,15 @@ class Mdl_Reports extends CI_Model
         return $this->db->get('ip_clients')->result();
     }
 
+    /**
+     * Processes the sales by year report
+     * @param null $from_date
+     * @param null $to_date
+     * @param null $minQuantity
+     * @param null $maxQuantity
+     * @param bool $taxChecked
+     * @return mixed
+     */
     public function sales_by_year(
         $from_date = null,
         $to_date = null,
@@ -192,5 +218,4 @@ class Mdl_Reports extends CI_Model
         $this->db->order_by('client_name');
         return $this->db->get('ip_clients')->result();
     }
-
 }

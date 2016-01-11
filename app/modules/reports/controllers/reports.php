@@ -1,13 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Reports
+ * @package Modules\Reports\Controllers
+ */
 class Reports extends Admin_Controller
 {
-
+    /**
+     * Reports constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -15,6 +19,9 @@ class Reports extends Admin_Controller
         $this->load->model('mdl_reports');
     }
 
+    /**
+     * Returns the sales by client report
+     */
     public function sales_by_client()
     {
         if ($this->input->post('btn_submit')) {
@@ -33,6 +40,9 @@ class Reports extends Admin_Controller
         $this->layout->buffer('content', 'reports/sales_by_client_index')->render();
     }
 
+    /**
+     * Returns the payment history report
+     */
     public function payment_history()
     {
         if ($this->input->post('btn_submit')) {
@@ -51,6 +61,9 @@ class Reports extends Admin_Controller
         $this->layout->buffer('content', 'reports/payment_history_index')->render();
     }
 
+    /**
+     * Returns the invoice aging report
+     */
     public function invoice_aging()
     {
         if ($this->input->post('btn_submit')) {
@@ -68,6 +81,9 @@ class Reports extends Admin_Controller
         $this->layout->buffer('content', 'reports/invoice_aging_index')->render();
     }
 
+    /**
+     * Returns the sales by year report
+     */
     public function sales_by_year()
     {
 
@@ -87,5 +103,4 @@ class Reports extends Admin_Controller
 
         $this->layout->buffer('content', 'reports/sales_by_year_index')->render();
     }
-
 }
