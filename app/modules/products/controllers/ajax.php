@@ -1,13 +1,19 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Products_Ajax
+ * @package Modules\Products\Controllers
+ */
 class Products_Ajax extends Admin_Controller
 {
-    //public $ajax_controller = TRUE;
+    public $ajax_controller = true;
+
+    /**
+     * Returns the modal that can be used to select a product
+     */
     public function modal_product_lookups()
     {
         //$filter_family  = $this->input->get('filter_family');
@@ -41,6 +47,10 @@ class Products_Ajax extends Admin_Controller
         $this->layout->load_view('products/modal_product_lookups', $data);
     }
 
+    /**
+     * Returns all products based on the given IDs
+     * @uses array $_POST['product_ids']
+     */
     public function process_product_selections()
     {
         $this->load->model('mdl_products');
@@ -53,5 +63,4 @@ class Products_Ajax extends Admin_Controller
 
         echo json_encode($products);
     }
-
 }

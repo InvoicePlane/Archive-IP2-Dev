@@ -25,6 +25,7 @@ class Invoices_Ajax extends Admin_Controller
      * @uses $_POST['invoice_password']
      * @uses $_POST['payment_method']
      * @uses $_POST['invoice_custom']
+     * @see Mdl_Items::validation_rules()
      */
     public function save()
     {

@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Products
+ * @package Modules\Products\Controllers
+ */
 class Products extends Admin_Controller
 {
+    /**
+     * Products constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,6 +19,10 @@ class Products extends Admin_Controller
         $this->load->model('mdl_products');
     }
 
+    /**
+     * Index page, returns all products
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_products->paginate(site_url('products/index'), $page);
@@ -24,6 +33,12 @@ class Products extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the form
+     * If an ID was provided the form will be filled with the data of the product
+     * for the given ID and can be used as an edit form.
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -61,10 +76,13 @@ class Products extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes a product from the database
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_products->delete($id);
         redirect('products');
     }
-
 }
