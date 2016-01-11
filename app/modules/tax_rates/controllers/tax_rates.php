@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Tax_Rates
+ * @package Modules\TaskRates\Controllers
+ */
 class Tax_Rates extends Admin_Controller
 {
+    /**
+     * Tax_Rates constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,6 +19,10 @@ class Tax_Rates extends Admin_Controller
         $this->load->model('mdl_tax_rates');
     }
 
+    /**
+     * Index page, returns all tax rates
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_tax_rates->paginate(site_url('tax_rates/index'), $page);
@@ -24,6 +33,12 @@ class Tax_Rates extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the form
+     * If an ID was provided the form will be filled with the data of the tax rate
+     * for the given ID and can be used as an edit form.
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -53,10 +68,13 @@ class Tax_Rates extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes a tax rate from the database
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_tax_rates->delete($id);
         redirect('tax_rates');
     }
-
 }
