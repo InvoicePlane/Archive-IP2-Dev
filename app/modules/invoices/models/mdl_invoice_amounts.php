@@ -242,7 +242,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 
     /**
      * Returns the total paid amounts for the dashboard overview based on the given period
-     * @param null $period
+     * @param string $period
      * @return mixed
      */
     public function get_total_paid($period = null)

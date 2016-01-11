@@ -46,7 +46,7 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
     }
 
     /**
-     * Returns the validation rules for clients
+     * Returns the validation rules for invoice tax rates
      * @return array
      */
     public function validation_rules()
