@@ -1,12 +1,17 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Payments
+ * @package Modules\Payments\Controllers
+ */
 class Payments extends Admin_Controller
 {
+    /**
+     * Payments constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,6 +19,10 @@ class Payments extends Admin_Controller
         $this->load->model('mdl_payments');
     }
 
+    /**
+     * Index page, returns all payments
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_payments->paginate(site_url('payments/index'), $page);
@@ -32,6 +41,12 @@ class Payments extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Returns the form
+     * If an ID was provided the form will be filled with the data of the payment
+     * for the given ID and can be used as an edit form.
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -108,10 +123,13 @@ class Payments extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * Deletes the payment from the database
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_payments->delete($id);
         redirect('payments');
     }
-
 }

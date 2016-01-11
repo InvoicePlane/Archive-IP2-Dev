@@ -1,14 +1,20 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
+/**
+ * Class Payments_Ajax
+ * @package Modules\Payments\Controllers
+ */
 class Payments_Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 
+    /**
+     * Adds the payment method to the database and returns the result
+     * @see Mdl_Payment_Methods::validation_rules()
+     */
     public function add()
     {
         $this->load->model('payments/mdl_payments');
@@ -30,6 +36,9 @@ class Payments_Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Returns the modal that can be used to add a payment
+     */
     public function modal_add_payment()
     {
         $this->load->module('layout');
@@ -45,5 +54,4 @@ class Payments_Ajax extends Admin_Controller
 
         $this->layout->load_view('payments/modal_add_payment', $data);
     }
-
 }
