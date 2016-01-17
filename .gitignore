@@ -1,4 +1,9 @@
 /app/config/development
+/data/archive/*
+/data/customer_files/*
+/data/images/*
+/data/import/*
+/data/temp/*
 /docs
 /node_modules
 /themes/core/fonts/fontawesome
