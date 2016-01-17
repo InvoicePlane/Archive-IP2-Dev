@@ -390,8 +390,6 @@ class Setup extends MX_Controller
     /**
      * Writes the database configuration to the configuration file
      * 
-     * @TODO read_file() is deprecated
-     * 
      * @param $hostname
      * @param $username
      * @param $password
@@ -399,7 +397,7 @@ class Setup extends MX_Controller
      */
     private function write_database_config($hostname, $username, $password, $database)
     {
-        $db_file = read_file(APPPATH . 'config/database_empty.php');
+        $db_file = readfile(APPPATH . 'config/database_empty.php');
 
         $db_file = str_replace('$db[\'default\'][\'hostname\'] = \'\'',
             '$db[\'default\'][\'hostname\'] = \'' . addcslashes($hostname, '\'\\') . '\'', $db_file);

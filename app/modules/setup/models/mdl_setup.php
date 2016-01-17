@@ -15,13 +15,11 @@ class Mdl_Setup extends CI_Model
     /**
      * Installs the basic tables
      * 
-     * @TODO read_file() is deprecated
-     * 
      * @return bool
      */
     public function install_tables()
     {
-        $file_contents = read_file(APPPATH . 'modules/setup/sql/000_1.0.0.sql');
+        $file_contents = readfile(APPPATH . 'modules/setup/sql/000_1.0.0.sql');
 
         $this->execute_contents($file_contents);
 
@@ -40,8 +38,6 @@ class Mdl_Setup extends CI_Model
 
     /**
      * Runs all upgrades on the database
-     * 
-     * @TODO read_file() is deprecated
      * 
      * @return bool
      */
@@ -66,7 +62,7 @@ class Mdl_Setup extends CI_Model
 
                 // if (!$update_applied)
                 if (!$update_applied->num_rows()) {
-                    $file_contents = read_file(APPPATH . 'modules/setup/sql/' . $sql_file);
+                    $file_contents = readfile(APPPATH . 'modules/setup/sql/' . $sql_file);
 
                     $this->execute_contents($file_contents);
 
@@ -94,8 +90,6 @@ class Mdl_Setup extends CI_Model
     /**
      * Executes the SQL files
      * 
-     * @TODO mysql_error() is deprecated
-     * 
      * @param $contents
      */
     private function execute_contents($contents)
@@ -105,7 +99,7 @@ class Mdl_Setup extends CI_Model
         foreach ($commands as $command) {
             if (trim($command)) {
                 if (!$this->db->query(trim($command) . ';')) {
-                    $this->errors[] = mysql_error();
+                    $this->errors[] = $this->db->_error_message();
                 }
             }
         }
