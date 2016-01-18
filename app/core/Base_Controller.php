@@ -32,7 +32,7 @@ class Base_Controller extends MX_Controller
         if (!file_exists(APPPATH . 'config/database.php')) {
 
             $this->load->helper('redirect');
-            redirect('/welcome');
+            redirect('/start');
 
         } else {
             // Load globally used libraries and helpers

@@ -5,15 +5,16 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Welcome
- * @package Modules\Welcome\Controllers
+ * @package Modules\Start\Controllers
  */
-class Welcome extends CI_Controller
+class Start extends CI_Controller
 {
     /**
      * Returns the welcome page
      */
     public function index()
     {
-        $this->load->view('welcome');
+        $this->load->helper('url');
+        $this->load->view('start');
     }
 }
