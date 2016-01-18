@@ -1,4 +1,5 @@
 /app/config/development
+/app/config/database.php
 /data/archive/*
 /data/customer_files/*
 /data/images/*

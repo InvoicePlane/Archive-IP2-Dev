@@ -1,22 +1,27 @@
-<div class="container">
-    <div class="install-panel">
+<div id="setup" class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
 
-        <h1 id="logo"><span>InvoicePlane</span></h1>
+    <h1 class="m-y-2">
+        <img src="<?php echo THEME_URL;?>img/logo_200x100.png" alt="InvoicePlane">
+    </h1>
+    
+    <div class="card">
+        
+        <div class="card-header">
+            <?php echo lang('setup_choose_language'); ?>
+        </div>
 
-        <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
+        <form class="card-block" method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-            <legend><?php echo lang('setup_choose_language'); ?></legend>
-
-            <p><?php echo lang('setup_choose_language_message'); ?></p>
-
-            <select name="ip_lang" class="form-control">
-                <?php foreach ($languages as $language) { ?>
-                    <option value="<?php echo $language; ?>"
-                            <?php if ($language == 'english') { ?>selected="selected"<?php } ?>><?php echo ucfirst($language); ?></option>
-                <?php } ?>
-            </select>
-
-            <br/>
+            <div class="form-group">
+                <label for="ip_lang"><?php echo lang('setup_choose_language_message'); ?></label>
+                <select name="ip_lang" class="form-control">
+                    <?php foreach ($languages as $language) { ?>
+                        <option value="<?php echo $language['value']; ?>">
+                            <?php echo $language['label']; ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
 
             <input class="btn btn-success" type="submit" name="btn_continue" value="<?php echo lang('continue'); ?>">
 

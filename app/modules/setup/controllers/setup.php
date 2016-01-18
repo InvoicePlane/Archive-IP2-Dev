@@ -7,7 +7,7 @@ if (!defined('BASEPATH')) {
  * Class Setup
  * @package Modules\Setup\Controllers
  */
-class Setup extends MX_Controller
+class Setup extends Base_Controller
 {
     public $errors = 0;
 
@@ -18,22 +18,7 @@ class Setup extends MX_Controller
     {
         parent::__construct();
 
-        $this->load->library('session');
-
-        $this->load->helper('file');
-        $this->load->helper('directory');
-        $this->load->helper('url');
-        $this->load->helper('language');
-
         $this->load->model('mdl_setup');
-
-        $this->load->module('layout');
-
-        if (!$this->session->userdata('ip_lang')) {
-            $this->session->set_userdata('ip_lang', 'english');
-        }
-
-        $this->lang->load('ip', $this->session->userdata('ip_lang'));
     }
 
     /**
@@ -60,14 +45,24 @@ class Setup extends MX_Controller
 
         $this->load->helper('directory');
 
-        $languages = directory_map(APPPATH . '/language', true);
+        $raw_languages = directory_map(APPPATH . '/language', true);
+        sort($raw_languages);
 
-        sort($languages);
+        $languages = [];
+        foreach ($raw_languages as $language) {
+            if ($language != 'index.html') {
+                $language = str_replace('/', '', $language);
+                $languages[] = [
+                    'value' => $language,
+                    'label' => ucfirst($language),
+                ];
+            }
+        }
 
         $this->layout->set('languages', $languages);
 
         $this->layout->buffer('content', 'setup/language');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     /**
@@ -75,7 +70,7 @@ class Setup extends MX_Controller
      */
     public function prerequisites()
     {
-        if ($this->session->userdata('install_step') <> 'prerequisites') {
+        if ($this->session->userdata('install_step') != 'prerequisites') {
             redirect('setup/language');
         }
 
@@ -93,7 +88,7 @@ class Setup extends MX_Controller
         );
 
         $this->layout->buffer('content', 'setup/prerequisites');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     /**
@@ -129,7 +124,7 @@ class Setup extends MX_Controller
         $this->layout->set('database', $this->check_database());
         $this->layout->set('errors', $this->errors);
         $this->layout->buffer('content', 'setup/configure_database');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     /**
@@ -156,7 +151,7 @@ class Setup extends MX_Controller
         );
 
         $this->layout->buffer('content', 'setup/install_tables');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     /**
@@ -188,7 +183,7 @@ class Setup extends MX_Controller
         );
 
         $this->layout->buffer('content', 'setup/upgrade_tables');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     /**
@@ -222,7 +217,7 @@ class Setup extends MX_Controller
             )
         );
         $this->layout->buffer('content', 'setup/create_user');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     /**
@@ -254,7 +249,7 @@ class Setup extends MX_Controller
         $this->layout->set('update', $update);
 
         $this->layout->buffer('content', 'setup/complete');
-        $this->layout->render('setup');
+        $this->layout->render('base');
     }
 
     /**
@@ -266,28 +261,27 @@ class Setup extends MX_Controller
         $checks = array();
 
         $writables = array(
-            './uploads',
-            './uploads/temp',
-            './uploads/archive',
-            './uploads/customer_files',
-            './' . APPPATH . 'config/', // for database.php
-            './' . APPPATH . 'helpers/mpdf/tmp',
-            './' . APPPATH . 'helpers/mpdf/ttfontdata',
-            './' . APPPATH . 'helpers/mpdf/graph_cache',
-            './' . APPPATH . 'logs'
+            DATAFOLDER,
+            DATAFOLDER_ARCHIVES,
+            DATAFOLDER_CFILES,
+            DATAFOLDER_IMAGES,
+            DATAFOLDER_IMPORT,
+            DATAFOLDER_TEMP,
+            APPPATH . 'config/',
+            APPPATH . 'logs',
         );
 
         foreach ($writables as $writable) {
             if (!is_writable($writable)) {
                 $checks[] = array(
-                    'message' => $writable . ' ' . lang('is_not_writable'),
+                    'message' => str_replace(FCPATH, '', $writable) . ' ' . lang('is_not_writable'),
                     'success' => 0
                 );
 
                 $this->errors += 1;
             } else {
                 $checks[] = array(
-                    'message' => $writable . ' ' . lang('is_writable'),
+                    'message' => str_replace(FCPATH, '', $writable) . ' ' . lang('is_writable'),
                     'success' => 1
                 );
             }
@@ -298,9 +292,9 @@ class Setup extends MX_Controller
 
     /**
      * Checks if the database connection can be established
-     * 
+     *
      * @TODO lib_mysql is deprecated and should be removed
-     * 
+     *
      * @return array
      */
     private function check_database()
@@ -371,8 +365,6 @@ class Setup extends MX_Controller
         }
 
         if (!ini_get('date.timezone')) {
-            #$this->errors += 1;
-
             $checks[] = array(
                 'message' => sprintf(lang('php_timezone_fail'), date_default_timezone_get()),
                 'warning' => 1
@@ -389,7 +381,7 @@ class Setup extends MX_Controller
 
     /**
      * Writes the database configuration to the configuration file
-     * 
+     *
      * @param $hostname
      * @param $username
      * @param $password

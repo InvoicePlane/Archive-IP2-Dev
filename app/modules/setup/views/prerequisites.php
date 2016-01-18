@@ -1,35 +1,43 @@
-<div class="container">
-    <div class="install-panel">
+<div id="setup" class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
 
-        <h1 id="logo"><span>InvoicePlane</span></h1>
+    <h1 class="m-y-2">
+        <img src="<?php echo THEME_URL;?>img/logo_200x100.png" alt="InvoicePlane">
+    </h1>
 
-        <form method="post" class="form-horizontal"
-              action="<?php echo site_url($this->uri->uri_string()); ?>">
-
-            <legend><?php echo lang('setup_prerequisites'); ?></legend>
+    <div class="card">
+        
+        <div class="card-header">
+            <?php echo lang('setup_prerequisites'); ?>
+        </div>
+        
+        <form class="card-block" method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
             <p><?php echo lang('setup_prerequisites_message'); ?></p>
 
-            <?php foreach ($basics as $basic) {
-                if ($basic['success']) { ?>
-                    <p><i class="fa fa-check text-success fa-margin"></i> <?php echo $basic['message']; ?></p>
-                <?php } elseif ($basic['warning']) { ?>
-                    <p><i class="fa fa-exclamation text-warning fa-margin"></i> <?php echo $basic['message']; ?></p>
-                <?php } else { ?>
-                    <p><i class="fa fa-close text-danger fa-margin"></i> <?php echo $basic['message']; ?></p>
-                <?php }
-            } ?>
+            <div class="m-y-2">
+                <?php foreach ($basics as $basic) {
+                    if ($basic['success']) {?>
+                        <p><i class="fa fa-check text-success fa-margin-right"></i> <?php echo $basic['message']; ?></p>
+                    <?php } elseif ($basic['warning']) { ?>
+                        <p><i class="fa fa-exclamation text-warning fa-margin-right"></i> <?php echo $basic['message']; ?></p>
+                    <?php } else { ?>
+                        <p><i class="fa fa-close text-danger fa-margin-right"></i> <?php echo $basic['message']; ?></p>
+                    <?php }
+                } ?>
 
-            <?php foreach ($writables as $writable) {
-                if ($writable['success']) { ?>
-                    <p><i class="fa fa-check text-success fa-margin"></i> <?php echo $writable['message']; ?></p>
-                <?php } else { ?>
-                    <p><i class="fa fa-close text-danger fa-margin"></i> <?php echo $writable['message']; ?></p>
-                <?php }
-            } ?>
+                <br>
+
+                <?php foreach ($writables as $writable) {
+                    if ($writable['success']) { ?>
+                        <p><i class="fa fa-check text-success fa-margin-right"></i> <?php echo $writable['message']; ?></p>
+                    <?php } else { ?>
+                        <p><i class="fa fa-close text-danger fa-margin-right"></i> <?php echo $writable['message']; ?></p>
+                    <?php }
+                } ?>
+            </div>
 
             <?php if ($errors) { ?>
-                <a href="javascript:history.go(0)" class="btn btn-danger">
+                <a href="javascript:location.reload()" class="btn btn-danger">
                     <?php echo lang('try_again'); ?>
                 </a>
             <?php } else { ?>
@@ -38,6 +46,6 @@
             <?php } ?>
 
         </form>
-
+        
     </div>
 </div>
