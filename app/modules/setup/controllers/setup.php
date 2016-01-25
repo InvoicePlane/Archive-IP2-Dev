@@ -7,7 +7,7 @@ if (!defined('BASEPATH')) {
  * Class Setup
  * @package Modules\Setup\Controllers
  */
-class Setup extends Base_Controller
+class Setup extends Setup_Controller
 {
     public $errors = 0;
 
