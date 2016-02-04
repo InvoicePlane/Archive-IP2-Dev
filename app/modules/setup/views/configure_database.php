@@ -1,22 +1,26 @@
-<div class="container">
-    <div class="install-panel">
+<div id="setup" class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
 
-        <h1 id="logo"><span>InvoicePlane</span></h1>
+    <h1 class="m-y-2">
+        <img src="<?php echo THEME_URL;?>img/logo_200x100.png" alt="InvoicePlane">
+    </h1>
 
-        <form method="post"
-              action="<?php echo site_url($this->uri->uri_string()); ?>">
+    <div class="card">
 
-            <legend><?php echo lang('setup_database_details'); ?></legend>
+        <div class="card-header">
+            <?php echo lang('setup_database_details'); ?>
+        </div>
+
+        <form class="card-block" method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
+
+            <p><?php echo lang('setup_database_message'); ?></p>
 
             <?php if (!$database['success']) { ?>
 
                 <?php if ($database['message'] and $_POST) { ?>
-                    <p><span class="label label-danger"><?php echo lang('failure'); ?></span>
+                    <div class="alert alert-danger">
                         <?php echo $database['message']; ?>
-                    </p>
+                    </div>
                 <?php } ?>
-
-                <p><?php echo lang('setup_database_message'); ?></p>
 
                 <div class="form-group">
                     <label for="db_hostname">
@@ -24,7 +28,7 @@
                     </label>
                     <input type="text" name="db_hostname" id="db_hostname" class="form-control"
                            value="<?php echo $this->input->post('db_hostname'); ?>">
-                    <span class="help-block"><?php echo lang('setup_db_hostname_info'); ?></span>
+                    <small class="text-muted"><?php echo lang('setup_db_hostname_info'); ?></small>
                 </div>
 
                 <div class="form-group">
@@ -33,7 +37,7 @@
                     </label>
                     <input type="text" name="db_username" id="db_username" class="form-control"
                            value="<?php echo $this->input->post('db_username'); ?>">
-                    <span class="help-block"><?php echo lang('setup_db_username_info'); ?></span>
+                    <small class="text-muted"><?php echo lang('setup_db_username_info'); ?></small>
                 </div>
 
                 <div class="form-group">
@@ -42,7 +46,7 @@
                     </label>
                     <input type="password" name="db_password" id="db_password" class="form-control"
                            value="<?php echo $this->input->post('db_password'); ?>">
-                    <span class="help-block"><?php echo lang('setup_db_password_info'); ?></span>
+                    <small class="text-muted"><?php echo lang('setup_db_password_info'); ?></small>
                 </div>
 
                 <div class="form-group">
@@ -51,13 +55,13 @@
                     </label>
                     <input type="text" name="db_database" id="db_database" class="form-control"
                            value="<?php echo $this->input->post('db_database'); ?>">
-                    <span class="help-block"><?php echo lang('setup_db_database_info'); ?></span>
+                    <small class="text-muted"><?php echo lang('setup_db_database_info'); ?></small>
                 </div>
             <?php } ?>
 
             <?php if ($errors) { ?>
-                <input type="submit" class="btn btn-primary" name="btn_try_again"
-                       value="<?php echo lang('try_again'); ?>">
+                <input type="submit" class="btn btn-danger" name="btn_try_again"
+                       value="<?php echo lang('check_db_connection'); ?>">
             <?php } else { ?>
                 <p><i class="fa fa-check text-success fa-margin"></i>
                     <?php echo lang('setup_database_configured_message'); ?>

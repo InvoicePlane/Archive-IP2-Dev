@@ -101,10 +101,11 @@ class Setup extends Setup_Controller
         }
 
         if ($this->input->post('btn_continue')) {
-            $this->load_ci_database();
+
+            $this->load->database();
 
             // This might be an upgrade - check if it is
-            if (!$this->db->table_exists('ip_versions')) {
+            if (!$this->db->table_exists('versions')) {
                 // This appears to be an install
                 $this->session->set_userdata('install_step', 'install_tables');
                 redirect('setup/install_tables');
@@ -116,12 +117,13 @@ class Setup extends Setup_Controller
             }
         }
 
-        if ($this->input->post('db_hostname')) {
-            $this->write_database_config($this->input->post('db_hostname'), $this->input->post('db_username'),
-                $this->input->post('db_password'), $this->input->post('db_database'));
+        $db_check = $this->check_database();
+
+        if ($db_check['success'] === 1) {
+            $this->write_database_config();
         }
 
-        $this->layout->set('database', $this->check_database());
+        $this->layout->set('database', $db_check);
         $this->layout->set('errors', $this->errors);
         $this->layout->buffer('content', 'setup/configure_database');
         $this->layout->render('base');
@@ -141,7 +143,7 @@ class Setup extends Setup_Controller
             redirect('setup/upgrade_tables');
         }
 
-        $this->load_ci_database();
+        $this->load->database();
 
         $this->layout->set(
             array(
@@ -173,7 +175,7 @@ class Setup extends Setup_Controller
             }
         }
 
-        $this->load_ci_database();
+        $this->load->database();
 
         $this->layout->set(
             array(
@@ -195,7 +197,7 @@ class Setup extends Setup_Controller
             redirect('setup/prerequisites');
         }
 
-        $this->load_ci_database();
+        $this->load->database();
 
         $this->load->model('users/mdl_users');
 
@@ -231,7 +233,7 @@ class Setup extends Setup_Controller
 
         // Check if this is an update or the first install
         // First get all version entries from the database and format them
-        $this->load_ci_database();
+        $this->load->database();
         $versions = $this->db->query('SELECT * FROM ip_versions');
         if ($versions->num_rows() > 0) {
             foreach ($versions->result() as $row):
@@ -293,49 +295,60 @@ class Setup extends Setup_Controller
     /**
      * Checks if the database connection can be established
      *
-     * @TODO lib_mysql is deprecated and should be removed
-     *
      * @return array
      */
     private function check_database()
     {
-        $this->load->library('lib_mysql');
+        if ($this->input->post('db_hostname')
+            && $this->input->post('db_username')
+            && $this->input->post('db_hostname')
+            && $this->input->post('db_hostname')
+        ) {
 
-        if (is_file(APPPATH . '/config/database.php')) {
-            // There is alread a (hopefully working?) database.php file.
-            require(APPPATH . '/config/database.php');
-        } else {
-            // No database.php file existent. Use the _empty template.
-            require(APPPATH . '/config/database_empty.php');
-        }
+            $hostname = addcslashes($this->input->post('db_hostname'), '\'\\');
+            $username = addcslashes($this->input->post('db_username'), '\'\\');
+            $password = addcslashes($this->input->post('db_password'), '\'\\');
+            $database = addcslashes($this->input->post('db_database'), '\'\\');
 
-        $db = $db['default'];
+            $dsn = 'mysql:host=' . $hostname . ';dbname=' . $database;
 
-        $can_connect = $this->lib_mysql->connect($db['hostname'], $db['username'], $db['password']);
+            // Test the database connection and return errors if they occur
+            try {
+                
+                $database = new PDO($dsn, $username, $password);
+                
+            } catch (PDOException $e) {
+                $error_message = $e->getMessage();
 
-        if (!$can_connect) {
-            $this->errors += 1;
+                $this->errors += 1;
+                
+                // Prepare the error message
+                if (strpos($error_message, '[1045]')) {
+                    $error_message = lang('cannot_connect_database_server');
+                } elseif (strpos($error_message, '[1044]')) {
+                    $error_message = lang('cannot_select_specified_database');
+                } else {
+                    $error_message = lang('setup_database_unknown_connection_error') . '<br>' . $error_message;
+                }
+                
+                return array(
+                    'message' => $error_message,
+                    'success' => 0
+                );
+            }
 
+            // No errors? Connection seems to be okay
             return array(
-                'message' => lang('cannot_connect_database_server'),
-                'success' => 0
+                'message' => lang('database_properly_configured'),
+                'success' => 1
             );
         }
 
-        $can_select_db = $this->lib_mysql->select_db($db['database']);
-
-        if (!$can_select_db) {
-            $this->errors += 1;
-
-            return array(
-                'message' => lang('cannot_select_specified_database'),
-                'success' => 0
-            );
-        }
+        $this->errors += 1;
 
         return array(
-            'message' => lang('database_properly_configured'),
-            'success' => 1
+            'message' => lang('cannot_connect_database_server'),
+            'success' => 0
         );
     }
 
@@ -381,33 +394,41 @@ class Setup extends Setup_Controller
 
     /**
      * Writes the database configuration to the configuration file
-     *
-     * @param $hostname
-     * @param $username
-     * @param $password
-     * @param $database
      */
-    private function write_database_config($hostname, $username, $password, $database)
+    private function write_database_config()
     {
-        $db_file = readfile(APPPATH . 'config/database_empty.php');
+        $this->load->helper('file');
 
-        $db_file = str_replace('$db[\'default\'][\'hostname\'] = \'\'',
-            '$db[\'default\'][\'hostname\'] = \'' . addcslashes($hostname, '\'\\') . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'username\'] = \'\'',
-            '$db[\'default\'][\'username\'] = \'' . addcslashes($username, '\'\\') . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'password\'] = \'\'',
-            '$db[\'default\'][\'password\'] = \'' . addcslashes($password, '\'\\') . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'database\'] = \'\'',
-            '$db[\'default\'][\'database\'] = \'' . addcslashes($database, '\'\\') . '\'', $db_file);
+        $db_file = file_get_contents(APPPATH . 'config/database_empty.php');
+
+        $hostname = addcslashes($this->input->post('db_hostname'), '\'\\');
+        $username = addcslashes($this->input->post('db_username'), '\'\\');
+        $password = addcslashes($this->input->post('db_password'), '\'\\');
+        $database = addcslashes($this->input->post('db_database'), '\'\\');
+
+        $dsn = 'mysql:host=' . $hostname . ';dbname=' . $database;
+
+        $db_file = str_replace(
+            '\'dsn\' => \'\'',
+            '\'dsn\' => \'' . $dsn . '\'',
+            $db_file);
+        $db_file = str_replace(
+            '\'hostname\' => \'localhost\'',
+            '\'hostname\' => \'' . $hostname . '\'',
+            $db_file);
+        $db_file = str_replace(
+            '\'username\' => \'\'',
+            '\'username\' => \'' . $username . '\'',
+            $db_file);
+        $db_file = str_replace(
+            '\'password\' => \'\'',
+            '\'password\' => \'' . $password . '\'',
+            $db_file);
+        $db_file = str_replace(
+            '\'database\' => \'\'',
+            '\'database\' => \'' . $database . '\'',
+            $db_file);
 
         write_file(APPPATH . 'config/database.php', $db_file);
-    }
-
-    /**
-     * Loads the database instance
-     */
-    private function load_ci_database()
-    {
-        $this->load->database();
     }
 }
