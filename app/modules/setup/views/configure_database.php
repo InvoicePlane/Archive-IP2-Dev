@@ -63,7 +63,8 @@
                 <input type="submit" class="btn btn-danger" name="btn_try_again"
                        value="<?php echo lang('check_db_connection'); ?>">
             <?php } else { ?>
-                <p><i class="fa fa-check text-success fa-margin"></i>
+                <p>
+                    <i class="fa fa-check text-success fa-margin-right"></i>
                     <?php echo lang('setup_database_configured_message'); ?>
                 </p>
                 <input type="submit" class="btn btn-success" name="btn_continue"

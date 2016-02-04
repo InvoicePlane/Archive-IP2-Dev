@@ -45,7 +45,7 @@ class Setup extends Setup_Controller
 
         $this->load->helper('directory');
 
-        $raw_languages = directory_map(APPPATH . '/language', true);
+        $raw_languages = directory_map(APPPATH . '/language');
         sort($raw_languages);
 
         $languages = [];
@@ -233,8 +233,12 @@ class Setup extends Setup_Controller
 
         // Check if this is an update or the first install
         // First get all version entries from the database and format them
+        $data = array();
+        
         $this->load->database();
+        
         $versions = $this->db->query('SELECT * FROM ip_versions');
+        
         if ($versions->num_rows() > 0) {
             foreach ($versions->result() as $row):
                 $data[] = $row;
@@ -315,7 +319,7 @@ class Setup extends Setup_Controller
             // Test the database connection and return errors if they occur
             try {
                 
-                $database = new PDO($dsn, $username, $password);
+                new PDO($dsn, $username, $password);
                 
             } catch (PDOException $e) {
                 $error_message = $e->getMessage();
