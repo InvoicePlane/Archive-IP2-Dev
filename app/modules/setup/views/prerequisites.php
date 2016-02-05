@@ -12,6 +12,8 @@
         
         <form class="card-block" method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
+            <?php echo $this->layout->load_view('layout/includes/alerts'); ?>
+
             <p><?php echo lang('setup_prerequisites_message'); ?></p>
 
             <div class="m-y-2">

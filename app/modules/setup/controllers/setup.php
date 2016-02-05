@@ -96,8 +96,8 @@ class Setup extends Setup_Controller
      */
     public function configure_database()
     {
-        if ($this->session->userdata('install_step') <> 'configure_database') {
-            redirect('setup/prerequisites');
+        if ($this->session->userdata('install_step') != 'configure_database') {
+            $this->restart_setup();
         }
 
         if ($this->input->post('btn_continue')) {
@@ -134,13 +134,13 @@ class Setup extends Setup_Controller
      */
     public function install_tables()
     {
-        if ($this->session->userdata('install_step') <> 'install_tables') {
-            redirect('setup/prerequisites');
+        if ($this->session->userdata('install_step') != 'install_tables') {
+            $this->restart_setup();
         }
 
         if ($this->input->post('btn_continue')) {
-            $this->session->set_userdata('install_step', 'upgrade_tables');
-            redirect('setup/upgrade_tables');
+            $this->session->set_userdata('install_step', 'create_user');
+            redirect('setup/create_user');
         }
 
         $this->load->database();
@@ -161,8 +161,8 @@ class Setup extends Setup_Controller
      */
     public function upgrade_tables()
     {
-        if ($this->session->userdata('install_step') <> 'upgrade_tables') {
-            redirect('setup/prerequisites');
+        if ($this->session->userdata('install_step') != 'upgrade_tables') {
+            $this->restart_setup();
         }
 
         if ($this->input->post('btn_continue')) {
@@ -193,8 +193,8 @@ class Setup extends Setup_Controller
      */
     public function create_user()
     {
-        if ($this->session->userdata('install_step') <> 'create_user') {
-            redirect('setup/prerequisites');
+        if ($this->session->userdata('install_step') != 'create_user') {
+            $this->restart_setup();
         }
 
         $this->load->database();
@@ -227,8 +227,8 @@ class Setup extends Setup_Controller
      */
     public function complete()
     {
-        if ($this->session->userdata('install_step') <> 'complete') {
-            redirect('setup/prerequisites');
+        if ($this->session->userdata('install_step') != 'complete') {
+            $this->restart_setup();
         }
 
         // Check if this is an update or the first install
@@ -434,5 +434,22 @@ class Setup extends Setup_Controller
             $db_file);
 
         write_file(APPPATH . 'config/database.php', $db_file);
+    }
+
+    /**
+     * Delete the database configuration file and redirect ot the prerequisites
+     */
+    private function restart_setup()
+    {
+        if (file_exists(APPPATH . 'config/database.php')) {
+            unlink(APPPATH . 'config/database.php');
+        }
+
+        $this->session->set_flashdata('alert_error', lang('setup_restarted'));
+        $this->session->keep_flashdata('alert_error');
+
+        $this->session->set_userdata('install_step', 'prerequisites');
+        
+        redirect('setup/prerequisites');
     }
 }

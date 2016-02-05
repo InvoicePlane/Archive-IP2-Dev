@@ -411,6 +411,7 @@ $lang = array(
     'setup_other_contact'                          => 'Other Contact',
     'setup_prerequisites'                          => 'Prerequisites',
     'setup_prerequisites_message'                  => 'Any issue listed below must be resolved before the installation can continue.',
+    'setup_restarted'                  			   => 'It seems that the setup was restarted due to an error. Please remove all tables from the database and start the setup again.',
     'setup_tables_errors'                          => 'The errors below need to be resolved before the installation can continue.',
     'setup_tables_success'                         => 'The database tables were successfully installed.',
     'setup_upgrade_message'                        => 'The errors below need to be resolved before the installation can continue.',
