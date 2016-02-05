@@ -45,7 +45,7 @@ class Setup extends Setup_Controller
 
         $this->load->helper('directory');
 
-        $raw_languages = directory_map(APPPATH . '/language');
+        $raw_languages = directory_map(APPPATH . '/language', 1);
         sort($raw_languages);
 
         $languages = [];

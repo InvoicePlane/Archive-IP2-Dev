@@ -46,7 +46,7 @@ class Mdl_Setup extends CI_Model
         $this->load->helper('directory');
         
         // Collect the available SQL files
-        $sql_files = directory_map(APPPATH . 'modules/setup/sql');
+        $sql_files = directory_map(APPPATH . 'modules/setup/sql', 1);
 
         // Sort them so they're in natural order
         sort($sql_files);
@@ -110,6 +110,7 @@ class Mdl_Setup extends CI_Model
      */
     public function install_default_data()
     {
+        // Save the standard invoice group
         $this->db->insert('invoice_groups', array(
                 'name' => 'Invoice Default',
                 'identifier_format' => 'I-{{{ID}}}',
@@ -118,11 +119,18 @@ class Mdl_Setup extends CI_Model
             )
         );
 
+        // Save the standard quote invoice group
         $this->db->insert('invoice_groups', array(
             'name' => 'Quote Default',
             'identifier_format' => 'Q-{{{ID}}}',
             'next_id' => 1,
             'left_pad' => 3,
+        ));
+
+        // Save the system admin user role
+        $this->db->insert('user_roles', array(
+            'name' => 'system_admin',
+            'permissions' => json_encode(array('all')),
         ));
     }
 
