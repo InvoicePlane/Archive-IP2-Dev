@@ -9,13 +9,14 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Users extends Response_Model
 {
-    public $table = 'ip_users';
-    public $primary_key = 'ip_users.user_id';
-    public $date_created_field = 'user_date_created';
-    public $date_modified_field = 'user_date_modified';
+    public $table = 'users';
+    public $primary_key = 'users.id';
+    public $date_created_field = 'date_created';
+    public $date_modified_field = 'date_modified';
 
     /**
      * Returns an array with all available user types
+     * @TODO IP-366 - User roles
      * @return array
      */
     public function user_types()
@@ -31,7 +32,7 @@ class Mdl_Users extends Response_Model
      */
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS ip_user_custom.*, ip_users.*', false);
+        $this->db->select('SQL_CALC_FOUND_ROWS user_custom.*, users.*', false);
     }
 
     /**
@@ -39,7 +40,7 @@ class Mdl_Users extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_user_custom', 'ip_user_custom.user_id = ip_users.user_id', 'left');
+        $this->db->join('user_custom', 'user_custom.user_id = users.user_id', 'left');
     }
 
     /**
@@ -47,7 +48,7 @@ class Mdl_Users extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_users.user_name');
+        $this->db->order_by('users.user_name');
     }
 
     /**
@@ -57,70 +58,70 @@ class Mdl_Users extends Response_Model
     public function validation_rules()
     {
         return array(
-            'user_type' => array(
-                'field' => 'user_type',
-                'label' => lang('user_type'),
+            'user_role_id' => array(
+                'field' => 'user_role_id',
+                'label' => lang('user_role'),
                 'rules' => 'required'
             ),
-            'user_email' => array(
-                'field' => 'user_email',
+            'email' => array(
+                'field' => 'email',
                 'label' => lang('email'),
-                'rules' => 'required|valid_email|is_unique[ip_users.user_email]'
+                'rules' => 'required|valid_email|is_unique[users.email]'
             ),
-            'user_name' => array(
-                'field' => 'user_name',
+            'company' => array(
+                'field' => 'company'
+            ),
+            'name' => array(
+                'field' => 'name',
                 'label' => lang('name'),
                 'rules' => 'required'
             ),
-            'user_password' => array(
-                'field' => 'user_password',
+            'password' => array(
+                'field' => 'password',
                 'label' => lang('password'),
                 'rules' => 'required|min_length[8]'
             ),
-            'user_passwordv' => array(
-                'field' => 'user_passwordv',
+            'passwordv' => array(
+                'field' => 'passwordv',
                 'label' => lang('verify_password'),
-                'rules' => 'required|matches[user_password]'
+                'rules' => 'required|matches[password]'
             ),
-            'user_company' => array(
-                'field' => 'user_company'
+            'address_1' => array(
+                'field' => 'address_1'
             ),
-            'user_address_1' => array(
-                'field' => 'user_address_1'
+            'address_2' => array(
+                'field' => 'address_2'
             ),
-            'user_address_2' => array(
-                'field' => 'user_address_2'
+            'city' => array(
+                'field' => 'city'
             ),
-            'user_city' => array(
-                'field' => 'user_city'
+            'state' => array(
+                'field' => 'state'
             ),
-            'user_state' => array(
-                'field' => 'user_state'
+            'zip' => array(
+                'field' => 'zip'
             ),
-            'user_zip' => array(
-                'field' => 'user_zip'
-            ),
-            'user_country' => array(
-                'field' => 'user_country',
+            'country' => array(
+                'field' => 'country',
                 'label' => lang('country'),
             ),
-            'user_phone' => array(
-                'field' => 'user_phone'
+            'phone' => array(
+                'field' => 'phone'
             ),
-            'user_fax' => array(
-                'field' => 'user_fax'
+            'fax' => array(
+                'field' => 'fax'
             ),
-            'user_mobile' => array(
-                'field' => 'user_mobile'
+            'mobile' => array(
+                'field' => 'mobile'
             ),
-            'user_web' => array(
-                'field' => 'user_web'
+            'web' => array(
+                'field' => 'web'
             ),
-            'user_vat_id' => array(
-                'field' => 'user_vat_id'
+            'vat_id' => array(
+                'field' => 'vat_id'
             ),
-            'user_tax_code' => array(
-                'field' => 'user_tax_code'
+            'tax_code' => array(
+                'field' => 'tax_code'
             )
         );
     }
@@ -132,61 +133,70 @@ class Mdl_Users extends Response_Model
     public function validation_rules_existing()
     {
         return array(
-            'user_type' => array(
-                'field' => 'user_type',
-                'label' => lang('user_type'),
+            'user_role_id' => array(
+                'field' => 'user_role_id',
+                'label' => lang('user_role'),
                 'rules' => 'required'
             ),
-            'user_email' => array(
-                'field' => 'user_email',
+            'email' => array(
+                'field' => 'email',
                 'label' => lang('email'),
                 'rules' => 'required|valid_email'
             ),
-            'user_name' => array(
-                'field' => 'user_name',
+            'company' => array(
+                'field' => 'company'
+            ),
+            'name' => array(
+                'field' => 'name',
                 'label' => lang('name'),
                 'rules' => 'required'
             ),
-            'user_company' => array(
-                'field' => 'user_company'
+            'password' => array(
+                'field' => 'password',
+                'label' => lang('password'),
+                'rules' => 'required|min_length[8]'
             ),
-            'user_address_1' => array(
-                'field' => 'user_address_1'
+            'passwordv' => array(
+                'field' => 'passwordv',
+                'label' => lang('verify_password'),
+                'rules' => 'required|matches[password]'
             ),
-            'user_address_2' => array(
-                'field' => 'user_address_2'
+            'address_1' => array(
+                'field' => 'address_1'
             ),
-            'user_city' => array(
-                'field' => 'user_city'
+            'address_2' => array(
+                'field' => 'address_2'
             ),
-            'user_state' => array(
-                'field' => 'user_state'
+            'city' => array(
+                'field' => 'city'
             ),
-            'user_zip' => array(
-                'field' => 'user_zip'
+            'state' => array(
+                'field' => 'state'
             ),
-            'user_country' => array(
-                'field' => 'user_country',
+            'zip' => array(
+                'field' => 'zip'
+            ),
+            'country' => array(
+                'field' => 'country',
                 'label' => lang('country'),
-                'rules' => 'required'
             ),
-            'user_phone' => array(
-                'field' => 'user_phone'
+            'phone' => array(
+                'field' => 'phone'
             ),
-            'user_fax' => array(
-                'field' => 'user_fax'
+            'fax' => array(
+                'field' => 'fax'
             ),
-            'user_mobile' => array(
-                'field' => 'user_mobile'
+            'mobile' => array(
+                'field' => 'mobile'
             ),
-            'user_web' => array(
-                'field' => 'user_web'
+            'web' => array(
+                'field' => 'web'
             ),
-            'user_vat_id' => array(
-                'field' => 'user_vat_id'
+            'vat_id' => array(
+                'field' => 'vat_id'
             ),
-            'user_tax_code' => array(
-                'field' => 'user_tax_code'
+            'tax_code' => array(
+                'field' => 'tax_code'
             )
         );
     }
@@ -198,15 +208,15 @@ class Mdl_Users extends Response_Model
     public function validation_rules_change_password()
     {
         return array(
-            'user_password' => array(
-                'field' => 'user_password',
+            'password' => array(
+                'field' => 'password',
                 'label' => lang('password'),
                 'rules' => 'required'
             ),
-            'user_passwordv' => array(
-                'field' => 'user_passwordv',
+            'passwordv' => array(
+                'field' => 'passwordv',
                 'label' => lang('verify_password'),
-                'rules' => 'required|matches[user_password]'
+                'rules' => 'required|matches[password]'
             )
         );
     }
@@ -219,15 +229,15 @@ class Mdl_Users extends Response_Model
     {
         $db_array = parent::db_array();
 
-        if (isset($db_array['user_password'])) {
-            unset($db_array['user_passwordv']);
+        if (isset($db_array['password'])) {
+            unset($db_array['passwordv']);
 
             $this->load->library('crypt');
 
             $user_psalt = $this->crypt->salt();
 
-            $db_array['user_psalt'] = $user_psalt;
-            $db_array['user_password'] = $this->crypt->generate_password($db_array['user_password'], $user_psalt);
+            $db_array['psalt'] = $user_psalt;
+            $db_array['password'] = $this->crypt->generate_password($db_array['password'], $user_psalt);
         }
 
         return $db_array;
@@ -235,6 +245,7 @@ class Mdl_Users extends Response_Model
 
     /**
      * Saves the changed password to the database
+     * @TODO Success alert needs language string
      * @param $user_id
      * @param $password
      */
@@ -246,12 +257,12 @@ class Mdl_Users extends Response_Model
         $user_password = $this->crypt->generate_password($password, $user_psalt);
 
         $db_array = array(
-            'user_psalt' => $user_psalt,
-            'user_password' => $user_password
+            'psalt' => $user_psalt,
+            'password' => $user_password
         );
 
-        $this->db->where('user_id', $user_id);
-        $this->db->update('ip_users', $db_array);
+        $this->db->where('id', $user_id);
+        $this->db->update('users', $db_array);
 
         $this->session->set_flashdata('alert_success', 'Password Successfully Changed');
     }
