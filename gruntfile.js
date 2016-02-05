@@ -53,6 +53,7 @@ module.exports = function (grunt) {
                         "themes/vendor/jqueryui/ui/resizable.js",
                         "themes/vendor/jqueryui/ui/selectable.js",
                         "themes/vendor/jqueryui/ui/sortable.js",
+                        "themes/vendor/select2/dist/js/select2.js",
                         "themes/vendor/dropzone/dist/dropzone.js",
                     ],
                     "themes/core/js/app.min.js": [

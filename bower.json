@@ -6,6 +6,7 @@
     "jquery": "~2.1",
     "tether": "~1.1.1",
     "jqueryui": "~1.11",
-    "dropzone": "~4.2.0"
+    "dropzone": "~4.2.0",
+    "select2": "^4.0.1"
   }
 }
