@@ -15,10 +15,11 @@ if (!defined('BASEPATH')) {
  */
 function get_country_list($cldr)
 {
-    if (file_exists(APPPATH . 'helpers/country-list/' . $cldr . '/country.php')) {
-        return (include APPPATH . 'helpers/country-list/' . $cldr . '/country.php');
+    $cl_path = FCPATH . 'vendor/umpirsky/country-list/data/';
+    if (file_exists($cl_path . $cldr . '/country.php')) {
+        return (include $cl_path . $cldr . '/country.php');
     } else {
-        return (include APPPATH . 'helpers/country-list/en/country.php');
+        return (include $cl_path . '/en/country.php');
     }
 
 }

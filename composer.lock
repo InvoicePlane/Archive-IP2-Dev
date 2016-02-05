@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "09050cd011e2e5a2ff51a70ee4850bac",
-    "content-hash": "ae2fe2b74b550ec7255649050e922ad4",
+    "hash": "41c9bafa8bff5a6ba5de33e160d272a7",
+    "content-hash": "373e2f01fbb9333716810e324ef1a187",
     "packages": [
         {
             "name": "codeigniter/framework",
@@ -2033,6 +2033,41 @@
                 "shim"
             ],
             "time": "2015-11-04 20:28:58"
+        },
+        {
+            "name": "umpirsky/country-list",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/umpirsky/country-list.git",
+                "reference": "deebcf78a0f0e4e82e5f36ade73beb190adc780a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/umpirsky/country-list/zipball/deebcf78a0f0e4e82e5f36ade73beb190adc780a",
+                "reference": "deebcf78a0f0e4e82e5f36ade73beb190adc780a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.4"
+            },
+            "require-dev": {
+                "symfony/locale": "^2.7|^3.0",
+                "umpirsky/list-generator": "^1.1"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Saša Stamenković",
+                    "email": "umpirsky@gmail.com"
+                }
+            ],
+            "description": "List of all countries with names and ISO 3166-1 codes in all languages and data formats.",
+            "time": "2016-01-06 12:06:37"
         }
     ],
     "packages-dev": [
