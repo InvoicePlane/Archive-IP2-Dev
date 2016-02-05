@@ -202,20 +202,23 @@ class Setup extends Setup_Controller
         $this->load->model('users/mdl_users');
 
         $this->load->helper('country');
+        $this->load->helper('ip');
 
         if ($this->mdl_users->run_validation()) {
+            
             $db_array = $this->mdl_users->db_array();
-            $db_array['user_type'] = 1;
 
             $this->mdl_users->save(null, $db_array);
 
-            $this->session->set_userdata('install_step', 'complete');
-            redirect('setup/complete');
+            $this->session->set_userdata('install_step', 'configure_application');
+            redirect('setup/configure_application');
+            
         }
 
         $this->layout->set(
             array(
                 'countries' => get_country_list(lang('cldr')),
+                'password_suggestion' => generate_password_suggestion(),
             )
         );
         $this->layout->buffer('content', 'setup/create_user');
