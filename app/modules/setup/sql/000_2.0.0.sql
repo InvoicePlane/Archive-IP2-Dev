@@ -7,10 +7,10 @@
 # ------------------------------------------------------------
 
 CREATE TABLE `client_notes` (
-  `id`         INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `client_id`  INT(11) UNSIGNED NOT NULL,
-  `note`       LONGTEXT         NOT NULL,
-  `date_added` DATE             NOT NULL,
+  `id`           INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `client_id`    INT(11) UNSIGNED NOT NULL,
+  `note`         LONGTEXT         NOT NULL,
+  `date_created` DATE             NOT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -224,7 +224,7 @@ CREATE TABLE `invoice_items` (
   `price`           DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
   `discount_amount` DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
   `item_order`      INT(2)           NOT NULL DEFAULT '0',
-  `date_added`      DATE             NOT NULL,
+  `date_created`    DATE             NOT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -300,7 +300,7 @@ CREATE TABLE `online_payments` (
   `gateway_name`     VARCHAR(100)     NOT NULL DEFAULT '',
   `gateway_response` VARCHAR(500)     NOT NULL DEFAULT '',
   `reference`        VARCHAR(300)     NOT NULL DEFAULT '',
-  `date_added`       DATE             NOT NULL,
+  `date_created`     DATE             NOT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -370,7 +370,7 @@ CREATE TABLE `projects` (
   `client_id`     INT(11) UNSIGNED NOT NULL,
   `user_id`       INT(11) UNSIGNED NOT NULL,
   `project_name`  VARCHAR(200)     NOT NULL DEFAULT '',
-  `date_added`    DATETIME         NOT NULL,
+  `date_created`  DATETIME         NOT NULL,
   `date_modified` DATETIME         NOT NULL,
   `date_deleted`  DATETIME                  DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -422,7 +422,7 @@ CREATE TABLE `quote_items` (
   `price`           DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
   `discount_amount` DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
   `item_order`      INT(2)           NOT NULL DEFAULT '0',
-  `date_added`      DATE             NOT NULL,
+  `date_created`    DATE             NOT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -507,7 +507,7 @@ CREATE TABLE `tasks` (
   `price`         DECIMAL(50, 10)  NOT NULL,
   `finish_date`   DATE             NOT NULL,
   `status`        TINYINT(1)       NOT NULL,
-  `date_added`    DATETIME         NOT NULL,
+  `date_created`  DATETIME         NOT NULL,
   `date_modified` DATETIME         NOT NULL,
   `date_deleted`  DATETIME                  DEFAULT NULL,
   PRIMARY KEY (`id`),
