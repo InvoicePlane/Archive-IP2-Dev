@@ -23,7 +23,9 @@
                 </select>
             </div>
 
-            <input class="btn btn-success" type="submit" name="btn_continue" value="<?php echo lang('continue'); ?>">
+            <button class="btn btn-success loader" type="submit" name="btn_continue" value="1">
+                <i class="fa fa-angle-right fa-margin-right"></i><?php echo lang('continue'); ?>
+            </button>
 
         </form>
 

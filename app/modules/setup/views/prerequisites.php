@@ -40,11 +40,12 @@
 
             <?php if ($errors) { ?>
                 <a href="javascript:location.reload()" class="btn btn-danger">
-                    <?php echo lang('try_again'); ?>
+                    <i class="fa fa-warning fa-margin-right"><?php echo lang('try_again'); ?>
                 </a>
             <?php } else { ?>
-                <input class="btn btn-success" type="submit" name="btn_continue"
-                       value="<?php echo lang('continue'); ?>">
+                <button type="submit" class="btn btn-success" name="btn_continue" value="1">
+                    <i class="fa fa-angle-right fa-margin-right"></i><?php echo lang('continue'); ?>
+                </button>
             <?php } ?>
 
         </form>

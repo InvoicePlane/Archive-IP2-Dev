@@ -29,11 +29,13 @@
             <?php } ?>
 
             <?php if ($errors) { ?>
-                <input type="submit" class="btn btn-danger" name="btn_try_again"
-                       value="<?php echo lang('try_again'); ?>">
+                <button type="submit" class="btn btn-danger" name="btn_try_again" value="1">
+                    <i class="fa fa-angle-right fa-margin-right"></i><?php echo lang('try_again'); ?>
+                </button>
             <?php } else { ?>
-                <input type="submit" class="btn btn-success" name="btn_continue"
-                       value="<?php echo lang('continue'); ?>">
+                <button type="submit" class="btn btn-success" name="btn_continue" value="1">
+                    <i class="fa fa-angle-right fa-margin-right"></i><?php echo lang('continue'); ?>
+                </button>
             <?php } ?>
 
         </form>

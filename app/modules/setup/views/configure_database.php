@@ -60,15 +60,17 @@
             <?php } ?>
 
             <?php if ($errors) { ?>
-                <input type="submit" class="btn btn-danger" name="btn_try_again"
-                       value="<?php echo lang('check_db_connection'); ?>">
+                <button type="submit" class="btn btn-danger" name="btn_try_again" value="1">
+                    <i class="fa fa-warning fa-margin-right"></i><?php echo lang('check_db_connection'); ?>
+                </button>
             <?php } else { ?>
                 <p>
                     <i class="fa fa-check text-success fa-margin-right"></i>
                     <?php echo lang('setup_database_configured_message'); ?>
                 </p>
-                <input type="submit" class="btn btn-success" name="btn_continue"
-                       value="<?php echo lang('continue'); ?>">
+                <button type="submit" class="btn btn-success" name="btn_continue" value="1">
+                    <i class="fa fa-angle-right fa-margin-right"></i><?php echo lang('continue'); ?>
+                </button>
             <?php } ?>
 
         </form>
