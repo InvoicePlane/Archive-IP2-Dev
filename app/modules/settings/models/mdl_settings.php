@@ -18,12 +18,12 @@ class Mdl_Settings extends CI_Model
      */
     public function get($key)
     {
-        $this->db->select('setting_value');
-        $this->db->where('setting_key', $key);
-        $query = $this->db->get('ip_settings');
+        $this->db->select('value');
+        $this->db->where('key', $key);
+        $query = $this->db->get('settings');
 
         if ($query->row()) {
-            return $query->row()->setting_value;
+            return $query->row()->value;
         } else {
             return null;
         }
@@ -37,15 +37,15 @@ class Mdl_Settings extends CI_Model
     public function save($key, $value)
     {
         $db_array = array(
-            'setting_key' => $key,
-            'setting_value' => $value
+            'key' => $key,
+            'value' => $value
         );
 
         if ($this->get($key) !== null) {
-            $this->db->where('setting_key', $key);
-            $this->db->update('ip_settings', $db_array);
+            $this->db->where('key', $key);
+            $this->db->update('settings', $db_array);
         } else {
-            $this->db->insert('ip_settings', $db_array);
+            $this->db->insert('settings', $db_array);
         }
     }
 
@@ -55,8 +55,8 @@ class Mdl_Settings extends CI_Model
      */
     public function delete($key)
     {
-        $this->db->where('setting_key', $key);
-        $this->db->delete('ip_settings');
+        $this->db->where('key', $key);
+        $this->db->delete('settings');
     }
 
     /**
@@ -64,10 +64,10 @@ class Mdl_Settings extends CI_Model
      */
     public function load_settings()
     {
-        $ip_settings = $this->db->get('ip_settings')->result();
+        $settings = $this->db->get('settings')->result();
 
-        foreach ($ip_settings as $data) {
-            $this->settings[$data->setting_key] = $data->setting_value;
+        foreach ($settings as $data) {
+            $this->settings[$data->key] = $data->value;
         }
     }
 

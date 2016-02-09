@@ -107,6 +107,7 @@ class Setup extends Setup_Controller
             // This might be an upgrade - check if it is
             if (!$this->db->table_exists('versions')) {
                 // This appears to be an install
+                $this->session->set_userdata('is_upgrade', false);
                 $this->session->set_userdata('install_step', 'install_tables');
                 redirect('setup/install_tables');
             } else {
@@ -226,6 +227,60 @@ class Setup extends Setup_Controller
     }
 
     /**
+     * Setup step to create configure the application
+     */
+    public function configure_application()
+    {
+        if ($this->session->userdata('install_step') != 'configure_application') {
+            $this->restart_setup();
+        }
+
+        // Skip this step
+        if ($this->input->post('btn_skip')) {
+            $this->session->set_userdata('install_step', 'complete');
+            redirect('setup/complete');
+        }
+
+        // Save the settings values to the database
+        if ($this->input->post('btn_continue')) {
+
+            $settings = $this->input->post('settings');
+
+            $this->load->database();
+
+            $this->load->library('encrypt');
+            $this->load->library('form_validation');
+
+            $this->load->model('mdl_settings');
+
+            foreach ($settings as $key => $value) {
+                if ($key == 'smtp_password' && !empty($value)) {
+                    $this->mdl_settings->save($key, $this->encrypt->encode($value));
+                } else {
+                    $this->mdl_settings->save($key, $value);
+                }
+            }
+            
+            $this->session->set_userdata('install_step', 'complete');
+            redirect('setup/complete');
+        }
+
+        $this->load->helper('country');
+        $this->load->helper('date');
+        
+        $this->layout->set(
+            array(
+                'countries' => get_country_list(lang('cldr')),
+                'current_date' => new DateTime(),
+                'date_formats' => date_formats(),
+                'first_days_of_weeks' => array("0" => lang("sunday"), "1" => lang("monday")),
+            )
+        );
+        $this->layout->buffer('content', 'setup/configure_application');
+        $this->layout->render('base');
+    }
+
+    /**
      * Setup step to confirm the setup ran successfully
      */
     public function complete()
@@ -233,29 +288,8 @@ class Setup extends Setup_Controller
         if ($this->session->userdata('install_step') != 'complete') {
             $this->restart_setup();
         }
-
-        // Check if this is an update or the first install
-        // First get all version entries from the database and format them
-        $data = array();
         
-        $this->load->database();
-        
-        $versions = $this->db->query('SELECT * FROM ip_versions');
-        
-        if ($versions->num_rows() > 0) {
-            foreach ($versions->result() as $row):
-                $data[] = $row;
-            endforeach;
-        }
-
-        // Then check if the first version entry is less than 30 minutes old
-        // If yes we assume that the user ran the setup a few minutes ago
-        if ($data[0]->version_date_applied < (time() - 1800)) {
-            $update = true;
-        } else {
-            $update = false;
-        }
-        $this->layout->set('update', $update);
+        $this->layout->set('update', $this->session->userdata('is_upgrade'));
 
         $this->layout->buffer('content', 'setup/complete');
         $this->layout->render('base');
