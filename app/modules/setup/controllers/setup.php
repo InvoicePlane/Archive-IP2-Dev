@@ -288,8 +288,6 @@ class Setup extends Setup_Controller
         if ($this->session->userdata('install_step') != 'complete') {
             $this->restart_setup();
         }
-        
-        $this->layout->set('update', $this->session->userdata('is_upgrade'));
 
         $this->layout->buffer('content', 'setup/complete');
         $this->layout->render('base');
