@@ -178,8 +178,8 @@ $(document).ready(function () {
         update_email_template_preview();
     });
 
-    $(".ajax-loader").bind("click", function () {
-        $("#fullpage-loader").fadeIn(200);
+    $("*[type='submit'], .ajax-loader").bind("click", function () {
+        $("#loader").fadeIn(200);
         $("#loader-error").delay(10000).fadeIn(200);
     });
 

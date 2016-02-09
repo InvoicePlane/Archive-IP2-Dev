@@ -103,6 +103,44 @@
   font-weight: bold;
 }
 
+#loader {
+  display: none;
+  z-index: 2000;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  
+  .loader-indicator {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    font-size: 3rem;
+  }
+
+  .loader-content {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    font-size: 1.5rem;
+    opacity: 0.85;
+    width: 100%;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.6);
+    
+    .loader-message {
+      position: absolute;
+      width: 100%;
+      top: 20%;
+      left: 0;
+    }
+  }
+}
+
 /*
 |   =========================================================
 |   Menu

@@ -31,5 +31,7 @@
 
 </div>
 
+<?php $this->view('includes/loader') ?>
+
 </body>
 </html>

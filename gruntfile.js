@@ -70,6 +70,7 @@ module.exports = function (grunt) {
             sass: {
                 files: [
                     "themes/core/sass/*.scss",
+                    "themes/core/sass/modules/*.scss",
                     "themes/InvoicePlane/*.scss"
                 ],
                 tasks: ["sass"]
