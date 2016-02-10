@@ -37,12 +37,14 @@ class Base_Controller extends MX_Controller
         } else {
             // Load globally used libraries and helpers
             $this->load->database();
+
+            $this->load->helper('date');
             $this->load->library('form_validation');
+            $this->load->helper('invoice');
             $this->load->helper('number');
             $this->load->helper('pager');
-            $this->load->helper('invoice');
-            $this->load->helper('date');
             $this->load->helper('redirect');
+            $this->load->helper('user');
 
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');
