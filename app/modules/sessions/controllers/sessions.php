@@ -6,6 +6,14 @@ if (!defined('BASEPATH')) {
 /**
  * Class Sessions
  * @package Modules\Sessions\Controllers
+ * @property CI_DB_query_builder $db
+ * @property CI_Email $email
+ * @property CI_Input $input
+ * @property CI_Session $session
+ * @property Layout $layout
+ * @property Mdl_Sessions $mdl_sessions
+ * @property Mdl_Settings $mdl_settings
+ * @property Mdl_Users $mdl_users
  */
 class Sessions extends Base_Controller
 {

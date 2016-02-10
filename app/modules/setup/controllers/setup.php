@@ -6,6 +6,14 @@ if (!defined('BASEPATH')) {
 /**
  * Class Setup
  * @package Modules\Setup\Controllers
+ * @property CI_DB_query_builder $db
+ * @property CI_Encrypt $encrypt
+ * @property CI_Input $input
+ * @property CI_Session $session
+ * @property Layout $layout
+ * @property Mdl_Settings $mdl_settings
+ * @property Mdl_Setup $mdl_setup
+ * @property Mdl_Users $mdl_users
  */
 class Setup extends Setup_Controller
 {

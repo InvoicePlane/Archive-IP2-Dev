@@ -7,6 +7,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Setup
  * @package Modules\Setup\Models
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
+ * @property CI_Session $session
  */
 class Mdl_Setup extends CI_Model
 {

@@ -6,6 +6,10 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Sessions
  * @package Modules\Sessions\Models
+ * @property Crypt $crypt
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
+ * @property CI_Session $session
  */
 class Mdl_Sessions extends CI_Model
 {
