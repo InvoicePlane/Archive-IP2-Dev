@@ -10,15 +10,16 @@ if (!defined('BASEPATH')) {
 class User_Controller extends Base_Controller
 {
     /**
-     * User_Controller constructor.
-     * @param $required_key
-     * @param $required_val
+     * User_Controller constructor
      */
-    public function __construct($required_key, $required_val)
+    public function __construct()
     {
         parent::__construct();
 
-        if ($this->session->userdata($required_key) <> $required_val) {
+        // Check if user is not logged in or is client
+        if (!user_logged_in() || user_is_client()) {
+            var_dump(!user_logged_in(),!user_is_client());
+            $this->session->set_flashdata('alert_error', lang('permissions_not_allowed'));
             redirect('sessions/login');
         }
     }

@@ -32,16 +32,48 @@ function check_permission($permission_name = '')
 
 /**
  * Checks if the logged in user is a client
- * 
+ *
  * @return mixed
  */
-function user_is_client() {
+function user_logged_in()
+{
     $CI = &get_instance();
-    $userdata = $CI->session->userdata();
-    
-    if (isset($userdata['user']['is_client'])) {
-        return ($userdata['user']['is_client'] == 1 ? true : false);
+
+    if (empty($CI->session->userdata('user'))) {
+        return false;
     }
-    
+
+    return true;
+}
+
+/**
+ * Checks if the logged in user is a client
+ *
+ * @return mixed
+ */
+function user_is_client()
+{
+    $CI = &get_instance();
+
+    if (isset($CI->session->user['is_client'])) {
+        return ($CI->session->user['is_client'] == 1 ? true : false);
+    }
+
+    return false;
+}
+
+/**
+ * Checks if the logged in user is an admin
+ *
+ * @return mixed
+ */
+function user_is_admin()
+{
+    $CI = &get_instance();
+
+    if (isset($CI->session->user['permissions']) && is_array($CI->session->user['permissions'])) {
+        return (in_array('all', $CI->session->user['permissions']) ? true : false);
+    }
+
     return false;
 }

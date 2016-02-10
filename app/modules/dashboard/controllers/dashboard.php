@@ -7,7 +7,7 @@ if (!defined('BASEPATH')) {
  * Class Dashboard
  * @package Modules\Dashboard\Controllers
  */
-class Dashboard extends Admin_Controller
+class Dashboard extends User_Controller
 {
     /**
      * Loads the dashboard
