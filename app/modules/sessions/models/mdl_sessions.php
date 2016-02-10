@@ -39,6 +39,7 @@ class Mdl_Sessions extends CI_Model
                         'email' => $user->email,
                         'role' => $role['name'],
                         'permissions' => json_decode($role['permissions']),
+                        'is_client' => $role['is_client'],
                     )
                 );
 

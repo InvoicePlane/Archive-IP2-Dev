@@ -73,7 +73,11 @@ class Sessions extends Base_Controller
                     $password = $this->input->post('password');
 
                     if ($this->authenticate($email, $password)) {
-                        redirect('sessions/login');
+                        if (user_is_client()) {
+                            redirect('guest');
+                        } else {
+                            redirect('dashboard');
+                        }
                     } else {
                         $this->session->set_flashdata('alert_error', lang('loginalert_credentials_incorrect'));
                     }
