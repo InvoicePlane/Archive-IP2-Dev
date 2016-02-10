@@ -127,9 +127,29 @@ class Mdl_Setup extends CI_Model
             'left_pad' => 3,
         ));
 
+        // @TODO IP-366 - User roles (set permissions)
         // Save the system admin user role
         $this->db->insert('user_roles', array(
             'name' => 'system_admin',
+            'permissions' => json_encode(array('all')),
+            'is_client' => false,
+        ));
+
+        // Save the manager user role
+        $this->db->insert('user_roles', array(
+            'name' => 'manager',
+            'permissions' => json_encode(array('all')),
+        ));
+
+        // Save the system admin user role
+        $this->db->insert('user_roles', array(
+            'name' => 'user',
+            'permissions' => json_encode(array('all')),
+        ));
+
+        // Save the client user role
+        $this->db->insert('user_roles', array(
+            'name' => 'client',
             'permissions' => json_encode(array('all')),
         ));
     }

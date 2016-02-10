@@ -567,6 +567,7 @@ CREATE TABLE `user_roles` (
   `id`          INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name`        VARCHAR(100)     NOT NULL DEFAULT '',
   `permissions` LONGTEXT         NOT NULL,
+  `is_client`   TINYINT(1)                DEFAULT '0',
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
