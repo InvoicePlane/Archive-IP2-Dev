@@ -18,7 +18,6 @@ class User_Controller extends Base_Controller
 
         // Check if user is not logged in or is client
         if (!user_logged_in() || user_is_client()) {
-            var_dump(!user_logged_in(),!user_is_client());
             $this->session->set_flashdata('alert_error', lang('permissions_not_allowed'));
             redirect('sessions/login');
         }
