@@ -9,17 +9,19 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Clients extends Response_Model
 {
-    public $table = 'ip_clients';
-    public $primary_key = 'ip_clients.client_id';
-    public $date_created_field = 'client_date_created';
-    public $date_modified_field = 'client_date_modified';
+    public $table = 'clients';
+    public $primary_key = 'clients.id';
+    public $date_created_field = 'date_created';
+    public $date_modified_field = 'date_modified';
+    public $date_deleted_field = 'date_deleted';
 
     /**
      * The default select directive used in every query
      */
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS ip_client_custom.*, ip_clients.*', false);
+        $this->db->where('date_deleted', null);
+        $this->db->select('SQL_CALC_FOUND_ROWS custom_client.*, clients.*', false);
     }
 
     /**
@@ -27,7 +29,7 @@ class Mdl_Clients extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_client_custom', 'ip_client_custom.client_id = ip_clients.client_id', 'left');
+        $this->db->join('custom_client', 'custom_client.id = clients.id', 'left');
     }
 
     /**
@@ -35,7 +37,7 @@ class Mdl_Clients extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_clients.client_name');
+        $this->db->order_by('clients.name');
     }
 
     /**
@@ -45,52 +47,52 @@ class Mdl_Clients extends Response_Model
     public function validation_rules()
     {
         return array(
-            'client_name' => array(
-                'field' => 'client_name',
-                'label' => lang('client_name'),
+            'name' => array(
+                'field' => 'name',
+                'label' => lang('name'),
                 'rules' => 'required'
             ),
-            'client_active' => array(
-                'field' => 'client_active'
+            'is_active' => array(
+                'field' => 'is_active'
             ),
-            'client_address_1' => array(
-                'field' => 'client_address_1'
+            'address_1' => array(
+                'field' => 'address_1'
             ),
-            'client_address_2' => array(
-                'field' => 'client_address_2'
+            'address_2' => array(
+                'field' => 'address_2'
             ),
-            'client_city' => array(
-                'field' => 'client_city'
+            'city' => array(
+                'field' => 'city'
             ),
-            'client_state' => array(
-                'field' => 'client_state'
+            'state' => array(
+                'field' => 'state'
             ),
-            'client_zip' => array(
-                'field' => 'client_zip'
+            'zip' => array(
+                'field' => 'zip'
             ),
-            'client_country' => array(
-                'field' => 'client_country'
+            'country' => array(
+                'field' => 'country'
             ),
-            'client_phone' => array(
-                'field' => 'client_phone'
+            'phone' => array(
+                'field' => 'phone'
             ),
-            'client_fax' => array(
-                'field' => 'client_fax'
+            'fax' => array(
+                'field' => 'fax'
             ),
-            'client_mobile' => array(
-                'field' => 'client_mobile'
+            'mobile' => array(
+                'field' => 'mobile'
             ),
-            'client_email' => array(
-                'field' => 'client_email'
+            'email' => array(
+                'field' => 'email'
             ),
-            'client_web' => array(
-                'field' => 'client_web'
+            'web' => array(
+                'field' => 'web'
             ),
-            'client_vat_id' => array(
-                'field' => 'user_vat_id'
+            'vat_id' => array(
+                'field' => 'vat_id'
             ),
-            'client_tax_code' => array(
-                'field' => 'user_tax_code'
+            'tax_code' => array(
+                'field' => 'tax_code'
             )
         );
     }
@@ -103,8 +105,8 @@ class Mdl_Clients extends Response_Model
     {
         $db_array = parent::db_array();
 
-        if (!isset($db_array['client_active'])) {
-            $db_array['client_active'] = 0;
+        if (!isset($db_array['is_active'])) {
+            $db_array['is_active'] = 0;
         }
 
         return $db_array;
@@ -116,30 +118,32 @@ class Mdl_Clients extends Response_Model
      */
     public function delete($id)
     {
-        parent::delete($id);
-
-        $this->load->helper('orphan');
-        delete_orphans();
+        $this->db->set('date_deleted', date('Y-m-d H:i:s'));
+        $this->db->where('id', $id);
+        $this->db->update('clients');
     }
 
     /**
-     * Returns client_id of existing or new record
+     * Returns id of existing or new record
+     *
+     * @param $name
+     * @return int
      */
-    public function client_lookup($client_name)
+    public function client_lookup($name)
     {
-        $client = $this->mdl_clients->where('client_name', $client_name)->get();
+        $client = $this->mdl_clients->where('name', $name)->get();
 
         if ($client->num_rows()) {
-            $client_id = $client->row()->client_id;
+            $id = $client->row()->id;
         } else {
             $db_array = array(
-                'client_name' => $client_name
+                'name' => $name
             );
 
-            $client_id = parent::save(null, $db_array);
+            $id = parent::save(null, $db_array);
         }
 
-        return $client_id;
+        return $id;
     }
 
     /**
@@ -148,7 +152,7 @@ class Mdl_Clients extends Response_Model
      */
     public function with_total()
     {
-        $this->filter_select('IFNULL((SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_total',
+        $this->filter_select('IFNULL((SELECT SUM(invoice_total) FROM invoice_amounts WHERE invoice_id IN (SELECT id FROM invoices WHERE invoices.client_id = clients.id)), 0) AS client_invoice_total',
             false);
         return $this;
     }
@@ -159,7 +163,7 @@ class Mdl_Clients extends Response_Model
      */
     public function with_total_paid()
     {
-        $this->filter_select('IFNULL((SELECT SUM(invoice_paid) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_paid',
+        $this->filter_select('IFNULL((SELECT SUM(paid) FROM invoice_amounts WHERE invoice_id IN (SELECT id FROM invoices WHERE invoices.client_id = clients.id)), 0) AS client_invoice_paid',
             false);
         return $this;
     }
@@ -170,7 +174,7 @@ class Mdl_Clients extends Response_Model
      */
     public function with_total_balance()
     {
-        $this->filter_select('IFNULL((SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_balance',
+        $this->filter_select('IFNULL((SELECT SUM(balance) FROM invoice_amounts WHERE invoice_id IN (SELECT id FROM invoices WHERE invoices.client_id = clients.id)), 0) AS client_invoice_balance',
             false);
         return $this;
     }
@@ -181,7 +185,7 @@ class Mdl_Clients extends Response_Model
      */
     public function is_active()
     {
-        $this->filter_where('client_active', 1);
+        $this->filter_where('is_active', 1);
         return $this;
     }
 
@@ -191,8 +195,8 @@ class Mdl_Clients extends Response_Model
      */
     public function is_inactive()
     {
-        $this->filter_where('client_active', 0);
+        $this->filter_where('is_active', 0);
         return $this;
     }
-
+    
 }
