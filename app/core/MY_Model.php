@@ -3,10 +3,17 @@
 /**
  * Class MY_Model
  * @package Core
+ * @property CI_Config $config
+ * @property CI_DB_query_builder $db
+ * @property CI_DB_driver $query
+ * @property CI_Form_validation $form_validation
+ * @property CI_Input $input
+ * @property CI_Loader $load
+ * @property CI_Pagination $pagination
+ * @property Mdl_Settings $mdl_settings
  */
 class MY_Model extends CI_Model
 {
-
     public $table;
     public $primary_key;
     public $default_limit = 15;
@@ -68,6 +75,9 @@ class MY_Model extends CI_Model
      * Sets CI query object and automatically creates active record query
      * based on methods in child model.
      * $this->model_name->get()
+     * 
+     * @param bool $include_defaults
+     * @return $this
      */
     public function get($include_defaults = true)
     {
@@ -98,8 +108,9 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Query builder which listens to methods in child model.
-     * @param type $exclude
+     * Query builder which listens to methods in child model
+     * 
+     * @param array $exclude
      */
     private function set_defaults($exclude = array())
     {
@@ -121,6 +132,10 @@ class MY_Model extends CI_Model
     /**
      * Call when paginating results.
      * $this->model_name->paginate()
+     * 
+     * @param $base_url
+     * @param int $offset
+     * @param int $uri_segment
      */
     public function paginate($base_url, $offset = 0, $uri_segment = 3)
     {
@@ -160,7 +175,10 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Retrieves a single record based on primary key value.
+     * Retrieves a single record based on primary key value
+     * 
+     * @param $id
+     * @return mixed
      */
     public function get_by_id($id)
     {
@@ -237,6 +255,8 @@ class MY_Model extends CI_Model
     /**
      * Deletes a record based on primary key value.
      * $this->model_name->delete(5);
+     * 
+     * @param $id
      */
     public function delete($id)
     {
@@ -247,6 +267,8 @@ class MY_Model extends CI_Model
     /**
      * Returns the CI query result object.
      * $this->model_name->get()->result();
+     * 
+     * @return mixed
      */
     public function result()
     {
@@ -256,6 +278,8 @@ class MY_Model extends CI_Model
     /**
      * Returns the CI query row object.
      * $this->model_name->get()->row();
+     * 
+     * @return mixed
      */
     public function row()
     {
@@ -265,6 +289,8 @@ class MY_Model extends CI_Model
     /**
      * Returns CI query result array.
      * $this->model_name->get()->result_array();
+     * 
+     * @return mixed
      */
     public function result_array()
     {
@@ -274,6 +300,8 @@ class MY_Model extends CI_Model
     /**
      * Returns CI query row array.
      * $this->model_name->get()->row_array();
+     * 
+     * @return mixed
      */
     public function row_array()
     {
@@ -283,6 +311,8 @@ class MY_Model extends CI_Model
     /**
      * Returns CI query num_rows().
      * $this->model_name->get()->num_rows();
+     * 
+     * @return mixed
      */
     public function num_rows()
     {
@@ -291,6 +321,7 @@ class MY_Model extends CI_Model
 
     /**
      * Used to retrieve record by ID and populate $this->form_values.
+     * 
      * @param int $id
      * @return boolean
      */
@@ -315,6 +346,7 @@ class MY_Model extends CI_Model
      * Performs validation on submitted form. By default, looks for method in
      * child model called validation_rules, but can be forced to run validation
      * on any method in child model which returns array of validation rules.
+     * 
      * @param string $validation_rules
      * @return boolean
      */
@@ -345,19 +377,27 @@ class MY_Model extends CI_Model
 
     /**
      * Returns the assigned form value to a form input element.
-     * @param type $key
-     * @return type
+     * 
+     * @param $key
+     * @return string
      */
     public function form_value($key)
     {
         return (isset($this->form_values[$key])) ? $this->form_values[$key] : '';
     }
 
+    /**
+     * @param $key
+     * @param $value
+     */
     public function set_form_value($key, $value)
     {
         $this->form_values[$key] = $value;
     }
 
+    /**
+     * @param $id
+     */
     public function set_id($id)
     {
         $this->id = $id;

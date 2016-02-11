@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Response_Model
  * @package Core
+ * @property CI_Session $session
  */
 class Response_Model extends Form_Validation_Model
 {

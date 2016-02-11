@@ -6,6 +6,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Form_Validation_Model
  * @package Core
+ * @property CI_Loader $load
+ * @property MY_Form_validation $form_validation
  */
 class Form_Validation_Model extends MY_Model
 {

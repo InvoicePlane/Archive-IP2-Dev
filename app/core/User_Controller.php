@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class User_Controller
  * @package Core
+ * @property CI_Session $session
  */
 class User_Controller extends Base_Controller
 {

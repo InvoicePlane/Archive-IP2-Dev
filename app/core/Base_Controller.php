@@ -6,6 +6,10 @@ if (!defined('BASEPATH')) {
 /**
  * Class Base_Controller
  * @package Core
+ * @property CI_Config $config
+ * @property CI_Input $input
+ * @property CI_Lang $lang
+ * @property Mdl_Settings $mdl_settings
  */
 class Base_Controller extends MX_Controller
 {
