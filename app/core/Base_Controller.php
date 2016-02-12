@@ -42,9 +42,12 @@ class Base_Controller extends MX_Controller
             // Load globally used libraries and helpers
             $this->load->database();
 
-            $this->load->helper('date');
             $this->load->library('form_validation');
+
+            $this->load->helper('alert');
+            $this->load->helper('date');
             $this->load->helper('invoice');
+            $this->load->helper('ip');
             $this->load->helper('number');
             $this->load->helper('pager');
             $this->load->helper('redirect');

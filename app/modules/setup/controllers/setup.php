@@ -211,7 +211,6 @@ class Setup extends Setup_Controller
         $this->load->model('users/mdl_users');
 
         $this->load->helper('country');
-        $this->load->helper('ip');
 
         if ($this->mdl_users->run_validation()) {
             

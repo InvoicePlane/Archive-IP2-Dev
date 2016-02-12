@@ -39,7 +39,13 @@ function user_logged_in()
 {
     $CI = &get_instance();
 
-    if (empty($CI->session->userdata('user'))) {
+    // Check if there is user data stored
+    if (!isset($CI->session->user['app_key'])) {
+        return false;
+    }
+    
+    // Check if the instance key matches
+    if (!defined('APP_KEY') || $CI->session->user['app_key'] != APP_KEY) {
         return false;
     }
 

@@ -170,9 +170,6 @@
                        placeholder="<?php echo lang('optional'); ?>">
             </div>
 
-            <input type="submit" class="btn btn-success" name="btn_continue"
-                   value="<?php echo lang('continue'); ?>">
-
             <button type="submit" class="btn btn-success" name="btn_continue" value="1">
                 <i class="fa fa-angle-right fa-margin-right"></i><?php echo lang('continue'); ?>
             </button>

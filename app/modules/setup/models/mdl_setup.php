@@ -165,6 +165,8 @@ class Mdl_Setup extends CI_Model
         $this->load->helper('string');
 
         $default_settings = array(
+            'app_key' => hash('sha1', time() . microtime()),
+            'api_key' => generate_api_key(),
             'default_language' => $this->session->userdata('ip_lang'),
             'date_format' => 'm/d/Y',
             'currency_symbol' => '$',
@@ -178,7 +180,6 @@ class Mdl_Setup extends CI_Model
             'quotes_expire_after' => 15,
             'default_invoice_group' => 1,
             'default_quote_group' => 2,
-            'api_key' => hash('md5', microtime()),
         );
 
         foreach ($default_settings as $setting_key => $setting_value) {

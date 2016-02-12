@@ -29,6 +29,7 @@ class Setup_Controller extends MX_Controller
             exit;
         }
         
+        $this->load->helper('ip');
         $this->load->helper('url');
         $this->load->helper('redirect');
 
