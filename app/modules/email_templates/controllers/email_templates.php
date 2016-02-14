@@ -12,7 +12,7 @@ if (!defined('BASEPATH')) {
  * @property Mdl_Email_Templates $mdl_email_templates
  * @property Mdl_Templates $mdl_templates
  */
-class Email_Templates extends Admin_Controller
+class Email_Templates extends User_Controller
 {
     /**
      * Email_Templates constructor.

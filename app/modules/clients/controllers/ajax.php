@@ -7,7 +7,7 @@ if (!defined('BASEPATH')) {
  * Class Clients_Ajax
  * @package Modules\Clients\Controllers
  */
-class Clients_Ajax extends Admin_Controller
+class Clients_Ajax extends User_Controller
 {
     public $ajax_controller = true;
 

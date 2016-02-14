@@ -7,7 +7,7 @@ if (!defined('BASEPATH')) {
  * Class Clients
  * @package Modules\Clients\Controllers
  */
-class Clients extends Admin_Controller
+class Clients extends User_Controller
 {
     /**
      * Clients constructor.

@@ -8,7 +8,7 @@ if (!defined('BASEPATH')) {
  * @package Modules\EmailTemplates\Controllers
  * @property Mdl_Email_Templates $mdl_email_templates
  */
-class Email_Templates_Ajax extends Admin_Controller
+class Email_Templates_Ajax extends User_Controller
 {
     public $ajax_controller = true;
 

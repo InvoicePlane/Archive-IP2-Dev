@@ -7,7 +7,7 @@ if (!defined('BASEPATH')) {
  * Class Custom_Fields
  * @package Modules\CustomFields\Controllers
  */
-class Custom_Fields extends Admin_Controller
+class Custom_Fields extends User_Controller
 {
     /**
      * Custom_Fields constructor.
