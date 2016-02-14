@@ -63,6 +63,9 @@ class Base_Controller extends MX_Controller
             } else {
                 define('THEME_URL', base_url() . 'themes/InvoicePlane/');
             }
+            
+            // Get the app key
+            define('APP_KEY', $this->mdl_settings->setting('app_key'));
 
             // Load language strings
             $this->lang->load('ip', $this->mdl_settings->setting('default_language'));
