@@ -69,12 +69,12 @@ class Sessions extends Base_Controller
             $user = $query->row();
 
             if (empty($user)) {
-                $this->session->set_flashdata('alert_error', lang('loginalert_user_not_found'));
+                set_alert('danger', lang('loginalert_user_not_found'));
             } else {
 
                 // Check if the user is marked as active
                 if ($user->is_active == 0) {
-                    $this->session->set_flashdata('alert_error', lang('loginalert_user_inactive'));
+                    set_alert('danger', lang('loginalert_user_inactive'));
                 } else {
                     // Try to authenticate the user
                     $email = $this->input->post('email');
@@ -87,7 +87,7 @@ class Sessions extends Base_Controller
                             redirect('dashboard');
                         }
                     } else {
-                        $this->session->set_flashdata('alert_error', lang('loginalert_credentials_incorrect'));
+                        set_alert('danger', lang('loginalert_credentials_incorrect'));
                     }
                 }
             }
@@ -124,7 +124,7 @@ class Sessions extends Base_Controller
 
             if (empty($user)) {
                 // Redirect back to the login screen with an alert
-                $this->session->set_flashdata('alert_success', lang('wrong_passwordreset_token'));
+                set_alert('danger', lang('wrong_passwordreset_token'));
                 redirect('sessions/login');
             }
 
@@ -145,7 +145,7 @@ class Sessions extends Base_Controller
             $user_id = $this->input->post('id');
 
             if (empty($user_id) || empty($new_password)) {
-                $this->session->set_flashdata('alert_error', lang('loginalert_no_password'));
+                set_alert('danger', lang('loginalert_no_password'));
                 redirect($_SERVER['HTTP_REFERER']);
             }
 
@@ -173,7 +173,7 @@ class Sessions extends Base_Controller
             $email = $this->input->post('email');
             
             if (empty($email)) {
-                $this->session->set_flashdata('alert_error', lang('loginalert_user_not_found'));
+                set_alert('danger', lang('loginalert_user_not_found'));
                 redirect($_SERVER['HTTP_REFERER']);
             }
 
@@ -217,7 +217,7 @@ class Sessions extends Base_Controller
                 $this->email->send();
 
                 // Redirect back to the login screen with an alert
-                $this->session->set_flashdata('alert_success', lang('email_successfully_sent'));
+                set_alert('success', lang('email_successfully_sent'));
                 redirect('sessions/login');
             }
         }
