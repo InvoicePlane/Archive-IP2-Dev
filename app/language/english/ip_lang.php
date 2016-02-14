@@ -36,6 +36,7 @@ $lang = array(
     'before_amount'                                => 'Before Amount',
     'bill_to'                                      => 'Bill To',
     'body'                                         => 'Body',
+    'body_template_file'                           => 'Template file for email body',
     'change_client'                                => 'Change Client',
     'calculate_discounts'                          => 'Calculate Discounts',
     'calendar_month'                               => 'Month',

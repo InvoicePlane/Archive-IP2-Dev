@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Email_Templates_Ajax
  * @package Modules\EmailTemplates\Controllers
+ * @property Mdl_Email_Templates $mdl_email_templates
  */
 class Email_Templates_Ajax extends Admin_Controller
 {
@@ -19,7 +20,7 @@ class Email_Templates_Ajax extends Admin_Controller
     {
         $this->load->model('email_templates/mdl_email_templates');
 
-        $id = $this->input->post('email_template_id');
+        $id = $this->input->post('id');
         echo json_encode($this->mdl_email_templates->get_by_id($id));
     }
 }

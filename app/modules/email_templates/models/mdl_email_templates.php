@@ -9,8 +9,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Email_Templates extends Response_Model
 {
-    public $table = 'ip_email_templates';
-    public $primary_key = 'ip_email_templates.email_template_id';
+    public $table = 'email_templates';
+    public $primary_key = 'email_templates.id';
 
     /**
      * The default select directive used in every query
@@ -25,7 +25,7 @@ class Mdl_Email_Templates extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('email_template_title');
+        $this->db->order_by('title');
     }
 
     /**
@@ -35,55 +35,55 @@ class Mdl_Email_Templates extends Response_Model
     public function validation_rules()
     {
         return array(
-            'email_template_title' => array(
-                'field' => 'email_template_title',
+            'title' => array(
+                'field' => 'title',
                 'label' => lang('title'),
                 'rules' => 'required'
             ),
-            'email_template_type' => array(
-                'field' => 'email_template_pdf_quote_template',
+            'type' => array(
+                'field' => 'pdf_quote_template',
                 'label' => lang('type')
             ),
-            'email_template_to_email' => array(
-                'field' => 'email_template_to_email',
-                'label' => lang('to_email')
-            ),
-            'email_template_subject' => array(
-                'field' => 'email_template_subject',
+            'subject' => array(
+                'field' => 'subject',
                 'label' => lang('subject')
             ),
-            'email_template_from_name' => array(
-                'field' => 'email_template_from_name',
+            'to_email' => array(
+                'field' => 'to_email',
+                'label' => lang('to_email')
+            ),
+            'from_name' => array(
+                'field' => 'from_name',
                 'label' => lang('from_name')
             ),
-            'email_template_from_email' => array(
-                'field' => 'email_template_from_email',
+            'from_email' => array(
+                'field' => 'from_email',
                 'label' => lang('from_email')
             ),
-            'email_template_cc' => array(
-                'field' => 'email_template_cc',
+            'cc' => array(
+                'field' => 'cc',
                 'label' => lang('cc')
             ),
-            'email_template_bcc' => array(
-                'field' => 'email_template_bcc',
+            'bcc' => array(
+                'field' => 'bcc',
                 'label' => lang('bcc')
             ),
-            'email_template_pdf_template' => array(
-                'field' => 'email_template_pdf_template',
+            'pdf_template' => array(
+                'field' => 'pdf_template',
                 'label' => lang('default_pdf_template')
             ),
-            'email_template_send_pdf' => array(
-                'field' => 'email_template_send_pdf',
+            'body_template_file' => array(
+                'field' => 'body_template_file',
+                'label' => lang('body_template_file')
+            ),
+            'send_attachments' => array(
+                'field' => 'send_attachments',
+                'label' => lang('send_attachments')
+            ),
+            'send_pdf' => array(
+                'field' => 'send_pdf',
                 'label' => lang('send_pdf')
             ),
-            'email_template_send_attachments' => array(
-               'field' => 'email_template_send_attachments',
-               'label' => lang('send_attachments')
-            ),
-            'email_template_body' => array(
-                'field' => 'email_template_body',
-                'label' => lang('body')
-            )
         );
     }
 }

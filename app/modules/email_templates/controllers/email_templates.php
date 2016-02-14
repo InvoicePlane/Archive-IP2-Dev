@@ -6,6 +6,11 @@ if (!defined('BASEPATH')) {
 /**
  * Class Email_Templates
  * @package Modules\EmailTemplates\Controllers
+ * @property CI_DB_query_builder $db
+ * @property Layout $layout
+ * @property Mdl_Custom_Fields $mdl_custom_fields
+ * @property Mdl_Email_Templates $mdl_email_templates
+ * @property Mdl_Templates $mdl_templates
  */
 class Email_Templates extends Admin_Controller
 {
@@ -45,10 +50,10 @@ class Email_Templates extends Admin_Controller
         }
 
         if ($this->input->post('is_update') == 0 && $this->input->post('email_template_title') != '') {
-            $check = $this->db->get_where('ip_email_templates',
-                array('email_template_title' => $this->input->post('email_template_title')))->result();
+            $check = $this->db->get_where('email_templates',
+                array('title' => $this->input->post('email_template_title')))->result();
             if (!empty($check)) {
-                $this->session->set_flashdata('alert_error', lang('email_template_already_exists'));
+                set_alert('danger', lang('email_template_already_exists'));
                 redirect('email_templates/form');
             }
         }
@@ -68,6 +73,7 @@ class Email_Templates extends Admin_Controller
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('invoices/mdl_templates');
 
+        $custom_fields = array();
         foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table) {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
