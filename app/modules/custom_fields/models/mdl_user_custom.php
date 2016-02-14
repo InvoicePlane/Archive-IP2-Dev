@@ -9,8 +9,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_User_Custom extends MY_Model
 {
-    public $table = 'ip_user_custom';
-    public $primary_key = 'ip_user_custom.user_custom_id';
+    public $table = 'custom_user';
+    public $primary_key = 'custom_user.id';
 
     /**
      * Saves a custom field for users to the database

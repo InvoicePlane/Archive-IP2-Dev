@@ -9,8 +9,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Client_Custom extends MY_Model
 {
-    public $table = 'ip_client_custom';
-    public $primary_key = 'ip_client_custom.client_custom_id';
+    public $table = 'custom_client';
+    public $primary_key = 'custom_client.id';
 
     /**
      * Saves a custom field for clients to the database

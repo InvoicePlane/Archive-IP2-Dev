@@ -10,8 +10,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Payment_Custom extends MY_Model
 {
-    public $table = 'ip_payment_custom';
-    public $primary_key = 'ip_payment_custom.payment_custom_id';
+    public $table = 'custom_payment';
+    public $primary_key = 'custom_payment.id';
 
     /**
      * Saves a custom field for payments to the database

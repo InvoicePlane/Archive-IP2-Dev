@@ -9,8 +9,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Quote_Custom extends MY_Model
 {
-    public $table = 'ip_quote_custom';
-    public $primary_key = 'ip_quote_custom.quote_custom_id';
+    public $table = 'custom_quote';
+    public $primary_key = 'custom_quote.id';
 
     /**
      * Saves a custom field for quotes to the database

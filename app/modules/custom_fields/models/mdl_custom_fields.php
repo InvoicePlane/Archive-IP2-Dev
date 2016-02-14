@@ -9,8 +9,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Custom_Fields extends MY_Model
 {
-    public $table = 'ip_custom_fields';
-    public $primary_key = 'ip_custom_fields.custom_field_id';
+    public $table = 'custom_fields';
+    public $primary_key = 'custom_fields.id';
 
     /**
      * The default select directive used in every query
@@ -27,11 +27,11 @@ class Mdl_Custom_Fields extends MY_Model
     public function custom_tables()
     {
         return array(
-            'ip_client_custom' => 'client',
-            'ip_invoice_custom' => 'invoice',
-            'ip_payment_custom' => 'payment',
-            'ip_quote_custom' => 'quote',
-            'ip_user_custom' => 'user'
+            'custom_client' => 'client',
+            'custom_invoice' => 'invoice',
+            'custom_payment' => 'payment',
+            'custom_quote' => 'quote',
+            'custom_user' => 'user'
         );
     }
 
@@ -42,8 +42,8 @@ class Mdl_Custom_Fields extends MY_Model
     public function custom_types()
     {
         return array(
-            'ip_fieldtype_input' => 'input_field',
-            'ip_fieldtype_textarea' => 'textarea_field'
+            'fieldtype_input' => 'input_field',
+            'fieldtype_textarea' => 'textarea_field'
         );
     }
 
@@ -54,18 +54,18 @@ class Mdl_Custom_Fields extends MY_Model
     public function validation_rules()
     {
         return array(
-            'custom_field_table' => array(
-                'field' => 'custom_field_table',
+            'table' => array(
+                'field' => 'table',
                 'label' => lang('table'),
                 'rules' => 'required'
             ),
-            'custom_field_type' => array(
-                'field' => 'custom_field_type',
+            'type' => array(
+                'field' => 'type',
                 'label' => lang('type'),
                 'rules' => 'required'
             ),
-            'custom_field_label' => array(
-                'field' => 'custom_field_label',
+            'label' => array(
+                'field' => 'label',
                 'label' => lang('label'),
                 'rules' => 'required|max_length[50]'
             )
@@ -88,20 +88,20 @@ class Mdl_Custom_Fields extends MY_Model
         $custom_tables = $this->custom_tables();
 
         // Check if the user wants to add 'id' as custom field
-        if (strtolower($db_array['custom_field_label']) == 'id') {
+        if (strtolower($db_array['label']) == 'id') {
             // Replace 'id' with 'field_id' to avoid problems with the primary key
-            $custom_field_label = 'field_id';
+            $label = 'field_id';
         } else {
-            $custom_field_label = strtolower(str_replace(' ', '_', $db_array['custom_field_label']));
+            $label = strtolower(str_replace(' ', '_', $db_array['label']));
         }
 
         // Create the name for the custom field column
 
         $this->load->helper('diacritics');
 
-        $clean_name = preg_replace('/[^a-z0-9_\s]/', '', strtolower(diacritics_remove_diacritics($custom_field_label)));
+        $clean_name = preg_replace('/[^a-z0-9_\s]/', '', strtolower(diacritics_remove_diacritics($label)));
 
-        $db_array['custom_field_column'] = $custom_tables[$db_array['custom_field_table']] . '_custom_' . $clean_name;
+        $db_array['column'] = 'custom_' . $custom_tables[$db_array['table']] . '_' . $clean_name;
 
         // Return the db array
         return $db_array;
@@ -123,18 +123,18 @@ class Mdl_Custom_Fields extends MY_Model
         // Create the record
         $db_array = ($db_array) ? $db_array : $this->db_array();
 
-        // Save the record to ip_custom_fields
+        // Save the record to custom_fields
         $id = parent::save($id, $db_array);
 
         if (isset($original_record)) {
-            if ($original_record->custom_field_column <> $db_array['custom_field_column']) {
+            if ($original_record->column <> $db_array['column']) {
                 // The column name differs from the original - rename it
-                $this->rename_column($db_array['custom_field_table'], $original_record->custom_field_column,
-                    $db_array['custom_field_column']);
+                $this->rename_column($db_array['table'], $original_record->column,
+                    $db_array['column']);
             }
         } else {
             // This is a new column - add it
-            $this->add_column($db_array['custom_field_table'], $db_array['custom_field_column']);
+            $this->add_column($db_array['table'], $db_array['column']);
         }
 
         return $id;
@@ -186,9 +186,9 @@ class Mdl_Custom_Fields extends MY_Model
     {
         $custom_field = $this->get_by_id($id);
 
-        if ($this->db->field_exists($custom_field->custom_field_column, $custom_field->custom_field_table)) {
+        if ($this->db->field_exists($custom_field->column, $custom_field->table)) {
             $this->load->dbforge();
-            $this->dbforge->drop_column($custom_field->custom_field_table, $custom_field->custom_field_column);
+            $this->dbforge->drop_column($custom_field->table, $custom_field->column);
         }
 
         parent::delete($id);
@@ -201,7 +201,7 @@ class Mdl_Custom_Fields extends MY_Model
      */
     public function by_table($table)
     {
-        $this->filter_where('custom_field_table', $table);
+        $this->filter_where('table', $table);
         return $this;
     }
 
