@@ -4,13 +4,13 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * Class Mdl_Families
+ * Class Mdl_Product_Families
  * @package Modules\Families\Models
  */
-class Mdl_Families extends Response_Model
+class Mdl_Product_Families extends Response_Model
 {
-    public $table = 'ip_families';
-    public $primary_key = 'ip_families.family_id';
+    public $table = 'families';
+    public $primary_key = 'families.id';
 
     /**
      * The default select directive used in every query
@@ -25,7 +25,7 @@ class Mdl_Families extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_families.family_name');
+        $this->db->order_by('families.name');
     }
 
     /**
@@ -35,9 +35,9 @@ class Mdl_Families extends Response_Model
     public function validation_rules()
     {
         return array(
-            'family_name' => array(
-                'field' => 'family_name',
-                'label' => lang('family_name'),
+            'name' => array(
+                'field' => 'name',
+                'label' => lang('product_family_name'),
                 'rules' => 'required'
             )
         );
