@@ -4,14 +4,12 @@
     }
 } ?>
 
-<?php if ($this->session->flashdata('alert_success')) { ?>
-    <div class="alert alert-success"><?php echo $this->session->flashdata('alert_success'); ?></div>
-<?php } ?>
-
-<?php if ($this->session->flashdata('alert_info')) { ?>
-    <div class="alert alert-info"><?php echo $this->session->flashdata('alert_info'); ?></div>
-<?php } ?>
-
-<?php if ($this->session->flashdata('alert_error')) { ?>
-    <div class="alert alert-danger"><?php echo $this->session->flashdata('alert_error'); ?></div>
-<?php } ?>
+<?php
+$alerts = get_alerts();
+if ($alerts) {
+    foreach ($alerts as $alert) {
+        echo '<div class="alert alert-' . $alert['type'] . '">' . $alert['message'] . '</div>';
+    }
+    clear_alerts();
+}
+?>
