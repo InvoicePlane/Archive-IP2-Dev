@@ -487,8 +487,7 @@ class Setup extends Setup_Controller
             unlink(APPPATH . 'config/database.php');
         }
 
-        $this->session->set_flashdata('alert_error', lang('setup_restarted'));
-        $this->session->keep_flashdata('alert_error');
+        set_alert('danger', lang('setup_restarted'));
 
         $this->session->set_userdata('install_step', 'prerequisites');
         
