@@ -74,7 +74,7 @@ class Clients extends Admin_Controller
             $check = $this->db->get_where('ip_clients',
                 array('client_name' => $this->input->post('client_name')))->result();
             if (!empty($check)) {
-                $this->session->set_flashdata('alert_error', lang('client_already_exists'));
+                set_alert('danger', lang('client_already_exists'));
                 redirect('clients/form');
             }
         }
