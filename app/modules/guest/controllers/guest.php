@@ -6,6 +6,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Guest
  * @package Modules\Guest\Controllers
+ * @property Layout $layout
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Quotes $mdl_quotes
  */
 class Guest extends Guest_Controller
 {
@@ -19,12 +22,12 @@ class Guest extends Guest_Controller
 
         $this->layout->set(
             array(
-                'overdue_invoices' => $this->mdl_invoices->is_overdue()->where_in('ip_invoices.client_id',
+                'open_quotes' => $this->mdl_quotes->is_open()->where_in('quotes.client_id',
                     $this->user_clients)->get()->result(),
-                'open_quotes' => $this->mdl_quotes->is_open()->where_in('ip_quotes.client_id',
+                'overdue_invoices' => $this->mdl_invoices->is_overdue()->where_in('invoices.client_id',
                     $this->user_clients)->get()->result(),
-                'open_invoices' => $this->mdl_invoices->is_open()->where_in('ip_invoices.client_id',
-                    $this->user_clients)->get()->result()
+                'open_invoices' => $this->mdl_invoices->is_open()->where_in('invoices.client_id',
+                    $this->user_clients)->get()->result(),
             )
         );
 

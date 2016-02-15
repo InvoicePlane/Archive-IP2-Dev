@@ -6,6 +6,10 @@ if (!defined('BASEPATH')) {
 /**
  * Class Guest_Quotes
  * @package Modules\Guest\Controllers
+ * @property Layout $layout
+ * @property Mdl_Quotes $mdl_quotes
+ * @property Mdl_Quote_Items $mdl_quote_items
+ * @property Mdl_Quote_Tax_Rates $mdl_quote_tax_rates
  */
 class Guest_Quotes extends Guest_Controller
 {
@@ -41,14 +45,14 @@ class Guest_Quotes extends Guest_Controller
         // Determine which group of quotes to load
         switch ($status) {
             case 'approved':
-                $this->mdl_quotes->is_approved()->where_in('ip_quotes.client_id', $this->user_clients);
+                $this->mdl_quotes->is_approved()->where_in('quotes.client_id', $this->user_clients);
                 break;
             case 'rejected':
-                $this->mdl_quotes->is_rejected()->where_in('ip_quotes.client_id', $this->user_clients);
+                $this->mdl_quotes->is_rejected()->where_in('quotes.client_id', $this->user_clients);
                 $this->layout->set('show_invoice_column', true);
                 break;
             default:
-                $this->mdl_quotes->is_open()->where_in('ip_quotes.client_id', $this->user_clients);
+                $this->mdl_quotes->is_open()->where_in('quotes.client_id', $this->user_clients);
                 break;
         }
 
@@ -72,14 +76,14 @@ class Guest_Quotes extends Guest_Controller
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quote_tax_rates');
 
-        $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id',
-            $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
+        $quote = $this->mdl_quotes->guest_visible()->where('quotes.id',
+            $quote_id)->where_in('quotes.client_id', $this->user_clients)->get()->row();
 
         if (!$quote) {
             show_404();
         }
 
-        $this->mdl_quotes->mark_viewed($quote->quote_id);
+        $this->mdl_quotes->mark_viewed($quote->id);
 
         $this->layout->set(
             array(
@@ -106,8 +110,8 @@ class Guest_Quotes extends Guest_Controller
 
         $this->mdl_quotes->mark_viewed($quote_id);
 
-        $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id',
-            $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
+        $quote = $this->mdl_quotes->guest_visible()->where('quotes.id',
+            $quote_id)->where_in('quotes.client_id', $this->user_clients)->get()->row();
 
         if (!$quote) {
             show_404();

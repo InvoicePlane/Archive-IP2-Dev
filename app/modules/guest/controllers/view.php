@@ -6,18 +6,26 @@ if (!defined('BASEPATH')) {
 /**
  * Class View
  * @package Modules\Guest\Controllers
+ * @property CI_Session $session
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Invoice_Tax_Rates $mdl_invoice_tax_rates
+ * @property Mdl_Items $mdl_items
+ * @property Mdl_Quotes $mdl_quotes
+ * @property Mdl_Quote_Items $mdl_quote_items
+ * @property Mdl_Quote_Tax_Rates $mdl_quote_tax_rates
+ * @property Mdl_Payment_Methods $mdl_payment_methods
  */
 class View extends Base_Controller
 {
     /**
      * Returns the web view for an invoice based on the given URL key
-     * @param $invoice_url_key
+     * @param $url_key
      */
-    public function invoice($invoice_url_key)
+    public function invoice($url_key)
     {
         $this->load->model('invoices/mdl_invoices');
 
-        $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
+        $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $url_key)->get();
 
         if ($invoice->num_rows() == 1) {
             $this->load->model('invoices/mdl_items');
@@ -41,7 +49,7 @@ class View extends Base_Controller
                 'items' => $this->mdl_items->get_items_and_replace_vars($invoice->invoice_id),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id',
                     $invoice->invoice_id)->get()->result(),
-                'invoice_url_key' => $invoice_url_key,
+                'invoice_url_key' => $url_key,
                 'flash_message' => $this->session->flashdata('flash_message'),
                 'payment_method' => $payment_method
             );
@@ -53,15 +61,15 @@ class View extends Base_Controller
 
     /**
      * Returns the generated PDF of the invoice based on the given ID
-     * @param $invoice_url_key
+     * @param $url_key
      * @param bool $stream
      * @param null $invoice_template
      */
-    public function generate_invoice_pdf($invoice_url_key, $stream = true, $invoice_template = null)
+    public function generate_invoice_pdf($url_key, $stream = true, $invoice_template = null)
     {
         $this->load->model('invoices/mdl_invoices');
 
-        $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
+        $invoice = $this->mdl_invoices->guest_visible()->where('url_key', $url_key)->get();
 
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
@@ -78,13 +86,13 @@ class View extends Base_Controller
 
     /**
      * Returns the web view for an invoice based on the given URL key
-     * @param $quote_url_key
+     * @param $url_key
      */
-    public function quote($quote_url_key)
+    public function quote($url_key)
     {
         $this->load->model('quotes/mdl_quotes');
 
-        $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get();
+        $quote = $this->mdl_quotes->guest_visible()->where('url_key', $url_key)->get();
 
         if ($quote->num_rows() == 1) {
             $this->load->model('quotes/mdl_quote_items');
@@ -99,9 +107,9 @@ class View extends Base_Controller
 
             $data = array(
                 'quote' => $quote,
-                'items' => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
-                'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
-                'quote_url_key' => $quote_url_key,
+                'items' => $this->mdl_quote_items->where('id', $quote->id)->get()->result(),
+                'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote->id)->get()->result(),
+                'quote_url_key' => $url_key,
                 'flash_message' => $this->session->flashdata('flash_message')
             );
 
@@ -112,15 +120,15 @@ class View extends Base_Controller
 
     /**
      * Returns the generated PDF of the quote based on the given ID
-     * @param $quote_url_key
+     * @param $url_key
      * @param bool $stream
      * @param null $quote_template
      */
-    public function generate_quote_pdf($quote_url_key, $stream = true, $quote_template = null)
+    public function generate_quote_pdf($url_key, $stream = true, $quote_template = null)
     {
         $this->load->model('quotes/mdl_quotes');
 
-        $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get();
+        $quote = $this->mdl_quotes->guest_visible()->where('url_key', $url_key)->get();
 
         if ($quote->num_rows() == 1) {
             $quote = $quote->row();
@@ -137,33 +145,33 @@ class View extends Base_Controller
 
     /**
      * Approves a quote based on the given URL key
-     * @param $quote_url_key
+     * @param $url_key
      */
-    public function approve_quote($quote_url_key)
+    public function approve_quote($url_key)
     {
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
 
-        $this->mdl_quotes->approve_quote_by_key($quote_url_key);
-        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id,
+        $this->mdl_quotes->approve_quote_by_key($url_key);
+        email_quote_status($this->mdl_quotes->where('quotes.url_key', $url_key)->get()->row()->quote_id,
             "approved");
 
-        redirect('guest/view/quote/' . $quote_url_key);
+        redirect('guest/view/quote/' . $url_key);
     }
 
     /**
      * Rejects a quote based on the given URL key
-     * @param $quote_url_key
+     * @param $url_key
      */
-    public function reject_quote($quote_url_key)
+    public function reject_quote($url_key)
     {
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
 
-        $this->mdl_quotes->reject_quote_by_key($quote_url_key);
-        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id,
+        $this->mdl_quotes->reject_quote_by_key($url_key);
+        email_quote_status($this->mdl_quotes->where('quotes.url_key', $url_key)->get()->row()->quote_id,
             "rejected");
 
-        redirect('guest/view/quote/' . $quote_url_key);
+        redirect('guest/view/quote/' . $url_key);
     }
 }

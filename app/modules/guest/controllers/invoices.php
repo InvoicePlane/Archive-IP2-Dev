@@ -6,6 +6,10 @@ if (!defined('BASEPATH')) {
 /**
  * Class Guest_Invoices
  * @package Modules\Guest\Controllers
+ * @property Layout $layout
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Invoice_Tax_Rates $mdl_invoice_tax_rates
+ * @property Mdl_Items $mdl_items
  */
 class Guest_Invoices extends Guest_Controller
 {
@@ -39,12 +43,11 @@ class Guest_Invoices extends Guest_Controller
         // Determine which group of invoices to load
         switch ($status) {
             case 'paid':
-                $this->mdl_invoices->is_paid()->where_in('ip_invoices.client_id', $this->user_clients);
+                $this->mdl_invoices->is_paid()->where_in('invoices.client_id', $this->user_clients);
                 break;
             default:
-                $this->mdl_invoices->is_open()->where_in('ip_invoices.client_id', $this->user_clients);
+                $this->mdl_invoices->is_open()->where_in('invoices.client_id', $this->user_clients);
                 break;
-
         }
 
         $this->mdl_invoices->paginate(site_url('guest/invoices/status/' . $status), $page);
@@ -70,7 +73,7 @@ class Guest_Invoices extends Guest_Controller
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id',
+        $invoice = $this->mdl_invoices->where('invoices.id', $invoice_id)->where_in('invoices.client_id',
             $this->user_clients)->get()->row();
 
         if (!$invoice) {
@@ -82,8 +85,8 @@ class Guest_Invoices extends Guest_Controller
         $this->layout->set(
             array(
                 'invoice' => $invoice,
-                'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
-                'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
+                'items' => $this->mdl_items->where('id', $invoice_id)->get()->result(),
+                'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('id', $invoice_id)->get()->result(),
                 'invoice_id' => $invoice_id
             )
         );
