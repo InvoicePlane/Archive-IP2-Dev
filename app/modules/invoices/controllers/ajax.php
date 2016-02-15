@@ -6,6 +6,19 @@ if (!defined('BASEPATH')) {
 /**
  * Class Invoices_Ajax
  * @package Modules\Invoices\Controllers
+ * @property CI_DB_query_builder $db
+ * @property CI_Form_validation $form_validation
+ * @property Layout $layout
+ * @property Mdl_Clients $mdl_clients
+ * @property Mdl_Invoice_Custom $mdl_invoice_custom
+ * @property Mdl_Invoice_Amounts $mdl_invoice_amounts
+ * @property Mdl_Invoice_Groups $mdl_invoice_groups
+ * @property Mdl_Invoice_Tax_Rates $mdl_invoice_tax_rates
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Invoices_Recurring $mdl_invoices_recurring
+ * @property Mdl_Items $mdl_items
+ * @property Mdl_Tasks $mdl_tasks
+ * @property Mdl_Tax_Rates $mdl_tax_rates
  */
 class Invoices_Ajax extends Admin_Controller
 {
@@ -41,38 +54,38 @@ class Invoices_Ajax extends Admin_Controller
 
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
-                if (!empty($item->item_quantity) && !empty($item->item_price)
-                    || !empty($item->item_name)
-                    || !empty($item->item_description)
+                if (!empty($item->quantity) && !empty($item->price)
+                    || !empty($item->name)
+                    || !empty($item->description)
                 ) {
-                    $item->item_quantity = standardize_amount($item->item_quantity);
-                    $item->item_price = standardize_amount($item->item_price);
-                    $item->item_discount_amount = standardize_amount($item->item_discount_amount);
+                    $item->quantity = standardize_amount($item->quantity);
+                    $item->price = standardize_amount($item->price);
+                    $item->discount_amount = standardize_amount($item->discount_amount);
 
-                    $item_id = ($item->item_id) ?: null;
-                    if (!$item->item_task_id) {
-                        unset($item->item_task_id);
+                    $item_id = ($item->id) ?: null;
+                    if (!$item->task_id) {
+                        unset($item->task_id);
                     } else {
                         $this->load->model('tasks/mdl_tasks');
-                        $this->mdl_tasks->update_status(4, $item->item_task_id);
+                        $this->mdl_tasks->update_status(4, $item->task_id);
                     }
                     $this->mdl_items->save($invoice_id, $item_id, $item);
                 } else {
                     // Throw an error message and use the form validation for that
                     $this->load->library('form_validation');
-                    $this->form_validation->set_rules('item_name', lang('item'), 'required');
-                    $this->form_validation->set_rules('item_description', lang('description'), 'required');
-                    $this->form_validation->set_rules('item_quantity', lang('quantity'), 'required');
-                    $this->form_validation->set_rules('item_price', lang('price'), 'required');
+                    $this->form_validation->set_rules('name', lang('item'), 'required');
+                    $this->form_validation->set_rules('description', lang('description'), 'required');
+                    $this->form_validation->set_rules('quantity', lang('quantity'), 'required');
+                    $this->form_validation->set_rules('price', lang('price'), 'required');
                     $this->form_validation->run();
 
                     $response = array(
                         'success' => 0,
                         'validation_errors' => array(
-                            'item_name' => form_error('item_name', '', ''),
-                            'item_description' => form_error('item_description', '', ''),
-                            'item_quantity' => form_error('item_quantity', '', ''),
-                            'item_price' => form_error('item_price', '', ''),
+                            'name' => form_error('name', '', ''),
+                            'description' => form_error('description', '', ''),
+                            'quantity' => form_error('quantity', '', ''),
+                            'price' => form_error('price', '', ''),
                         )
                     );
                     echo json_encode($response);
@@ -95,15 +108,15 @@ class Invoices_Ajax extends Admin_Controller
             }
 
             $db_array = array(
+                'status_id' => $invoice_status,
+                'payment_method_id' => $this->input->post('payment_method'),
                 'invoice_number' => $this->input->post('invoice_number'),
-                'invoice_terms' => $this->input->post('invoice_terms'),
-                'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
-                'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
-                'invoice_password' => $this->input->post('invoice_password'),
-                'invoice_status_id' => $invoice_status,
-                'payment_method' => $this->input->post('payment_method'),
-                'invoice_discount_amount' => $invoice_discount_amount,
-                'invoice_discount_percent' => $invoice_discount_percent,
+                'date_due' => date_to_mysql($this->input->post('invoice_date_due')),
+                'discount_amount' => $invoice_discount_amount,
+                'discount_percent' => $invoice_discount_percent,
+                'terms' => $this->input->post('invoice_terms'),
+                'password' => $this->input->post('invoice_password'),
+                'date_created' => date_to_mysql($this->input->post('invoice_date_created')),
             );
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
@@ -142,7 +155,6 @@ class Invoices_Ajax extends Admin_Controller
             $db_array = array();
 
             foreach ($this->input->post('custom') as $custom) {
-                // I hate myself for this...
                 $db_array[str_replace(']', '', str_replace('custom[', '', $custom['name']))] = $custom['value'];
             }
 
@@ -345,14 +357,14 @@ class Invoices_Ajax extends Admin_Controller
             ->get()->row();
 
         if (!empty($client)) {
-            $client_id = $client->client_id;
+            $client_id = $client->id;
             $invoice_id = $this->input->post('invoice_id');
 
             $db_array = array(
                 'client_id' => $client_id,
             );
-            $this->db->where('invoice_id', $invoice_id);
-            $this->db->update('ip_invoices', $db_array);
+            $this->db->where('id', $invoice_id);
+            $this->db->update('invoices', $db_array);
 
             $response = array(
                 'success' => 1,
@@ -385,7 +397,7 @@ class Invoices_Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'invoice_id' => $this->input->post('invoice_id'),
-            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id',
+            'invoice' => $this->mdl_invoices->where('invoices.id',
                 $this->input->post('invoice_id'))->get()->row()
         );
 
@@ -441,7 +453,7 @@ class Invoices_Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'invoice_id' => $this->input->post('invoice_id'),
-            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id',
+            'invoice' => $this->mdl_invoices->where('invoices.id',
                 $this->input->post('invoice_id'))->get()->row()
         );
 
@@ -469,16 +481,16 @@ class Invoices_Ajax extends Admin_Controller
 
             // Set source invoice to read-only
             if ($this->config->item('disable_read_only') == false) {
-                $this->mdl_invoices->where('invoice_id', $source_id);
-                $this->mdl_invoices->update('ip_invoices', array('is_read_only' => '1'));
+                $this->mdl_invoices->where('id', $source_id);
+                $this->mdl_invoices->update('invoices', array('is_read_only' => '1'));
             }
 
             // Set target invoice to credit invoice
-            $this->mdl_invoices->where('invoice_id', $target_id);
-            $this->mdl_invoices->update('ip_invoices', array('creditinvoice_parent_id' => $source_id));
+            $this->mdl_invoices->where('id', $target_id);
+            $this->mdl_invoices->update('invoices', array('credit_parent_id' => $source_id));
 
-            $this->mdl_invoices->where('invoice_id', $target_id);
-            $this->mdl_invoices->update('ip_invoice_amounts', array('invoice_sign' => '-1'));
+            $this->mdl_invoices->where('id', $target_id);
+            $this->mdl_invoices->update('invoice_amounts', array('sign' => '-1'));
 
             $response = array(
                 'success' => 1,

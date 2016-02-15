@@ -6,6 +6,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Recurring
  * @package Modules\Invoices\Controllers
+ * @property Layout $layout
+ * @property Mdl_Invoices_Recurring $mdl_invoices_recurring
  */
 class Recurring extends Admin_Controller
 {

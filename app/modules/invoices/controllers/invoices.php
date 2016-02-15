@@ -6,6 +6,17 @@ if (!defined('BASEPATH')) {
 /**
  * Class Invoices
  * @package Modules\Invoices\Controllers
+ * @property CI_DB_query_builder $db
+ * @property Layout $layout
+ * @property Mdl_Custom_Fields $mdl_custom_fields
+ * @property Mdl_Invoice_Custom $mdl_invoice_custom
+ * @property Mdl_Invoice_Amounts $mdl_invoice_amounts
+ * @property Mdl_Invoice_Tax_Rates $mdl_invoice_tax_rates
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Items $mdl_items
+ * @property Mdl_Payment_Methods $mdl_payment_methods
+ * @property Mdl_Tasks $mdl_tasks
+ * @property Mdl_Tax_Rates $mdl_tax_rates
  */
 class Invoices extends Admin_Controller
 {
@@ -79,6 +90,7 @@ class Invoices extends Admin_Controller
     public function archive()
     {
         $invoice_array = array();
+        
         if (isset($_POST['invoice_number'])) {
             $invoiceNumber = $_POST['invoice_number'];
             $invoice_array = glob('./uploads/archive/*' . '_' . $invoiceNumber . '.pdf');
@@ -138,7 +150,7 @@ class Invoices extends Admin_Controller
         if ($invoice_custom->num_rows()) {
             $invoice_custom = $invoice_custom->row();
 
-            unset($invoice_custom->invoice_id, $invoice_custom->invoice_custom_id);
+            unset($invoice_custom->invoice_id, $invoice_custom->id);
 
             foreach ($invoice_custom as $key => $val) {
                 $this->mdl_invoices->set_form_value('custom[' . $key . ']', $val);
@@ -160,7 +172,7 @@ class Invoices extends Admin_Controller
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result(),
+                'custom_fields' => $this->mdl_custom_fields->by_table('custom_invoice')->get()->result(),
                 'custom_js_vars' => array(
                     'currency_symbol' => $this->mdl_settings->setting('currency_symbol'),
                     'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
@@ -268,12 +280,12 @@ class Invoices extends Admin_Controller
     public function recalculate_all_invoices()
     {
         $this->db->select('invoice_id');
-        $invoice_ids = $this->db->get('ip_invoices')->result();
+        $invoice_ids = $this->db->get('invoices')->result();
 
         $this->load->model('mdl_invoice_amounts');
 
         foreach ($invoice_ids as $invoice_id) {
-            $this->mdl_invoice_amounts->calculate($invoice_id->invoice_id);
+            $this->mdl_invoice_amounts->calculate($invoice_id->id);
         }
     }
 }

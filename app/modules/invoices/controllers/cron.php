@@ -6,6 +6,10 @@ if (!defined('BASEPATH')) {
 /**
  * Class Cron
  * @package Modules\Invoices\Controllers
+ * @property Mdl_Email_Templates $mdl_email_templates
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Invoices_Recurring $mdl_invoices_recurring
+ * @property Mdl_Uploads $mdl_uploads
  */
 class Cron extends Base_Controller
 {
@@ -33,14 +37,14 @@ class Cron extends Base_Controller
 
                 // Create the new invoice
                 $db_array = array(
-                    'client_id' => $invoice->client_id,
-                    'invoice_date_created' => $invoice_recurring->recur_next_date,
-                    'invoice_date_due' => $this->mdl_invoices->get_date_due($invoice_recurring->recur_next_date, $invoice_recurring->recur_invoices_due_after),
-                    'invoice_group_id' => $invoice->invoice_group_id,
                     'user_id' => $invoice->user_id,
+                    'client_id' => $invoice->client_id,
+                    'invoice_group_id' => $invoice->invoice_group_id,
                     'invoice_number' => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id),
-                    'invoice_url_key' => $this->mdl_invoices->get_url_key(),
-                    'invoice_terms' => $invoice->invoice_terms
+                    'date_due' => $this->mdl_invoices->get_date_due($invoice_recurring->next_date, $invoice_recurring->invoices_due_after),
+                    'terms' => $invoice->terms,
+                    'url_key' => $this->mdl_invoices->get_url_key(),
+                    'date_created' => $invoice_recurring->next_date,
                 );
 
                 // This is the new invoice id
@@ -50,7 +54,7 @@ class Cron extends Base_Controller
                 $this->mdl_invoices->copy_invoice($source_id, $target_id);
 
                 // Update the next recur date for the recurring invoice
-                $this->mdl_invoices_recurring->set_next_recur_date($invoice_recurring->invoice_recurring_id);
+                $this->mdl_invoices_recurring->set_next_recur_date($invoice_recurring->id);
 
                 // Email the new invoice if applicable
                 if ($this->mdl_settings->setting('automatic_email_on_recur') and mailer_configured()) {
@@ -59,12 +63,12 @@ class Cron extends Base_Controller
                     // Set the email body, use default email template if available
                     $this->load->model('email_templates/mdl_email_templates');
 
-                    $email_template_id = $invoice_recurring->recur_email_invoice_template;
+                    $email_template_id = $invoice_recurring->email_template_id;
                     if (!$email_template_id) {
                         return;
                     }
 
-                    $email_template = $this->mdl_email_templates->where('email_template_id', $email_template_id)->get();
+                    $email_template = $this->mdl_email_templates->where('id', $email_template_id)->get();
                     if ($email_template->num_rows() == 0) {
                         return;
                     }
@@ -76,30 +80,31 @@ class Cron extends Base_Controller
                     $attachment_files = $this->mdl_uploads->get_invoice_uploads($target_id);
 
                     // Prepare the body
-                    $body = $tpl->email_template_body;
+                    // @TODO IP-390 - Use template files for email template body
+                    $body = $tpl->body_template_file;
                     if (strlen($body) != strlen(strip_tags($body))) {
                         $body = htmlspecialchars_decode($body);
                     } else {
                         $body = htmlspecialchars_decode(nl2br($body));
                     }
 
-                    $from = !empty($tpl->email_template_from_email) ?
+                    $from = !empty($tpl->from_email) ?
                         array(
-                            $tpl->email_template_from_email,
-                            $tpl->email_template_from_name
+                            $tpl->from_email,
+                            $tpl->from_name
                         ) :
                         array($invoice->user_email, "");
 
-                    $subject = !empty($tpl->email_template_subject) ?
-                        $tpl->email_template_subject :
+                    $subject = !empty($tpl->subject) ?
+                        $tpl->subject :
                         lang('invoice') . ' #' . $new_invoice->invoice_number;
 
-                    $pdf_template = $tpl->email_template_pdf_template;
-                    $to = $tpl->email_template_to_email;
-                    $cc = $tpl->email_template_cc;
-                    $bcc = $tpl->email_template_bcc;
-                    $send_pdf = $tpl->email_template_send_pdf;
-                    $send_attachments = $tpl->email_template_send_attachments;
+                    $pdf_template = $tpl->pdf_template;
+                    $to = $tpl->to_email;
+                    $cc = $tpl->cc;
+                    $bcc = $tpl->bcc;
+                    $send_pdf = $tpl->send_pdf;
+                    $send_attachments = $tpl->send_attachments;
                     
                     if (email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files, $send_pdf, $send_attachments)) {
                         $this->mdl_invoices->mark_sent($target_id);
