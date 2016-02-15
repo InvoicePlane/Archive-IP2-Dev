@@ -198,12 +198,12 @@ CREATE TABLE `invoice_groups` (
 # ------------------------------------------------------------
 
 CREATE TABLE `invoice_item_amounts` (
-  `id`             INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `item_id`        INT(11) UNSIGNED NOT NULL,
-  `item_subtotal`  DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
-  `item_tax_total` DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
-  `item_discount`  DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
-  `item_total`     DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
+  `id`        INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `item_id`   INT(11) UNSIGNED NOT NULL,
+  `subtotal`  DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
+  `tax_total` DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
+  `discount`  DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
+  `total`     DECIMAL(50, 10)  NOT NULL DEFAULT '0.0000000000',
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB

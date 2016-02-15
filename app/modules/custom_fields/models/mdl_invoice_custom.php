@@ -9,8 +9,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Invoice_Custom extends MY_Model
 {
-    public $table = 'custom_client';
-    public $primary_key = 'custom_client.id';
+    public $table = 'custom_invoice';
+    public $primary_key = 'custom_invoice.id';
 
     /**
      * Saves a custom field for invoices to the database
