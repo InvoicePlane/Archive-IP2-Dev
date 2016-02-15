@@ -6,58 +6,67 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Import
  * @package Modules\Import\Models
+ * @property CI_DB_query_builder $db
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Items $mdl_items
+ * @property Mdl_Payments $mdl_payments
  */
 class Mdl_Import extends Response_Model
 {
-    public $table = 'ip_imports';
-    public $primary_key = 'ip_imports.import_id';
+    public $table = 'imports';
+    public $primary_key = 'imports.id';
     public $expected_headers = array(
         'clients.csv' => array(
-            'client_name',
-            'client_address_1',
-            'client_address_2',
-            'client_city',
-            'client_state',
-            'client_zip',
-            'client_country',
-            'client_phone',
-            'client_fax',
-            'client_mobile',
-            'client_email',
-            'client_web',
-            'client_active'
+            'name',
+            'address_1',
+            'address_2',
+            'city',
+            'state',
+            'zip',
+            'country',
+            'phone',
+            'fax',
+            'mobile',
+            'email',
+            'web',
+            'vat_id',
+            'tax_code',
+            'is_active'
         ),
         'invoices.csv' => array(
             'user_email',
             'client_name',
-            'invoice_date_created',
-            'invoice_date_due',
             'invoice_number',
-            'invoice_terms'
+            'invoice_date_due',
+            'discount_amount',
+            'discount_percent',
+            'terms',
+            'date_created',
         ),
         'invoice_items.csv' => array(
             'invoice_number',
-            'item_tax_rate',
+            'tax_rate',
+            'name',
+            'description',
+            'quantity',
+            'price',
+            'discount_amount',
             'item_date_added',
-            'item_name',
-            'item_description',
-            'item_quantity',
-            'item_price'
         ),
         'payments.csv' => array(
             'invoice_number',
             'payment_method',
+            'amount',
+            'note',
             'payment_date',
-            'payment_amount',
-            'payment_note'
         )
     );
 
     public $primary_keys = array(
-        'ip_clients' => 'client_id',
-        'ip_invoices' => 'invoice_id',
-        'ip_invoice_items' => 'item_id',
-        'ip_payments' => 'payment_id'
+        'clients' => 'id',
+        'invoices' => 'id',
+        'invoice_items' => 'id',
+        'payments' => 'id'
     );
 
     /**
@@ -74,11 +83,11 @@ class Mdl_Import extends Response_Model
      */
     public function default_select()
     {
-        $this->db->select("SQL_CALC_FOUND_ROWS ip_imports.*,
-            (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_clients' AND ip_import_details.import_id = ip_imports.import_id) AS num_clients,
-            (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_invoices' AND ip_import_details.import_id = ip_imports.import_id) AS num_invoices,
-            (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_invoice_items' AND ip_import_details.import_id = ip_imports.import_id) AS num_invoice_items,
-            (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_payments' AND ip_import_details.import_id = ip_imports.import_id) AS num_payments",
+        $this->db->select("SQL_CALC_FOUND_ROWS imports.*,
+            (SELECT COUNT(*) FROM import_details WHERE table_name = 'clients' AND import_details.id = imports.id) AS num_clients,
+            (SELECT COUNT(*) FROM import_details WHERE table_name = 'invoices' AND import_details.id = imports.id) AS num_invoices,
+            (SELECT COUNT(*) FROM import_details WHERE table_name = 'invoice_items' AND import_details.id = imports.id) AS num_invoice_items,
+            (SELECT COUNT(*) FROM import_details WHERE table_name = 'payments' AND import_details.id = imports.id) AS num_payments",
             false);
     }
 
@@ -87,7 +96,7 @@ class Mdl_Import extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_imports.import_date DESC');
+        $this->db->order_by('imports.import_date DESC');
     }
 
     /**
@@ -100,7 +109,7 @@ class Mdl_Import extends Response_Model
             'import_date' => date('Y-m-d H:i:s')
         );
 
-        $this->db->insert('ip_imports', $db_array);
+        $this->db->insert('imports', $db_array);
 
         return $this->db->insert_id();
     }
@@ -140,12 +149,6 @@ class Mdl_Import extends Response_Model
                 foreach ($headers as $key => $header) {
                     $db_array[$header] = ($data[array_keys($fileheaders,
                             $header)[0]] <> 'NULL') ? $data[array_keys($fileheaders, $header)[0]] : '';
-                }
-
-                // Create a couple of default values if file is clients.csv
-                if ($file == 'clients.csv') {
-                    $db_array['client_date_created'] = date('Y-m-d');
-                    $db_array['client_date_modified'] = date('Y-m-d');
                 }
 
                 // Insert the record
@@ -195,8 +198,9 @@ class Mdl_Import extends Response_Model
                 foreach ($headers as $key => $header) {
                     if ($header == 'user_email') {
                         // Attempt to replace email address with user id
-                        $this->db->where('user_email', $data[$key]);
-                        $user = $this->db->get('ip_users');
+                        $this->db->where('email', $data[$key]);
+                        $user = $this->db->get('users');
+                        
                         if ($user->num_rows()) {
                             $header = 'user_id';
                             $data[$key] = $user->row()->user_id;
@@ -207,25 +211,24 @@ class Mdl_Import extends Response_Model
                     } elseif ($header == 'client_name') {
                         // Replace client name with client id
                         $header = 'client_id';
-                        $this->db->where('client_name', $data[$key]);
-                        $client = $this->db->get('ip_clients');
+                        $this->db->where('name', $data[$key]);
+                        $client = $this->db->get('clients');
+                        
                         if ($client->num_rows()) {
                             // Existing client found
                             $data[$key] = $client->row()->client_id;
                         } else {
                             // Existing client not found - create new client
                             $client_db_array = array(
-                                'client_name' => $data[$key],
-                                'client_date_created' => date('Y-m-d'),
-                                'client_date_modified' => date('Y-m-d')
+                                'name' => $data[$key],
                             );
 
-                            $this->db->insert('ip_clients', $client_db_array);
+                            $this->db->insert('clients', $client_db_array);
                             $data[$key] = $this->db->insert_id();
                         }
                     }
                     // Each invoice needs a url key
-                    $db_array['invoice_url_key'] = $this->mdl_invoices->get_url_key();
+                    $db_array['url_key'] = $this->mdl_invoices->get_url_key();
 
                     // Assign the final value to the array
                     $db_array[$header] = ($data[$key] <> 'NULL') ? $data[$key] : '';
@@ -279,24 +282,29 @@ class Mdl_Import extends Response_Model
                     if ($header == 'invoice_number') {
                         // Replace invoice_number with invoice_id
                         $this->db->where('invoice_number', $data[$key]);
-                        $user = $this->db->get('ip_invoices');
-                        if ($user->num_rows()) {
+                        $invoices = $this->db->get('invoices');
+                        
+                        if ($invoices->num_rows()) {
                             $header = 'invoice_id';
-                            $data[$key] = $user->row()->invoice_id;
+                            $data[$key] = $invoices->row()->id;
                         } else {
                             $record_error = true;
                         }
-                    } elseif ($header == 'item_tax_rate') {
+                    } elseif ($header == 'tax_rate') {
                         // Replace item_tax_rate with item_tax_rate_id
-                        $header = 'item_tax_rate_id';
+                        $header = 'tax_rate_id';
                         if ($data[$key] > 0) {
                             $this->db->where('tax_rate_percent', $data[$key]);
-                            $tax_rate = $this->db->get('ip_tax_rates');
+                            $tax_rate = $this->db->get('tax_rates');
+                            
                             if ($tax_rate->num_rows()) {
                                 $data[$key] = $tax_rate->row()->tax_rate_id;
                             } else {
-                                $this->db->insert('ip_tax_rates',
-                                    array('tax_rate_name' => $data[$key], 'tax_rate_percent' => $data[$key]));
+                                $this->db->insert('tax_rates', array(
+                                    'name' => $data[$key],
+                                    'percent' => $data[$key],
+                                    )
+                                );
                                 $data[$key] = $this->db->insert_id();
                             }
                         } else {
@@ -346,10 +354,11 @@ class Mdl_Import extends Response_Model
                 foreach ($headers as $key => $header) {
                     if ($header == 'invoice_number') {
                         $this->db->where('invoice_number', $data[$key]);
-                        $user = $this->db->get('ip_invoices');
-                        if ($user->num_rows()) {
+                        $invoices = $this->db->get('invoices');
+                        
+                        if ($invoices->num_rows()) {
                             $header = 'invoice_id';
-                            $data[$key] = $user->row()->invoice_id;
+                            $data[$key] = $invoices->row()->id;
                         } else {
                             $record_error = true;
                         }
@@ -358,11 +367,12 @@ class Mdl_Import extends Response_Model
 
                         if ($data[$key]) {
                             $this->db->where('payment_method_name', $data[$key]);
-                            $payment_method = $this->db->get('ip_payment_methods');
+                            $payment_method = $this->db->get('payment_methods');
+                            
                             if ($payment_method->num_rows()) {
-                                $data[$key] = $payment_method->row()->payment_method_id;
+                                $data[$key] = $payment_method->row()->id;
                             } else {
-                                $this->db->insert('ip_payment_methods', array('payment_method_name' => $data[$key]));
+                                $this->db->insert('payment_methods', array('name' => $data[$key]));
                                 $data[$key] = $this->db->insert_id();
                             }
                         } else {
@@ -397,12 +407,12 @@ class Mdl_Import extends Response_Model
         foreach ($ids as $id) {
             $db_array = array(
                 'import_id' => $import_id,
-                'import_table_name' => $table_name,
-                'import_lang_key' => $import_lang_key,
-                'import_record_id' => $id
+                'lang_key' => $import_lang_key,
+                'table_name' => $table_name,
+                'record_id' => $id
             );
 
-            $this->db->insert('ip_import_details', $db_array);
+            $this->db->insert('import_details', $db_array);
         }
     }
 
@@ -413,19 +423,19 @@ class Mdl_Import extends Response_Model
     public function delete($import_id)
     {
         // Gather the import details
-        $import_details = $this->db->where('import_id', $import_id)->get('ip_import_details')->result();
+        $import_details = $this->db->where('id', $import_id)->get('import_details')->result();
 
         // Loop through details and delete each of the imported records
         foreach ($import_details as $import_detail) {
-            $this->db->query("DELETE FROM " . $import_detail->import_table_name . " WHERE " . $this->primary_keys[$import_detail->import_table_name] . ' = ' . $import_detail->import_record_id);
+            $this->db->query("DELETE FROM " . $import_detail->table_name . " WHERE " . $this->primary_keys[$import_detail->table_name] . ' = ' . $import_detail->record_id);
         }
 
         // Delete the master import record
         parent::delete($import_id);
 
         // Delete the detail records
-        $this->db->where('import_id', $import_id);
-        $this->db->delete('ip_import_details');
+        $this->db->where('id', $import_id);
+        $this->db->delete('import_details');
 
         // Delete any orphaned records
         $this->load->helper('orphan');

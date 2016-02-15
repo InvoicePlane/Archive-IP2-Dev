@@ -6,6 +6,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Import
  * @package Modules\Import\Controllers
+ * @property Layout $layout
+ * @property Mdl_Import $mdl_import
  */
 class Import extends Admin_Controller
 {
@@ -79,27 +81,27 @@ class Import extends Admin_Controller
 
                 foreach ($files as $file) {
                     if ($file == 'clients.csv') {
-                        $ids = $this->mdl_import->import_data($file, 'ip_clients');
+                        $ids = $this->mdl_import->import_data($file, 'clients');
 
-                        $this->mdl_import->record_import_details($import_id, 'ip_clients', 'clients', $ids);
+                        $this->mdl_import->record_import_details($import_id, 'clients', 'clients', $ids);
                     } elseif ($file == 'invoices.csv') {
                         $this->load->model('invoices/mdl_invoices');
 
                         $ids = $this->mdl_import->import_invoices();
 
-                        $this->mdl_import->record_import_details($import_id, 'ip_invoices', 'invoices', $ids);
+                        $this->mdl_import->record_import_details($import_id, 'invoices', 'invoices', $ids);
                     } elseif ($file == 'invoice_items.csv') {
                         $this->load->model('invoices/mdl_items');
 
                         $ids = $this->mdl_import->import_invoice_items();
 
-                        $this->mdl_import->record_import_details($import_id, 'ip_invoice_items', 'invoice_items', $ids);
+                        $this->mdl_import->record_import_details($import_id, 'invoice_items', 'invoice_items', $ids);
                     } elseif ($file == 'payments.csv') {
                         $this->load->model('payments/mdl_payments');
 
                         $ids = $this->mdl_import->import_payments();
 
-                        $this->mdl_import->record_import_details($import_id, 'ip_payments', 'payments', $ids);
+                        $this->mdl_import->record_import_details($import_id, 'payments', 'payments', $ids);
                     }
                 }
             }
