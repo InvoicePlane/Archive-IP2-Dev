@@ -9,8 +9,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Invoice_Groups extends Response_Model
 {
-    public $table = 'ip_invoice_groups';
-    public $primary_key = 'ip_invoice_groups.invoice_group_id';
+    public $table = 'invoice_groups';
+    public $primary_key = 'invoice_groups.id';
 
     /**
      * The default select directive used in every query
@@ -25,7 +25,7 @@ class Mdl_Invoice_Groups extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_invoice_groups.invoice_group_name');
+        $this->db->order_by('invoice_groups.name');
     }
 
     /**
@@ -35,23 +35,23 @@ class Mdl_Invoice_Groups extends Response_Model
     public function validation_rules()
     {
         return array(
-            'invoice_group_name' => array(
-                'field' => 'invoice_group_name',
+            'name' => array(
+                'field' => 'name',
                 'label' => lang('name'),
                 'rules' => 'required'
             ),
-            'invoice_group_identifier_format' => array(
-                'field' => 'invoice_group_identifier_format',
+            'identifier_format' => array(
+                'field' => 'identifier_format',
                 'label' => lang('identifier_format'),
                 'rules' => 'required'
             ),
-            'invoice_group_next_id' => array(
-                'field' => 'invoice_group_next_id',
+            'next_id' => array(
+                'field' => 'next_id',
                 'label' => lang('next_id'),
                 'rules' => 'required'
             ),
-            'invoice_group_left_pad' => array(
-                'field' => 'invoice_group_left_pad',
+            'left_pad' => array(
+                'field' => 'left_pad',
                 'label' => lang('left_pad'),
                 'rules' => 'required'
             )
@@ -69,9 +69,9 @@ class Mdl_Invoice_Groups extends Response_Model
         $invoice_group = $this->get_by_id($invoice_group_id);
 
         $invoice_identifier = $this->parse_identifier_format(
-            $invoice_group->invoice_group_identifier_format,
-            $invoice_group->invoice_group_next_id,
-            $invoice_group->invoice_group_left_pad
+            $invoice_group->identifier_format,
+            $invoice_group->next_id,
+            $invoice_group->left_pad
         );
 
         if ($set_next) {
@@ -123,7 +123,7 @@ class Mdl_Invoice_Groups extends Response_Model
     public function set_next_invoice_number($invoice_group_id)
     {
         $this->db->where($this->primary_key, $invoice_group_id);
-        $this->db->set('invoice_group_next_id', 'invoice_group_next_id+1', false);
+        $this->db->set('next_id', 'next_id+1', false);
         $this->db->update($this->table);
     }
 }

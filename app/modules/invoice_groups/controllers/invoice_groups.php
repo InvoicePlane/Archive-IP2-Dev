@@ -6,6 +6,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Invoice_Groups
  * @package Modules\InvoiceGroups\Controllers
+ * @property Layout $layout
+ * @property Mdl_Invoice_Groups $mdl_invoice_groups
  */
 class Invoice_Groups extends Admin_Controller
 {
