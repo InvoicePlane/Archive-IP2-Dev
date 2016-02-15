@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Families
- * @package Modules\Families\Controllers
+ * @package Modules\Product_Families\Controllers
  * @property CI_DB_query_builder $db
  * @property Layout $layout
  * @property Mdl_Product_Families $mdl_product_families

@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 
 /**
  * Class Mdl_Product_Families
- * @package Modules\Families\Models
+ * @package Modules\Product_Families\Models
  */
 class Mdl_Product_Families extends Response_Model
 {
