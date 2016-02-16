@@ -4,48 +4,48 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * Class Mdl_Item_Amounts
+ * Class Mdl_Amounts
  * @package Modules\Invoices\Models
+ * @property CI_DB_query_builder $db
+ * @property Mdl_Items $mdl_items
  */
-class Mdl_Item_Amounts extends CI_Model
+class Mdl_Amounts extends CI_Model
 {
     /**
      * Calculates the amounts for an item
      * 
-     * * item_amount_id
-     * * item_id
-     * * item_subtotal = item_quantity * item_price
-     * * item_tax_total
-     * * item_total = (item_quantity * item_price) + item_tax_total
+     * * amount_id
+     * * id
+     * * subtotal = quantity * price
+     * * tax_total
+     * * total = (quantity * price) + tax_total
      * 
-     * @param $item_id
+     * @param $id
      */
-    public function calculate($item_id)
+    public function calculate($id)
     {
         $this->load->model('invoices/mdl_items');
-        $item = $this->mdl_items->get_by_id($item_id);
+        $item = $this->mdl_items->get_by_id($id);
 
-        $tax_rate_percent = 0;
-
-        $item_subtotal = $item->item_quantity * $item->item_price;
-        $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
-        $item_discount_total = $item->item_discount_amount * $item->item_quantity;
-        $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
+        $subtotal = $item->quantity * $item->price;
+        $tax_total = $subtotal * ($item->tax_rate_percent / 100);
+        $discount_total = $item->discount_amount * $item->quantity;
+        $total = $subtotal + $tax_total - $discount_total;
 
         $db_array = array(
-            'item_id' => $item_id,
-            'item_subtotal' => $item_subtotal,
-            'item_tax_total' => $item_tax_total,
-            'item_discount' => $item_discount_total,
-            'item_total' => $item_total
+            'id' => $id,
+            'subtotal' => $subtotal,
+            'tax_total' => $tax_total,
+            'discount' => $discount_total,
+            'total' => $total
         );
 
-        $this->db->where('item_id', $item_id);
-        if ($this->db->get('ip_invoice_item_amounts')->num_rows()) {
-            $this->db->where('item_id', $item_id);
-            $this->db->update('ip_invoice_item_amounts', $db_array);
+        $this->db->where('id', $id);
+        if ($this->db->get('invoice_amounts')->num_rows()) {
+            $this->db->where('id', $id);
+            $this->db->update('invoice_amounts', $db_array);
         } else {
-            $this->db->insert('ip_invoice_item_amounts', $db_array);
+            $this->db->insert('invoice_amounts', $db_array);
         }
     }
 }

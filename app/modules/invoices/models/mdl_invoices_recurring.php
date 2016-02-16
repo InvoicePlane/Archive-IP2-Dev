@@ -9,9 +9,9 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Invoices_Recurring extends Response_Model
 {
-    public $table = 'ip_invoices_recurring';
-    public $primary_key = 'ip_invoices_recurring.invoice_recurring_id';
-    public $recur_frequencies = array(
+    public $table = 'invoices_recurring';
+    public $primary_key = 'invoices_recurring.id';
+    public $frequencies = array(
         '7D' => 'calendar_week',
         '1M' => 'calendar_month',
         '1Y' => 'year',
@@ -24,10 +24,10 @@ class Mdl_Invoices_Recurring extends Response_Model
      */
     public function default_select()
     {
-        $this->db->select("SQL_CALC_FOUND_ROWS ip_invoices.*,
-            ip_clients.client_name,
-            ip_invoices_recurring.*,
-            IF(recur_end_date > date(NOW()) OR recur_end_date = '0000-00-00', 'active', 'inactive') AS recur_status",
+        $this->db->select("SQL_CALC_FOUND_ROWS invoices.*,
+            clients.name,
+            invoices_recurring.*,
+            IF(end_date > date(NOW()) OR end_date = '0000-00-00', 'active', 'inactive') AS status",
             false);
     }
 
@@ -36,8 +36,8 @@ class Mdl_Invoices_Recurring extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_invoices_recurring.invoice_id');
-        $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
+        $this->db->join('invoices', 'invoices.id = invoices_recurring.invoice_id');
+        $this->db->join('clients', 'clients.id = invoices.client_id');
     }
 
     /**
@@ -51,30 +51,33 @@ class Mdl_Invoices_Recurring extends Response_Model
                 'field' => 'invoice_id',
                 'rules' => 'required'
             ),
-            'recur_start_date' => array(
-                'field' => 'recur_start_date',
+            'email_template_id' => array(
+                'field' => 'email_template_id',
+                'label' => lang('email_template'),
+            ),
+            'start_date' => array(
+                'field' => 'start_date',
                 'label' => lang('start_date'),
                 'rules' => 'required'
             ),
-            'recur_end_date' => array(
-                'field' => 'recur_end_date',
+            'end_date' => array(
+                'field' => 'end_date',
                 'label' => lang('end_date')
             ),
-            'recur_frequency' => array(
-                'field' => 'recur_frequency',
+            'frequency' => array(
+                'field' => 'frequency',
                 'label' => lang('every'),
                 'rules' => 'required'
             ),
-            'recur_invoices_due_after' => array(
-                    'field' => 'recur_invoices_due_after',
+            'next_date' => array(
+                'field' => 'next_date',
+                'label' => lang('next_date'),
+            ),
+            'invoices_due_after' => array(
+                    'field' => 'invoices_due_after',
                     'label' => lang('invoices_due_after'),
                     'rules' => 'required'
             ),
-            'recur_email_invoice_template' => array(
-                    'field' => 'recur_email_invoice_template',
-                    'label' => lang('email_invoice_template'),
-                    'rules' => 'required'
-            )
         );
     }
 
@@ -86,13 +89,13 @@ class Mdl_Invoices_Recurring extends Response_Model
     {
         $db_array = parent::db_array();
 
-        $db_array['recur_start_date'] = date_to_mysql($db_array['recur_start_date']);
-        $db_array['recur_next_date'] = $db_array['recur_start_date'];
+        $db_array['start_date'] = date('Y-m-d');
+        $db_array['next_date'] = $db_array['start_date'];
 
-        if ($db_array['recur_end_date']) {
-            $db_array['recur_end_date'] = date_to_mysql($db_array['recur_end_date']);
+        if ($db_array['end_date']) {
+            $db_array['end_date'] = date_to_mysql($db_array['end_date']);
         } else {
-            $db_array['recur_end_date'] = '0000-00-00';
+            $db_array['end_date'] = '0000-00-00';
         }
 
         return $db_array;
@@ -100,17 +103,17 @@ class Mdl_Invoices_Recurring extends Response_Model
 
     /**
      * Stop a recurring invoice
-     * @param $invoice_recurring_id
+     * @param $id
      */
-    public function stop($invoice_recurring_id)
+    public function stop($id)
     {
         $db_array = array(
-            'recur_end_date' => date('Y-m-d'),
-            'recur_next_date' => '0000-00-00'
+            'end_date' => date('Y-m-d'),
+            'next_date' => '0000-00-00'
         );
 
-        $this->db->where('invoice_recurring_id', $invoice_recurring_id);
-        $this->db->update('ip_invoices_recurring', $db_array);
+        $this->db->where('id', $id);
+        $this->db->update('invoices_recurring', $db_array);
     }
 
     /**
@@ -119,25 +122,25 @@ class Mdl_Invoices_Recurring extends Response_Model
      */
     public function active()
     {
-        $this->filter_where("recur_next_date <= date(NOW()) AND (recur_end_date > date(NOW()) OR recur_end_date = '0000-00-00')");
+        $this->filter_where("next_date <= date(NOW()) AND (end_date > date(NOW()) OR end_date = '0000-00-00')");
         return $this;
     }
 
     /**
      * Sets the next recurring date for a recurring invoice
-     * @param $invoice_recurring_id
+     * @param $id
      */
-    public function set_next_recur_date($invoice_recurring_id)
+    public function set_next_date($id)
     {
-        $invoice_recurring = $this->where('invoice_recurring_id', $invoice_recurring_id)->get()->row();
+        $invoice_recurring = $this->where('id', $id)->get()->row();
 
-        $recur_next_date = increment_date($invoice_recurring->recur_next_date, $invoice_recurring->recur_frequency);
+        $next_date = increment_date($invoice_recurring->next_date, $invoice_recurring->frequency);
 
         $db_array = array(
-            'recur_next_date' => $recur_next_date
+            'next_date' => $next_date
         );
 
-        $this->db->where('invoice_recurring_id', $invoice_recurring_id);
-        $this->db->update('ip_invoices_recurring', $db_array);
+        $this->db->where('id', $id);
+        $this->db->update('invoices_recurring', $db_array);
     }
 }

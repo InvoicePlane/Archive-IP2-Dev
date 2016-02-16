@@ -6,12 +6,14 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Items
  * @package Modules\Invoices\Models
+ * @property Mdl_Amounts $mdl_item_amounts
+ * @property Mdl_Invoice_Amounts $mdl_invoice_amounts
  */
 class Mdl_Items extends Response_Model
 {
-    public $table = 'ip_invoice_items';
-    public $primary_key = 'ip_invoice_items.item_id';
-    public $date_created_field = 'item_date_added';
+    public $table = 'invoice_items';
+    public $primary_key = 'invoice_items.id';
+    public $date_created_field = 'date_created';
 
     /**
      * Returns all items for the given invoice ID
@@ -87,7 +89,7 @@ class Mdl_Items extends Response_Model
      */
     public function default_select()
     {
-        $this->db->select('ip_invoice_item_amounts.*, ip_invoice_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
+        $this->db->select('invoice_item_amounts.*, invoice_items.*, item_tax_rates.item_tax_rates AS tax_rate');
     }
 
     /**
@@ -95,7 +97,7 @@ class Mdl_Items extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_invoice_items.item_order');
+        $this->db->order_by('invoice_items.item_order');
     }
 
     /**
@@ -103,10 +105,10 @@ class Mdl_Items extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_invoice_item_amounts', 'ip_invoice_item_amounts.item_id = ip_invoice_items.item_id',
+        $this->db->join('invoice_item_amounts', 'invoice_item_amounts.item_id = invoice_items.id',
             'left');
-        $this->db->join('ip_tax_rates AS item_tax_rates',
-            'item_tax_rates.tax_rate_id = ip_invoice_items.item_tax_rate_id', 'left');
+        $this->db->join('tax_rates AS item_tax_rates',
+            'tax_rates.tax_rate_id = invoice_items.tax_rate_id', 'left');
     }
 
     /**
@@ -121,29 +123,41 @@ class Mdl_Items extends Response_Model
                 'label' => lang('invoice'),
                 'rules' => 'required'
             ),
-            'item_name' => array(
-                'field' => 'item_name',
-                'label' => lang('item_name'),
+            'tax_rate_id' => array(
+                'field' => 'tax_rate_id',
+                'label' => lang('tax_rate')
+            ),
+            'task_id' => array(
+                'field' => 'task_id',
+                'label' => lang('task')
+            ),
+            'product_id' => array(
+                'field' => 'product_id',
+                'label' => lang('product')
+            ),
+            'name' => array(
+                'field' => 'name',
+                'label' => lang('name'),
                 'rules' => 'required'
             ),
-            'item_description' => array(
-                'field' => 'item_description',
+            'description' => array(
+                'field' => 'description',
                 'label' => lang('description')
             ),
-            'item_quantity' => array(
-                'field' => 'item_quantity',
+            'quantity' => array(
+                'field' => 'quantity',
                 'label' => lang('quantity'),
                 'rules' => 'required'
             ),
-            'item_price' => array(
-                'field' => 'item_price',
+            'price' => array(
+                'field' => 'price',
                 'label' => lang('price'),
                 'rules' => 'required'
             ),
-            'item_tax_rate_id' => array(
-                'field' => 'item_tax_rate_id',
-                'label' => lang('item_tax_rate')
-            )
+            'discount_amount' => array(
+                'field' => 'discount_amount',
+                'label' => lang('discount_amount'),
+            ),
         );
     }
 
@@ -169,16 +183,16 @@ class Mdl_Items extends Response_Model
 
     /**
      * Deletes an invoice from the database
-     * @param $item_id
+     * @param $id
      * @return null
      */
-    public function delete($item_id)
+    public function delete($id)
     {
         // Get item:
         // the invoice id is needed to recalculate invoice amounts
         // and the task id to update status if the item refers a task
-        $query = $this->db->get_where($this->table,
-            array('item_id' => $item_id));
+        $query = $this->db->get_where($this->table, array('id' => $id));
+        
         if ($query->num_rows() == 0) {
             return null;
         }
@@ -187,11 +201,11 @@ class Mdl_Items extends Response_Model
         $invoice_id = $row->invoice_id;
 
         // Delete the item
-        parent::delete($item_id);
+        parent::delete($id);
 
         // Delete the item amounts
-        $this->db->where('item_id', $item_id);
-        $this->db->delete('ip_invoice_item_amounts');
+        $this->db->where('id', $id);
+        $this->db->delete('invoice_item_amounts');
 
         // Recalculate invoice amounts
         $this->load->model('invoices/mdl_invoice_amounts');

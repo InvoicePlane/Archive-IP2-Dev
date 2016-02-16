@@ -6,20 +6,21 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Invoice_Tax_Rates
  * @package Modules\Invoices\Models
+ * @property Mdl_Invoice_Amounts $mdl_invoice_amounts
  */
 class Mdl_Invoice_Tax_Rates extends Response_Model
 {
-    public $table = 'ip_invoice_tax_rates';
-    public $primary_key = 'ip_invoice_tax_rates.invoice_tax_rate_id';
+    public $table = 'invoice_tax_rates';
+    public $primary_key = 'invoice_tax_rates.id';
 
     /**
      * The default select directive used in every query
      */
     public function default_select()
     {
-        $this->db->select('ip_tax_rates.tax_rate_name AS invoice_tax_rate_name');
-        $this->db->select('ip_tax_rates.tax_rate_percent AS invoice_tax_rate_percent');
-        $this->db->select('ip_invoice_tax_rates.*');
+        $this->db->select('tax_rates.name AS name');
+        $this->db->select('tax_rates.percent AS percent');
+        $this->db->select('invoice_tax_rates.*');
     }
 
     /**
@@ -27,7 +28,7 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_invoice_tax_rates.tax_rate_id');
+        $this->db->join('tax_rates', 'tax_rates.id = invoice_tax_rates.id');
     }
 
     /**
