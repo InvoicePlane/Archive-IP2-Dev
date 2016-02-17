@@ -6,6 +6,12 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mailer
  * @package Modules\Mailer\Controllers
+ * @property Layout $layout
+ * @property Mdl_Email_Templates $mdl_email_templates
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Quotes $mdl_quotes
+ * @property Mdl_Templates $mdl_templates
+ * @property Mdl_Uploads $mdl_uploads
  */
 class Mailer extends Admin_Controller
 {
@@ -43,12 +49,12 @@ class Mailer extends Admin_Controller
         $this->load->model('email_templates/mdl_email_templates');
         $this->load->helper('template');
 
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+        $invoice = $this->mdl_invoices->where('invoices.id', $invoice_id)->get()->row();
 
         $email_template_id = select_email_invoice_template($invoice);
 
         if ($email_template_id) {
-            $email_template = $this->mdl_email_templates->where('email_template_id', $email_template_id)->get();
+            $email_template = $this->mdl_email_templates->where('id', $email_template_id)->get();
 
             $this->layout->set('email_template', json_encode($email_template->row()));
         } else {

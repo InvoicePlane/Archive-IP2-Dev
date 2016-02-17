@@ -129,11 +129,11 @@ function phpmail_send(
 
     // And away it goes...
     if ($mail->Send()) {
-        $CI->session->set_flashdata('alert_success', 'The email has been sent');
+        set_alert('success', 'The email has been sent');
         return true;
     } else {
         // Or not...
-        $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+        set_alert('danger', $mail->ErrorInfo);
         return false;
     }
 }
