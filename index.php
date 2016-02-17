@@ -223,6 +223,9 @@ define('BASEPATH', str_replace('\\', '/', $system_path));
 // Path to the front controller (this file)
 define('FCPATH', dirname(__FILE__) . '/');
 
+// System independend const to the  application root folder
+define('IP_PATH', FCPATH);
+
 // Name of the "system folder"
 define('SYSDIR', trim(strrchr(trim(BASEPATH, '/'), '/'), '/'));
 
@@ -271,12 +274,12 @@ define('VIEWPATH', $view_folder);
 /*
  * Path to the data directory and all sub paths 
  */
-define('DATAFOLDER', FCPATH . 'data' . DIRECTORY_SEPARATOR);
-define('DATAFOLDER_ARCHIVES', FCPATH . 'data' . DIRECTORY_SEPARATOR . 'archive' . DIRECTORY_SEPARATOR);
-define('DATAFOLDER_CFILES', FCPATH . 'data' . DIRECTORY_SEPARATOR . 'customer_files' . DIRECTORY_SEPARATOR);
-define('DATAFOLDER_IMAGES', FCPATH . 'data' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR);
-define('DATAFOLDER_IMPORT', FCPATH . 'data' . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR);
-define('DATAFOLDER_TEMP', FCPATH . 'data' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR);
+define('DATAFOLDER', IP_PATH . 'data' . DIRECTORY_SEPARATOR);
+define('DATAFOLDER_ARCHIVES', IP_PATH . 'data' . DIRECTORY_SEPARATOR . 'archive' . DIRECTORY_SEPARATOR);
+define('DATAFOLDER_CFILES', IP_PATH . 'data' . DIRECTORY_SEPARATOR . 'customer_files' . DIRECTORY_SEPARATOR);
+define('DATAFOLDER_IMAGES', IP_PATH . 'data' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR);
+define('DATAFOLDER_IMPORT', IP_PATH . 'data' . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR);
+define('DATAFOLDER_TEMP', IP_PATH . 'data' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR);
 
 
 /*

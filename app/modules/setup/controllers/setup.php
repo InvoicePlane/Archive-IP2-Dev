@@ -322,14 +322,14 @@ class Setup extends Setup_Controller
         foreach ($writables as $writable) {
             if (!is_writable($writable)) {
                 $checks[] = array(
-                    'message' => str_replace(FCPATH, '', $writable) . ' ' . lang('is_not_writable'),
+                    'message' => str_replace(IP_PATH, '', $writable) . ' ' . lang('is_not_writable'),
                     'success' => 0
                 );
 
                 $this->errors += 1;
             } else {
                 $checks[] = array(
-                    'message' => str_replace(FCPATH, '', $writable) . ' ' . lang('is_writable'),
+                    'message' => str_replace(IP_PATH, '', $writable) . ' ' . lang('is_writable'),
                     'success' => 1
                 );
             }
