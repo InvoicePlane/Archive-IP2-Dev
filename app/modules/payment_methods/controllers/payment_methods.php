@@ -6,6 +6,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Payment_Methods
  * @package Modules\PaymentMethods\Controllers
+ * @property CI_DB_query_builder $db
+ * @property Layout $layout
+ * @property Mdl_Payment_Methods $mdl_payment_methods
  */
 class Payment_Methods extends Admin_Controller
 {
@@ -46,10 +49,11 @@ class Payment_Methods extends Admin_Controller
         }
 
         if ($this->input->post('is_update') == 0 && $this->input->post('payment_method_name') != '') {
-            $check = $this->db->get_where('ip_payment_methods',
+            $check = $this->db->get_where('payment_methods',
                 array('payment_method_name' => $this->input->post('payment_method_name')))->result();
+
             if (!empty($check)) {
-                $this->session->set_flashdata('alert_error', lang('payment_method_already_exists'));
+                set_alert('danger', lang('payment_method_already_exists'));
                 redirect('payment_methods/form');
             }
         }

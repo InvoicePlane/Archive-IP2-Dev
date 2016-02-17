@@ -10,8 +10,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Payment_Methods extends Response_Model
 {
-    public $table = 'ip_payment_methods';
-    public $primary_key = 'ip_payment_methods.payment_method_id';
+    public $table = 'payment_methods';
+    public $primary_key = 'payment_methods.id';
 
     /**
      * The default select directive used in every query
@@ -26,7 +26,7 @@ class Mdl_Payment_Methods extends Response_Model
      */
     public function order_by()
     {
-        $this->db->order_by('ip_payment_methods.payment_method_name');
+        $this->db->order_by('payment_methods.method_name');
     }
 
     /**
@@ -36,8 +36,8 @@ class Mdl_Payment_Methods extends Response_Model
     public function validation_rules()
     {
         return array(
-            'payment_method_name' => array(
-                'field' => 'payment_method_name',
+            'method_name' => array(
+                'field' => 'method_name',
                 'label' => lang('payment_method'),
                 'rules' => 'required'
             )
