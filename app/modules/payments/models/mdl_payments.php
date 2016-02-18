@@ -6,11 +6,13 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Payments
  * @package Modules\Payments\Models
+ * @property CI_DB_query_builder $db
+ * @property Mdl_Invoice_Amounts $mdl_invoice_amounts
  */
 class Mdl_Payments extends Response_Model
 {
-    public $table = 'ip_payments';
-    public $primary_key = 'ip_payments.payment_id';
+    public $table = 'payments';
+    public $primary_key = 'payments.id';
     public $validation_rules = 'validation_rules';
 
     /**
@@ -19,14 +21,14 @@ class Mdl_Payments extends Response_Model
     public function default_select()
     {
         $this->db->select("
-            SQL_CALC_FOUND_ROWS ip_payment_custom.*,
-            ip_payment_methods.*,
-            ip_invoice_amounts.*,
-            ip_clients.client_name,
-        	ip_clients.client_id,
-            ip_invoices.invoice_number,
-            ip_invoices.invoice_date_created,
-            ip_payments.*", false);
+            SQL_CALC_FOUND_ROWS payment_custom.*,
+            payment_methods.*,
+            invoice_amounts.*,
+            clients.name,
+        	clients.id,
+            invoices.invoice_number,
+            invoices.date_created,
+            payments.*", false);
     }
 
     /**
@@ -34,7 +36,7 @@ class Mdl_Payments extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_payments.payment_date DESC');
+        $this->db->order_by('payments.payment_date DESC');
     }
 
     /**
@@ -42,12 +44,12 @@ class Mdl_Payments extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id');
-        $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
-        $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id');
-        $this->db->join('ip_payment_methods', 'ip_payment_methods.payment_method_id = ip_payments.payment_method_id',
+        $this->db->join('invoices', 'invoices.id = payments.invoice_id');
+        $this->db->join('clients', 'clients.id = invoices.client_id');
+        $this->db->join('invoice_amounts', 'invoice_amounts.invoice_id = invoices.invoice_id');
+        $this->db->join('payment_methods', 'payment_methods.id = payments.payment_method_id',
             'left');
-        $this->db->join('ip_payment_custom', 'ip_payment_custom.payment_id = ip_payments.payment_id', 'left');
+        $this->db->join('payment_custom', 'payment_custom.payment_id = payments.id', 'left');
     }
 
     /**
@@ -62,24 +64,24 @@ class Mdl_Payments extends Response_Model
                 'label' => lang('invoice'),
                 'rules' => 'required'
             ),
+            'payment_method_id' => array(
+                'field' => 'payment_method_id',
+                'label' => lang('payment_method')
+            ),
+            'amount' => array(
+                'field' => 'amount',
+                'label' => lang('payment'),
+                'rules' => 'required|callback_validate_payment_amount'
+            ),
+            'note' => array(
+                'field' => 'payment_note',
+                'label' => lang('note')
+            ),
             'payment_date' => array(
                 'field' => 'payment_date',
                 'label' => lang('date'),
                 'rules' => 'required'
             ),
-            'payment_amount' => array(
-                'field' => 'payment_amount',
-                'label' => lang('payment'),
-                'rules' => 'required|callback_validate_payment_amount'
-            ),
-            'payment_method_id' => array(
-                'field' => 'payment_method_id',
-                'label' => lang('payment_method')
-            ),
-            'payment_note' => array(
-                'field' => 'payment_note',
-                'label' => lang('note')
-            )
         );
     }
 
@@ -96,12 +98,12 @@ class Mdl_Payments extends Response_Model
         $payment_id = $this->input->post('payment_id');
 
         $invoice_balance = $this->db->where('invoice_id',
-            $invoice_id)->get('ip_invoice_amounts')->row()->invoice_balance;
+            $invoice_id)->get('invoice_amounts')->row()->balance;
 
         if ($payment_id) {
-            $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
+            $payment = $this->db->where('id', $payment_id)->get('payments')->row();
 
-            $invoice_balance = $invoice_balance + $payment->payment_amount;
+            $invoice_balance = $invoice_balance + $payment->amount;
         }
 
         if ($amount > $invoice_balance) {
@@ -140,8 +142,8 @@ class Mdl_Payments extends Response_Model
     {
         // Get the invoice id before deleting payment
         $this->db->select('invoice_id');
-        $this->db->where('payment_id', $id);
-        $invoice_id = $this->db->get('ip_payments')->row()->invoice_id;
+        $this->db->where('id', $id);
+        $invoice_id = $this->db->get('payments')->row()->invoice_id;
 
         // Delete the payment
         parent::delete($id);
@@ -151,14 +153,14 @@ class Mdl_Payments extends Response_Model
         $this->mdl_invoice_amounts->calculate($invoice_id);
 
         // Change invoice status back to sent
-        $this->db->select('invoice_status_id');
-        $this->db->where('invoice_id', $invoice_id);
-        $invoice = $this->db->get('ip_invoices')->row();
+        $this->db->select('status_id');
+        $this->db->where('id', $invoice_id);
+        $invoice = $this->db->get('invoices')->row();
 
         if ($invoice->invoice_status_id == 4) {
-            $this->db->where('invoice_id', $invoice_id);
-            $this->db->set('invoice_status_id', 2);
-            $this->db->update('ip_invoices');
+            $this->db->where('id', $invoice_id);
+            $this->db->set('status_id', 2);
+            $this->db->update('invoices');
         }
 
         $this->load->helper('orphan');
@@ -174,7 +176,7 @@ class Mdl_Payments extends Response_Model
         $db_array = parent::db_array();
 
         $db_array['payment_date'] = date_to_mysql($db_array['payment_date']);
-        $db_array['payment_amount'] = standardize_amount($db_array['payment_amount']);
+        $db_array['amount'] = standardize_amount($db_array['amount']);
 
         return $db_array;
     }
@@ -204,7 +206,7 @@ class Mdl_Payments extends Response_Model
      */
     public function by_client($client_id)
     {
-        $this->filter_where('ip_clients.client_id', $client_id);
+        $this->filter_where('clients.id', $client_id);
         return $this;
     }
 }

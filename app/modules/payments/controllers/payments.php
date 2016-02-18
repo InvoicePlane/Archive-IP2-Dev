@@ -6,6 +6,12 @@ if (!defined('BASEPATH')) {
 /**
  * Class Payments
  * @package Modules\Payments\Controllers
+ * @property Layout $layout
+ * @property Mdl_Custom_Fields $mdl_custom_fields
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Payment_Custom $mdl_payment_custom
+ * @property Mdl_Payment_Methods $mdl_payment_methods
+ * @property Mdl_Payments $mdl_payments
  */
 class Payments extends Admin_Controller
 {
@@ -95,7 +101,7 @@ class Payments extends Admin_Controller
         $this->load->model('payment_methods/mdl_payment_methods');
         $this->load->model('custom_fields/mdl_custom_fields');
 
-        $open_invoices = $this->mdl_invoices->where('ip_invoice_amounts.invoice_balance >', 0)->get()->result();
+        $open_invoices = $this->mdl_invoices->where('invoice_amounts.balance >', 0)->get()->result();
 
         $amounts = array();
         $invoice_payment_methods = array();
@@ -109,14 +115,14 @@ class Payments extends Admin_Controller
                 'payment_id' => $id,
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
                 'open_invoices' => $open_invoices,
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_payment_custom')->get()->result(),
+                'custom_fields' => $this->mdl_custom_fields->by_table('payment_custom')->get()->result(),
                 'amounts' => json_encode($amounts),
                 'invoice_payment_methods' => json_encode($invoice_payment_methods)
             )
         );
 
         if ($id) {
-            $this->layout->set('payment', $this->mdl_payments->where('ip_payments.payment_id', $id)->get()->row());
+            $this->layout->set('payment', $this->mdl_payments->where('payments.id', $id)->get()->row());
         }
 
         $this->layout->buffer('content', 'payments/form');

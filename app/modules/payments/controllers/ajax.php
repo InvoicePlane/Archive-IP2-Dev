@@ -6,6 +6,10 @@ if (!defined('BASEPATH')) {
 /**
  * Class Payments_Ajax
  * @package Modules\Payments\Controllers
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Payment_Methods $mdl_payment_methods
+ * @property Mdl_Payments $mdl_payments
  */
 class Payments_Ajax extends Admin_Controller
 {
