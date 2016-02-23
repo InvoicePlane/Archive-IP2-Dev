@@ -6,6 +6,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Filter_Ajax
  * @package Modules\Filter\Controllers
+ * 
+ * @TODO Complete overhaul needed
  */
 class Filter_Ajax extends Admin_Controller
 {
