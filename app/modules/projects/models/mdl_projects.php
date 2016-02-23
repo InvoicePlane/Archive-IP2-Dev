@@ -6,11 +6,14 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Projects
  * @package Modules\Projects\Models
+ * @property CI_DB_query_builder $db
  */
 class Mdl_Projects extends Response_Model
 {
-    public $table = 'ip_projects';
-    public $primary_key = 'ip_projects.project_id';
+    public $table = 'projects';
+    public $primary_key = 'projects.id';
+    public $date_created_field = 'date_created';
+    public $date_modified_field = 'date_modified';
 
     /**
      * The default select directive used in every query
@@ -25,7 +28,7 @@ class Mdl_Projects extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_projects.project_id');
+        $this->db->order_by('projects.project_id');
     }
 
     /**
@@ -33,7 +36,8 @@ class Mdl_Projects extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_clients', 'ip_clients.client_id = ip_projects.client_id', 'left');
+        $this->db->join('clients', 'clients.id = projects.client_id', 'left');
+        $this->db->join('users', 'users.id = projects.user_id', 'left');
     }
 
     /**
@@ -43,15 +47,19 @@ class Mdl_Projects extends Response_Model
     public function validation_rules()
     {
         return array(
+            'client_id' => array(
+                'field' => 'client_id',
+                'label' => lang('client'),
+            ),
+            'user_id' => array(
+                'field' => 'user_id',
+                'label' => lang('user'),
+            ),
             'project_name' => array(
                 'field' => 'project_name',
                 'label' => lang('project_name'),
                 'rules' => 'required'
             ),
-            'client_id' => array(
-                'field' => 'client_id',
-                'label' => lang('client'),
-            )
         );
     }
 }

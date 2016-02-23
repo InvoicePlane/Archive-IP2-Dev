@@ -6,6 +6,10 @@ if (!defined('BASEPATH')) {
 /**
  * Class Projects
  * @package Modules\Projects\Controllers
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Clients $mdl_clients
+ * @property Mdl_Projects $mdl_projects
  */
 class Projects extends Admin_Controller
 {
@@ -60,7 +64,7 @@ class Projects extends Admin_Controller
 
         $this->layout->set(
             array(
-                'clients' => $this->mdl_clients->where('client_active', 1)->get()->result()
+                'clients' => $this->mdl_clients->where('is_active', true)->get()->result()
             )
         );
 
