@@ -6,6 +6,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Products_Ajax
  * @package Modules\Products\Controllers
+ * @property Layout $layout
+ * @property Mdl_Products $mdl_products
+ * @property Mdl_Product_Families $mdl_product_families
  */
 class Products_Ajax extends Admin_Controller
 {
@@ -20,7 +23,7 @@ class Products_Ajax extends Admin_Controller
         $filter_product = $this->input->get('filter_product');
 
         $this->load->model('mdl_products');
-        $this->load->model('families/mdl_families');
+        $this->load->model('product_families/mdl_product_families');
 
         // Apply filters
         /*
@@ -30,12 +33,12 @@ class Products_Ajax extends Admin_Controller
         */
 
         if (!empty($filter_product)) {
-            $products = $this->mdl_products->by_product($filter_product);
+            $this->mdl_products->by_product($filter_product);
         }
-        $products = $this->mdl_products->get();
+        $this->mdl_products->get();
         $products = $this->mdl_products->result();
 
-        $families = $this->mdl_families->get()->result();
+        $families = $this->mdl_product_families->get()->result();
 
         $data = array(
             'products' => $products,
@@ -55,7 +58,7 @@ class Products_Ajax extends Admin_Controller
     {
         $this->load->model('mdl_products');
 
-        $products = $this->mdl_products->where_in('product_id', $this->input->post('product_ids'))->get()->result();
+        $products = $this->mdl_products->where_in('id', $this->input->post('product_ids'))->get()->result();
 
         foreach ($products as $product) {
             $product->product_price = format_amount($product->product_price, $this->mdl_settings->setting('item_price_decimal_places'));

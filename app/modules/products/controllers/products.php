@@ -6,6 +6,11 @@ if (!defined('BASEPATH')) {
 /**
  * Class Products
  * @package Modules\Products\Controllers
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Products $mdl_products
+ * @property Mdl_Product_Families $mdl_product_families
+ * @property Mdl_Tax_Rates $mdl_tax_rates
  */
 class Products extends Admin_Controller
 {
@@ -49,7 +54,7 @@ class Products extends Admin_Controller
 
             // We need to use the correct decimal point for sql IPT-310
             $db_array = $this->mdl_products->db_array();
-            $db_array['product_price'] = standardize_amount($db_array['product_price']);
+            $db_array['price'] = standardize_amount($db_array['price']);
             $db_array['purchase_price'] = standardize_amount($db_array['purchase_price']);
 
             $this->mdl_products->save($id, $db_array);
@@ -62,12 +67,12 @@ class Products extends Admin_Controller
             }
         }
 
-        $this->load->model('families/mdl_families');
+        $this->load->model('product_families/mdl_product_families');
         $this->load->model('tax_rates/mdl_tax_rates');
 
         $this->layout->set(
             array(
-                'families' => $this->mdl_families->get()->result(),
+                'families' => $this->mdl_product_families->get()->result(),
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
             )
         );

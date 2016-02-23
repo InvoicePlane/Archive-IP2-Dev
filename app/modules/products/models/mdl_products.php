@@ -10,8 +10,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Products extends Response_Model
 {
-    public $table = 'ip_products';
-    public $primary_key = 'ip_products.product_id';
+    public $table = 'products';
+    public $primary_key = 'products.id';
 
     /**
      * The default select directive used in every query
@@ -26,7 +26,7 @@ class Mdl_Products extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_families.family_name, ip_products.product_name');
+        $this->db->order_by('product_families.name, products.name');
     }
 
     /**
@@ -34,8 +34,8 @@ class Mdl_Products extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_families', 'ip_families.family_id = ip_products.family_id', 'left');
-        $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_products.tax_rate_id', 'left');
+        $this->db->join('product_families', 'product_families.id = products.family_id', 'left');
+        $this->db->join('tax_rates', 'ip_tax_rates.id = products.tax_rate_id', 'left');
     }
 
     /**
@@ -44,9 +44,9 @@ class Mdl_Products extends Response_Model
      */
     public function by_product($match)
     {
-        $this->db->like('product_sku', $match);
-        $this->db->or_like('product_name', $match);
-        $this->db->or_like('product_description', $match);
+        $this->db->like('sku', $match);
+        $this->db->or_like('name', $match);
+        $this->db->or_like('description', $match);
     }
 
     /**
@@ -56,31 +56,6 @@ class Mdl_Products extends Response_Model
     public function validation_rules()
     {
         return array(
-            'product_sku' => array(
-                'field' => 'product_sku',
-                'label' => lang('product_sku'),
-                'rules' => 'required'
-            ),
-            'product_name' => array(
-                'field' => 'product_name',
-                'label' => lang('product_name'),
-                'rules' => 'required'
-            ),
-            'product_description' => array(
-                'field' => 'product_description',
-                'label' => lang('product_description'),
-                'rules' => ''
-            ),
-            'product_price' => array(
-                'field' => 'product_price',
-                'label' => lang('product_price'),
-                'rules' => 'required'
-            ),
-            'purchase_price' => array(
-                'field' => 'purchase_price',
-                'label' => lang('purchase_price'),
-                'rules' => ''
-            ),
             'family_id' => array(
                 'field' => 'family_id',
                 'label' => lang('family'),
@@ -91,7 +66,31 @@ class Mdl_Products extends Response_Model
                 'label' => lang('tax_rate'),
                 'rules' => 'numeric'
             ),
-
+            'sku' => array(
+                'field' => 'sku',
+                'label' => lang('product_sku'),
+                'rules' => 'required'
+            ),
+            'name' => array(
+                'field' => 'name',
+                'label' => lang('product_name'),
+                'rules' => 'required'
+            ),
+            'description' => array(
+                'field' => 'description',
+                'label' => lang('product_description'),
+                'rules' => ''
+            ),
+            'price' => array(
+                'field' => 'price',
+                'label' => lang('product_price'),
+                'rules' => 'required'
+            ),
+            'purchase_price' => array(
+                'field' => 'purchase_price',
+                'label' => lang('purchase_price'),
+                'rules' => ''
+            ),
         );
     }
 }
