@@ -9,8 +9,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Product_Families extends Response_Model
 {
-    public $table = 'families';
-    public $primary_key = 'families.id';
+    public $table = 'product_families';
+    public $primary_key = 'product_families.id';
 
     /**
      * The default select directive used in every query
@@ -25,7 +25,7 @@ class Mdl_Product_Families extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('families.name');
+        $this->db->order_by('product_families.name');
     }
 
     /**
