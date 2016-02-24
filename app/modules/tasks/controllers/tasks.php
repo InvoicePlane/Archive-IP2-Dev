@@ -6,6 +6,11 @@ if (!defined('BASEPATH')) {
 /**
  * Class Tasks
  * @package Modules\Tasks\Controllers
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Projects $mdl_projects
+ * @property Mdl_Tasks $mdl_tasks
+ * @property Mdl_Tax_Rates $mdl_tax_rates
  */
 class Tasks extends Admin_Controller
 {

@@ -6,6 +6,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Tasks_Ajax
  * @package Modules\Tasks\Controllers
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Tasks $mdl_tasks
  */
 class Tasks_Ajax extends Admin_Controller
 {
@@ -32,7 +35,8 @@ class Tasks_Ajax extends Admin_Controller
     {
         $this->load->model('mdl_tasks');
 
-        $tasks = $this->mdl_tasks->where_in('task_id', $this->input->post('task_ids'))->get()->result();
+        $tasks = $this->mdl_tasks->where_in('id', $this->input->post('task_ids'))->get()->result();
+
         foreach ($tasks as $task) {
             $task->task_price = format_amount($task->task_price);
         }

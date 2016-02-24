@@ -502,7 +502,7 @@ CREATE TABLE `tasks` (
   `id`            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `project_id`    INT(11) UNSIGNED NOT NULL,
   `tax_rate_id`   INT(11) UNSIGNED NOT NULL,
-  `name`          VARCHAR(50)      NOT NULL,
+  `title`         VARCHAR(200)     NOT NULL,
   `description`   LONGTEXT,
   `price`         DECIMAL(50, 10)  NOT NULL,
   `finish_date`   DATE             NOT NULL,
