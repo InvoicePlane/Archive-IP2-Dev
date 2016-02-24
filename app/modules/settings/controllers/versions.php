@@ -6,6 +6,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Versions
  * @package Modules\Settings\Controllers
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Versions $mdl_versions
  */
 class Versions extends Admin_Controller
 {

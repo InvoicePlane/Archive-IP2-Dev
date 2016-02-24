@@ -6,11 +6,12 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Versions
  * @package Modules\Settings\Models
+ * @property CI_DB_query_builder $db
  */
 class Mdl_Versions extends Response_Model
 {
-    public $table = 'ip_versions';
-    public $primary_key = 'ip_versions.version_id';
+    public $table = 'versions';
+    public $primary_key = 'versions.id';
 
     /**
      * The default select directive used in every query
@@ -25,6 +26,6 @@ class Mdl_Versions extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_versions.version_date_applied DESC, ip_versions.version_file DESC');
+        $this->db->order_by('versions.date_applied DESC, versions.file DESC');
     }
 }

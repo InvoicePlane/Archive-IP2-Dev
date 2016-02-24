@@ -6,6 +6,19 @@ if (!defined('BASEPATH')) {
 /**
  * Class Settings
  * @package Modules\Settings\Controllers
+ * @property CI_Config $config
+ * @property CI_DB_query_builder $db
+ * @property CI_Encrypt $encrypt
+ * @property CI_Form_validation $form_validation
+ * @property CI_Loader $load
+ * @property CI_Upload $upload
+ * @property Layout $layout
+ * @property Mdl_Email_Templates $mdl_email_templates
+ * @property Mdl_Invoice_Groups $mdl_invoice_groups
+ * @property Mdl_Payment_Methods $mdl_payment_methods
+ * @property Mdl_Tax_Rates $mdl_tax_rates
+ * @property Mdl_Templates $mdl_templates
+ * @property Mdl_Versions $mdl_versions
  */
 class Settings extends Admin_Controller
 {
@@ -27,11 +40,16 @@ class Settings extends Admin_Controller
         if ($this->input->post('settings')) {
             $settings = $this->input->post('settings');
 
-            // Only execute if the setting is different
+            /**
+             * @TODO Do not alter the table scheme
+             */
             if ($settings['tax_rate_decimal_places'] <> $this->mdl_settings->setting('tax_rate_decimal_places')) {
                 $this->db->query("ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT NULL");
             }
 
+            /**
+             * @TODO Do not alter the table scheme
+             */
             if ($settings['item_price_decimal_places'] <> $this->mdl_settings->setting('item_price_decimal_places')) {
                 $decimals = intval($settings['item_price_decimal_places']);
                 $precision = 8 + $decimals;
@@ -44,6 +62,9 @@ class Settings extends Admin_Controller
                 $this->db->query("ALTER TABLE `ip_products` CHANGE `purchase_price` `purchase_price` FLOAT( {$precision}, {$decimals} ) NOT NULL");
             }
 
+            /**
+             * @TODO Do not alter the table scheme
+             */
             if ($settings['item_amount_decimal_places'] <> $this->mdl_settings->setting('item_amount_decimal_places')) {
                 $decimals = intval($settings['item_amount_decimal_places']);
                 $precision = 8 + $decimals;

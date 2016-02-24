@@ -6,10 +6,13 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Settings
  * @package Modules\Settings\Models
+ * @property CI_DB_query_builder $db
  */
 class Mdl_Settings extends CI_Model
 {
     public $settings = array();
+    public $table = 'settings';
+    public $primary_key = 'settings.id';
 
     /**
      * Get a settings value by its key
