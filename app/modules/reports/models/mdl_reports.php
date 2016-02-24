@@ -6,6 +6,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Reports
  * @package Modules\Reports\Modules
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
+ * @property Mdl_Payments $mdl_payments
  */
 class Mdl_Reports extends CI_Model
 {
@@ -19,24 +22,88 @@ class Mdl_Reports extends CI_Model
     {
         $this->db->select('client_name');
 
-        if ($from_date and $to_date) {
+        if ($from_date && $to_date) {
+
             $from_date = date_to_mysql($from_date);
             $to_date = date_to_mysql($to_date);
 
-            $this->db->select("(SELECT COUNT(*) FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id and invoice_date_created >= " . $this->db->escape($from_date) . " and invoice_date_created <= " . $this->db->escape($to_date) . ") AS invoice_count");
-            $this->db->select("(SELECT SUM(invoice_item_subtotal) FROM ip_invoice_amounts WHERE ip_invoice_amounts.invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id and invoice_date_created >= " . $this->db->escape($from_date) . " and invoice_date_created <= " . $this->db->escape($to_date) . ")) AS sales");
-            $this->db->select("(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE ip_invoice_amounts.invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id and invoice_date_created >= " . $this->db->escape($from_date) . " and invoice_date_created <= " . $this->db->escape($to_date) . ")) AS sales_with_tax");
-            $this->db->where('client_id IN (SELECT client_id FROM ip_invoices WHERE invoice_date_created >=' . $this->db->escape($from_date) . ' and invoice_date_created <= ' . $this->db->escape($to_date) . ')');
+            $this->db->select("
+                (
+                SELECT COUNT(*)
+                FROM invoices
+                WHERE invoices.client_id = clients.id
+                    AND date_created >= " . $this->db->escape($from_date) . "
+                    AND date_created <= " . $this->db->escape($to_date) . "
+                ) AS invoice_count");
+
+            $this->db->select("
+                (
+                SELECT SUM(item_subtotal)
+                FROM invoice_amounts
+                WHERE invoice_amounts.invoice_id IN (
+                    SELECT id FROM invoices
+                    WHERE invoices.client_id = clients.id
+                        AND date_created >= " . $this->db->escape($from_date) . "
+                        AND date_created <= " . $this->db->escape($to_date) . "
+                    )
+                ) AS sales");
+
+            $this->db->select("
+                (
+                SELECT SUM(total)
+                FROM invoice_amounts
+                WHERE invoice_amounts.invoice_id IN (
+                    SELECT id FROM invoices
+                    WHERE invoices.client_id = clients.id
+                        AND date_created >= " . $this->db->escape($from_date) . "
+                        AND date_created <= " . $this->db->escape($to_date) . "
+                    )
+                ) AS sales_with_tax");
+
+            $this->db->where('
+                id IN (
+                    SELECT client_id FROM invoices
+                    WHERE date_created >=' . $this->db->escape($from_date) . '
+                        AND date_created <= ' . $this->db->escape($to_date) . '
+                )');
+
         } else {
-            $this->db->select('(SELECT COUNT(*) FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id) AS invoice_count');
-            $this->db->select('(SELECT SUM(invoice_item_subtotal) FROM ip_invoice_amounts WHERE ip_invoice_amounts.invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)) AS sales');
-            $this->db->select('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE ip_invoice_amounts.invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)) AS sales_with_tax');
-            $this->db->where('client_id IN (SELECT client_id FROM ip_invoices)');
+
+            $this->db->select('
+            (
+                SELECT COUNT(*)
+                FROM invoices
+                WHERE invoices.client_id = clients.id
+            ) AS invoice_count');
+
+            $this->db->select('
+                (
+                SELECT SUM(item_subtotal)
+                FROM invoice_amounts
+                WHERE invoice_amounts.invoice_id IN (
+                    SELECT id
+                    FROM invoices
+                    WHERE invoices.client_id = clients.id
+                    )
+                ) AS sales');
+
+            $this->db->select('
+                (
+                SELECT SUM(total)
+                FROM invoice_amounts
+                WHERE invoice_amounts.invoice_id IN (
+                    SELECT invoice_id
+                    FROM invoices
+                    WHERE invoices.client_id = clients.id
+                    )
+                ) AS sales_with_tax');
+
+            $this->db->where('id IN (SELECT client_id FROM invoices)');
         }
 
         $this->db->order_by('client_name');
 
-        return $this->db->get('ip_clients')->result();
+        return $this->db->get('clients')->result();
     }
 
     /**
@@ -49,7 +116,7 @@ class Mdl_Reports extends CI_Model
     {
         $this->load->model('payments/mdl_payments');
 
-        if ($from_date and $to_date) {
+        if ($from_date AND $to_date) {
             $from_date = date_to_mysql($from_date);
             $to_date = date_to_mysql($to_date);
 
@@ -67,21 +134,67 @@ class Mdl_Reports extends CI_Model
     public function invoice_aging()
     {
         $this->db->select('client_name');
-        $this->db->select('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 1 DAY) AND invoice_date_due >= DATE_SUB(NOW(), INTERVAL 15 DAY))) AS range_1',
+        $this->db->select('
+            (
+            SELECT SUM(invoice_balance)
+            FROM invoice_amounts
+            WHERE invoice_id IN (
+                SELECT id
+                FROM invoices
+                WHERE invoices.client_id = clients.id
+                    AND date_due <= DATE_SUB(NOW(),INTERVAL 1 DAY)
+                    AND date_due >= DATE_SUB(NOW(), INTERVAL 15 DAY)
+                )
+            ) AS range_1',
             false);
-        $this->db->select('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 16 DAY) AND invoice_date_due >= DATE_SUB(NOW(), INTERVAL 30 DAY))) AS range_2',
+        
+        $this->db->select('
+            (
+            SELECT SUM(invoice_balance)
+            FROM invoice_amounts
+            WHERE invoice_id IN (
+                SELECT id
+                FROM invoices
+                WHERE invoices.client_id = clients.id
+                    AND date_due <= DATE_SUB(NOW(),INTERVAL 16 DAY)
+                    AND date_due >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                )
+            ) AS range_2',
             false);
-        $this->db->select('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 31 DAY))) AS range_3',
+        
+        $this->db->select('
+            (
+            SELECT SUM(invoice_balance)
+            FROM invoice_amounts
+            WHERE invoice_id IN (
+                SELECT id
+                FROM invoices
+                WHERE invoices.client_id = clients.id
+                    AND date_due <= DATE_SUB(NOW(),INTERVAL 31 DAY)
+                )
+            ) AS range_3',
             false);
-        $this->db->select('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id AND invoice_date_due <= DATE_SUB(NOW(), INTERVAL 1 DAY))) AS total_balance',
+        
+        $this->db->select('
+            (
+            SELECT SUM(invoice_balance)
+            FROM invoice_amounts
+            WHERE invoice_id IN (
+                SELECT id
+                FROM invoices
+                WHERE invoices.client_id = clients.id
+                    AND date_due <= DATE_SUB(NOW(), INTERVAL 1 DAY)
+                )
+            ) AS total_balance',
             false);
+        
         $this->db->having('range_1 >', 0);
         $this->db->or_having('range_2 >', 0);
         $this->db->or_having('range_3 >', 0);
         $this->db->or_having('total_balance >', 0);
 
 
-        return $this->db->get('ip_clients')->result();
+        return $this->db->get('clients')->result();
     }
 
     /**
@@ -99,7 +212,8 @@ class Mdl_Reports extends CI_Model
         $minQuantity = null,
         $maxQuantity = null,
         $taxChecked = false
-    ) {
+    )
+    {
         if ($minQuantity == "") {
             $minQuantity = 0;
         }
@@ -123,45 +237,259 @@ class Mdl_Reports extends CI_Model
 
             if ($maxQuantity) {
 
-                $this->db->select('client_id');
-                $this->db->select('client_vat_id AS VAT_ID');
-                $this->db->select('client_name as Name');
-                $this->db->select('(SELECT SUM(amounts.invoice_item_subtotal) FROM ip_invoice_amounts amounts WHERE amounts.invoice_id IN (SELECT inv.invoice_id FROM ip_invoices inv WHERE inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created)) AS total_payment',
+                $this->db->select('id');
+                $this->db->select('vat_id AS VAT_ID');
+                $this->db->select('name as Name');
+
+                $this->db->select('
+                    (
+                    SELECT SUM(amounts.item_subtotal)
+                    FROM invoice_amounts amounts
+                    WHERE amounts.invoice_id IN (
+                        SELECT inv.id
+                        FROM invoices inv
+                        WHERE inv.client_id = clients.id
+                            AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                            AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                        )
+                    ) AS total_payment',
                     false);
 
                 for ($index = $from_date_year; $index <= $to_date_year; $index++) {
-                    $this->db->select('(SELECT SUM(invoice_item_subtotal) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-01-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-02-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-03-%\'))) AS payment_t1_' . $index . '',
+
+                    $this->db->select('
+                        (
+                        SELECT SUM(item_subtotal)
+                        FROM invoice_amounts
+                        WHERE invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                AND (
+                                    inv.date_created LIKE \'%' . $index . '-01-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-02-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-03-%\'
+                                    )
+                            )
+                        ) AS payment_t1_' . $index . '',
                         false);
-                    $this->db->select('(SELECT SUM(invoice_item_subtotal) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-04-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-05-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-06-%\'))) AS payment_t2_' . $index . '',
+
+                    $this->db->select('
+                        (
+                        SELECT SUM(item_subtotal)
+                        FROM invoice_amounts
+                        WHERE invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                            AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                            AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                            AND (
+                                inv.date_created LIKE \'%' . $index . '-04-%\'
+                                OR inv.date_created LIKE \'%' . $index . '-05-%\'
+                                OR inv.date_created LIKE \'%' . $index . '-06-%\'
+                                )
+                            )
+                        ) AS payment_t2_' . $index . '',
                         false);
-                    $this->db->select('(SELECT SUM(invoice_item_subtotal) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-07-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-08-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-09-%\'))) AS payment_t3_' . $index . '',
+
+                    $this->db->select('
+                        (
+                        SELECT SUM(item_subtotal)
+                        FROM invoice_amounts
+                        WHERE invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                AND (
+                                    inv.date_created LIKE \'%' . $index . '-07-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-08-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-09-%\'
+                                    )
+                            )
+                        ) AS payment_t3_' . $index . '',
                         false);
-                    $this->db->select('(SELECT SUM(invoice_item_subtotal) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-10-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-11-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-12-%\'))) AS payment_t4_' . $index . '',
+
+                    $this->db->select('
+                        (
+                        SELECT SUM(item_subtotal)
+                        FROM invoice_amounts
+                        WHERE invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                AND (
+                                    inv.date_created LIKE \'%' . $index . '-10-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-11-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-12-%\'
+                                    )
+                            )
+                        ) AS payment_t4_' . $index . '',
                         false);
+
                 }
 
-                $this->db->where('(SELECT SUM(amounts.invoice_item_subtotal) FROM ip_invoice_amounts amounts WHERE amounts.invoice_id IN (SELECT inv.invoice_id FROM ip_invoices inv WHERE inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . ' <= inv.invoice_date_created AND ' . $this->db->escape($to_date) . ' >= inv.invoice_date_created AND ' . $minQuantity . ' <= (SELECT SUM(amounts2.invoice_item_subtotal) FROM ip_invoice_amounts amounts2 WHERE amounts2.invoice_id IN (SELECT inv2.invoice_id FROM ip_invoices inv2 WHERE inv2.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created)) AND ' . $maxQuantity . ' >= (SELECT SUM(amounts3.invoice_item_subtotal) FROM ip_invoice_amounts amounts3 WHERE amounts3.invoice_id IN (SELECT inv3.invoice_id FROM ip_invoices inv3 WHERE inv3.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . ' <= inv3.invoice_date_created AND ' . $this->db->escape($to_date) . ' >= inv3.invoice_date_created)))) <>0');
+                $this->db->where('
+                    (
+                    SELECT SUM(amounts.item_subtotal)
+                    FROM invoice_amounts amounts
+                    WHERE amounts.invoice_id IN (
+                        SELECT inv.ind
+                        FROM invoices inv
+                        WHERE inv.client_id = clients.id
+                            AND ' . $this->db->escape($from_date) . ' <= inv.date_created
+                            AND ' . $this->db->escape($to_date) . ' >= inv.date_created
+                            AND ' . $minQuantity . ' <= (
+                                SELECT SUM(amounts2.item_subtotal)
+                                FROM invoice_amounts amounts2
+                                WHERE amounts2.invoice_id IN (
+                                    SELECT inv2.id
+                                    FROM invoices inv2
+                                    WHERE inv2.client_id = clients.id
+                                        AND ' . $this->db->escape($from_date) . ' <= inv2.date_created
+                                        AND ' . $this->db->escape($to_date) . ' >= inv2.date_created))
+                                        AND ' . $maxQuantity . ' >= (
+                                            SELECT SUM(amounts3.item_subtotal)
+                                            FROM invoice_amounts amounts3
+                                            WHERE amounts3.invoice_id IN (
+                                                SELECT inv3.id
+                                                FROM invoices inv3
+                                                WHERE inv3.client_id = clients.id
+                                                    AND ' . $this->db->escape($from_date) . ' <= inv3.date_created
+                                                    AND ' . $this->db->escape($to_date) . ' >= inv3.date_created
+                                                )
+                                    )
+                        )
+                    ) <>0');
 
             } else {
 
-                $this->db->select('client_id');
-                $this->db->select('client_vat_id AS VAT_ID');
-                $this->db->select('client_name as Name');
-                $this->db->select('(SELECT SUM(amounts.invoice_item_subtotal) FROM ip_invoice_amounts amounts WHERE amounts.invoice_id IN (SELECT inv.invoice_id FROM ip_invoices inv WHERE inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created)) AS total_payment',
+                $this->db->select('id');
+                $this->db->select('vat_id AS VAT_ID');
+                $this->db->select('name as Name');
+
+                $this->db->select('
+                    (
+                    SELECT SUM(amounts.item_subtotal)
+                    FROM invoice_amounts amounts
+                    WHERE amounts.invoice_id IN (
+                        SELECT inv.id
+                        FROM invoices inv
+                        WHERE inv.client_id = clients.id
+                            AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                            AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                        )
+                    ) AS total_payment',
                     false);
 
                 for ($index = $from_date_year; $index <= $to_date_year; $index++) {
-                    $this->db->select('(SELECT SUM(invoice_item_subtotal) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-01-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-02-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-03-%\'))) AS payment_t1_' . $index . '',
+
+                    $this->db->select('
+                        (
+                        SELECT SUM(item_subtotal)
+                        FROM invoice_amounts
+                        WHERE invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                AND (inv.date_created LIKE \'%' . $index . '-01-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-02-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-03-%\'
+                                )
+                            )
+                        ) AS payment_t1_' . $index . '',
                         false);
-                    $this->db->select('(SELECT SUM(invoice_item_subtotal) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-04-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-05-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-06-%\'))) AS payment_t2_' . $index . '',
+
+                    $this->db->select('
+                        (
+                        SELECT SUM(item_subtotal)
+                        FROM invoice_amounts
+                        WHERE invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                AND (
+                                    inv.date_created LIKE \'%' . $index . '-04-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-05-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-06-%\'
+                                    )
+                            )
+                        ) AS payment_t2_' . $index . '',
                         false);
-                    $this->db->select('(SELECT SUM(invoice_item_subtotal) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-07-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-08-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-09-%\'))) AS payment_t3_' . $index . '',
+
+                    $this->db->select('
+                        (
+                        SELECT SUM(item_subtotal)
+                        FROM invoice_amounts
+                        WHERE invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                            AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                            AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                            AND (
+                                inv.date_created LIKE \'%' . $index . '-07-%\'
+                                OR inv.date_created LIKE \'%' . $index . '-08-%\'
+                                OR inv.date_created LIKE \'%' . $index . '-09-%\'
+                                )
+                            )
+                        ) AS payment_t3_' . $index . '',
                         false);
-                    $this->db->select('(SELECT SUM(invoice_item_subtotal) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-10-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-11-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-12-%\'))) AS payment_t4_' . $index . '',
+
+                    $this->db->select('
+                        (
+                        SELECT SUM(item_subtotal)
+                        FROM invoice_amounts
+                        WHERE invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                AND (
+                                    inv.date_created LIKE \'%' . $index . '-10-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-11-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-12-%\'
+                                    )
+                            )
+                        ) AS payment_t4_' . $index . '',
                         false);
+
                 }
 
-                $this->db->where('(SELECT SUM(amounts.invoice_item_subtotal) FROM ip_invoice_amounts amounts WHERE amounts.invoice_id IN (SELECT inv.invoice_id FROM ip_invoices inv WHERE inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . ' <= inv.invoice_date_created AND ' . $this->db->escape($to_date) . ' >= inv.invoice_date_created AND ' . $minQuantity . ' <= (SELECT SUM(amounts2.invoice_item_subtotal) FROM ip_invoice_amounts amounts2 WHERE amounts2.invoice_id IN (SELECT inv2.invoice_id FROM ip_invoices inv2 WHERE inv2.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created)))) <>0');
+                $this->db->where('
+                    (
+                    SELECT SUM(amounts.item_subtotal)
+                    FROM invoice_amounts amounts
+                    WHERE amounts.invoice_id IN (
+                        SELECT inv.id
+                        FROM invoices inv
+                        WHERE inv.client_id = clients.id
+                            AND ' . $this->db->escape($from_date) . ' <= inv.date_created
+                            AND ' . $this->db->escape($to_date) . ' >= inv.date_created
+                            AND ' . $minQuantity . ' <= (
+                                SELECT SUM(amounts2.item_subtotal)
+                                FROM invoice_amounts amounts2
+                                WHERE amounts2.invoice_id IN (
+                                    SELECT inv2.id
+                                    FROM invoices inv2
+                                    WHERE inv2.client_id = clients.id
+                                        AND ' . $this->db->escape($from_date) . ' <= inv2.date_created
+                                        AND ' . $this->db->escape($to_date) . ' >= inv2.date_created
+                                    )
+                                )
+                            )
+                    ) <>0');
 
             }
 
@@ -170,52 +498,265 @@ class Mdl_Reports extends CI_Model
 
                 if ($maxQuantity) {
 
-                    $this->db->select('client_id');
-                    $this->db->select('client_vat_id AS VAT_ID');
-                    $this->db->select('client_name as Name');
-                    $this->db->select('(SELECT SUM(amounts.invoice_total) FROM ip_invoice_amounts amounts WHERE amounts.invoice_id IN (SELECT inv.invoice_id FROM ip_invoices inv WHERE inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created)) AS total_payment',
+                    $this->db->select('id');
+                    $this->db->select('vat_id AS VAT_ID');
+                    $this->db->select('name as Name');
+
+                    $this->db->select('
+                        (
+                        SELECT SUM(amounts.total)
+                        FROM invoice_amounts amounts
+                        WHERE amounts.invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                            )
+                        ) AS total_payment',
                         false);
 
                     for ($index = $from_date_year; $index <= $to_date_year; $index++) {
-                        $this->db->select('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-01-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-02-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-03-%\'))) AS payment_t1_' . $index . '',
+
+                        $this->db->select('
+                            (
+                            SELECT SUM(total)
+                            FROM invoice_amounts
+                            WHERE invoice_id IN (
+                                select invoice_id
+                                FROM invoices inv
+                                where inv.client_id = clients.id
+                                    AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                    AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                    AND (
+                                        inv.date_created LIKE \'%' . $index . '-01-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-02-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-03-%\'
+                                        )
+                                )
+                            ) AS payment_t1_' . $index . '',
                             false);
-                        $this->db->select('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-04-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-05-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-06-%\'))) AS payment_t2_' . $index . '',
+
+                        $this->db->select('
+                            (
+                            SELECT SUM(total)
+                            FROM invoice_amounts
+                            WHERE invoice_id IN (
+                                SELECT inv.id
+                                FROM invoices inv
+                                WHERE inv.client_id = clients.id
+                                    AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                    AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                    AND (
+                                        inv.date_created LIKE \'%' . $index . '-04-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-05-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-06-%\'
+                                        )
+                                )
+                            ) AS payment_t2_' . $index . '',
                             false);
-                        $this->db->select('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-07-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-08-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-09-%\'))) AS payment_t3_' . $index . '',
+
+                        $this->db->select('
+                            (
+                            SELECT SUM(total)
+                            FROM invoice_amounts
+                            WHERE invoice_id IN (
+                                SELECT inv.id
+                                FROM invoices inv
+                                WHERE inv.client_id = clients.id
+                                    AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                    AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                    AND (
+                                        inv.date_created LIKE \'%' . $index . '-07-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-08-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-09-%\'
+                                        )
+                                )
+                            ) AS payment_t3_' . $index . '',
                             false);
-                        $this->db->select('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-10-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-11-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-12-%\'))) AS payment_t4_' . $index . '',
+
+                        $this->db->select('
+                            (
+                            SELECT SUM(total)
+                            FROM invoice_amounts
+                            WHERE invoice_id IN (
+                                SELECT inv.id
+                                FROM invoices inv
+                                WHERE inv.client_id = clients.id
+                                    AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                    AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                    AND (
+                                        inv.date_created LIKE \'%' . $index . '-10-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-11-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-12-%\'
+                                        )
+                                )
+                            ) AS payment_t4_' . $index . '',
                             false);
+
                     }
 
-                    $this->db->where('(SELECT SUM(amounts.invoice_total) FROM ip_invoice_amounts amounts WHERE amounts.invoice_id IN (SELECT inv.invoice_id FROM ip_invoices inv WHERE inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . ' <= inv.invoice_date_created AND ' . $this->db->escape($to_date) . ' >= inv.invoice_date_created AND ' . $minQuantity . ' <= (SELECT SUM(amounts2.invoice_total) FROM ip_invoice_amounts amounts2 WHERE amounts2.invoice_id IN (SELECT inv2.invoice_id FROM ip_invoices inv2 WHERE inv2.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created)) AND ' . $maxQuantity . ' >= (SELECT SUM(amounts3.invoice_total) FROM ip_invoice_amounts amounts3 WHERE amounts3.invoice_id IN (SELECT inv3.invoice_id FROM ip_invoices inv3 WHERE inv3.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . ' <= inv3.invoice_date_created AND ' . $this->db->escape($to_date) . ' >= inv3.invoice_date_created)))) <>0');
+                    $this->db->where('
+                        (
+                        SELECT SUM(amounts.total)
+                        FROM invoice_amounts amounts
+                        WHERE amounts.invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . ' <= inv.date_created
+                                AND ' . $this->db->escape($to_date) . ' >= inv.date_created
+                                AND ' . $minQuantity . ' <= (
+                                    SELECT SUM(amounts2.total)
+                                    FROM invoice_amounts amounts2
+                                    WHERE amounts2.invoice_id IN (
+                                        SELECT inv2.id
+                                        FROM invoices inv2
+                                        WHERE inv2.client_id = clients.id
+                                            AND ' . $this->db->escape($from_date) . ' <= inv2.date_created
+                                            AND ' . $this->db->escape($to_date) . ' >= inv2.date_created))
+                                            AND ' . $maxQuantity . ' >= (
+                                                SELECT SUM(amounts3.total)
+                                                FROM invoice_amounts amounts3
+                                                WHERE amounts3.invoice_id IN (
+                                                    SELECT inv3.id
+                                                    FROM invoices inv3
+                                                    WHERE inv3.client_id = clients.id
+                                                    AND ' . $this->db->escape($from_date) . ' <= inv3.date_created
+                                                    AND ' . $this->db->escape($to_date) . ' >= inv3.date_created
+                                                )
+                                    )
+                            )
+                        ) <>0');
 
                 } else {
 
-                    $this->db->select('client_id');
-                    $this->db->select('client_vat_id AS VAT_ID');
-                    $this->db->select('client_name as Name');
-                    $this->db->select('(SELECT SUM(amounts.invoice_total) FROM ip_invoice_amounts amounts WHERE amounts.invoice_id IN (SELECT inv.invoice_id FROM ip_invoices inv WHERE inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created)) AS total_payment',
+                    $this->db->select('id');
+                    $this->db->select('vat_id AS VAT_ID');
+                    $this->db->select('name as Name');
+
+                    $this->db->select('
+                        (
+                        SELECT SUM(amounts.total)
+                        FROM invoice_amounts amounts
+                        WHERE amounts.invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                            )
+                        ) AS total_payment',
                         false);
 
                     for ($index = $from_date_year; $index <= $to_date_year; $index++) {
-                        $this->db->select('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-01-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-02-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-03-%\'))) AS payment_t1_' . $index . '',
+
+                        $this->db->select('
+                            (
+                            SELECT SUM(total)
+                            FROM invoice_amounts
+                            WHERE invoice_id IN (
+                                SELECT inv.id
+                                FROM invoices inv
+                                WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                AND (
+                                    inv.date_created LIKE \'%' . $index . '-01-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-02-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-03-%\'
+                                    )
+                                )
+                            ) AS payment_t1_' . $index . '',
                             false);
-                        $this->db->select('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-04-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-05-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-06-%\'))) AS payment_t2_' . $index . '',
+
+                        $this->db->select('
+                            (
+                            SELECT SUM(total)
+                            FROM invoice_amounts
+                            WHERE invoice_id IN (
+                                SELECT inv.id
+                                FROM invoices inv
+                                WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                AND (
+                                    inv.date_created LIKE \'%' . $index . '-04-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-05-%\'
+                                    OR inv.date_created LIKE \'%' . $index . '-06-%\'
+                                    )
+                                )
+                            ) AS payment_t2_' . $index . '',
                             false);
-                        $this->db->select('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-07-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-08-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-09-%\'))) AS payment_t3_' . $index . '',
+
+                        $this->db->select('
+                            (
+                            SELECT SUM(total)
+                            FROM invoice_amounts
+                            WHERE invoice_id IN (
+                                SELECT inv.id
+                                FROM invoices inv
+                                WHERE inv.client_id = clients.id
+                                    AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                    AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                    AND (
+                                        inv.date_created LIKE \'%' . $index . '-07-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-08-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-09-%\'
+                                        )
+                                    )
+                            ) AS payment_t3_' . $index . '',
                             false);
-                        $this->db->select('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (select invoice_id FROM ip_invoices inv where inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created AND (inv.invoice_date_created LIKE \'%' . $index . '-10-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-11-%\' OR inv.invoice_date_created LIKE \'%' . $index . '-12-%\'))) AS payment_t4_' . $index . '',
+
+                        $this->db->select('
+                            (
+                            SELECT SUM(total)
+                            FROM invoice_amounts
+                            WHERE invoice_id IN (
+                                SELECT inv.id
+                                FROM invoices inv
+                                WHERE inv.client_id = clients.id
+                                    AND ' . $this->db->escape($from_date) . '<= inv.date_created
+                                    AND ' . $this->db->escape($to_date) . '>= inv.date_created
+                                    AND (
+                                        inv.date_created LIKE \'%' . $index . '-10-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-11-%\'
+                                        OR inv.date_created LIKE \'%' . $index . '-12-%\'
+                                        )
+                                    )
+                                ) AS payment_t4_' . $index . '',
                             false);
+
                     }
 
-                    $this->db->where('(SELECT SUM(amounts.invoice_total) FROM ip_invoice_amounts amounts WHERE amounts.invoice_id IN (SELECT inv.invoice_id FROM ip_invoices inv WHERE inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . ' <= inv.invoice_date_created AND ' . $this->db->escape($to_date) . ' >= inv.invoice_date_created AND ' . $minQuantity . ' <= (SELECT SUM(amounts2.invoice_total) FROM ip_invoice_amounts amounts2 WHERE amounts2.invoice_id IN (SELECT inv2.invoice_id FROM ip_invoices inv2 WHERE inv2.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created)))) <>0');
-
+                    $this->db->where('
+                        (
+                        SELECT SUM(amounts.total)
+                        FROM invoice_amounts amounts
+                        WHERE amounts.invoice_id IN (
+                            SELECT inv.id
+                            FROM invoices inv
+                            WHERE inv.client_id = clients.id
+                                AND ' . $this->db->escape($from_date) . ' <= inv.date_created
+                                AND ' . $this->db->escape($to_date) . ' >= inv.date_created
+                                AND ' . $minQuantity . ' <= (
+                                    SELECT SUM(amounts2.total)
+                                    FROM invoice_amounts amounts2
+                                    WHERE amounts2.invoice_id IN (
+                                        SELECT inv2.id
+                                        FROM invoices inv2 WHERE inv2.client_id = clients.id
+                                        AND ' . $this->db->escape($from_date) . ' <= inv2.date_created
+                                        AND ' . $this->db->escape($to_date) . ' >= inv2.date_created
+                                        )
+                                    )
+                            )
+                        ) <>0');
                 }
 
             }
         }
 
         $this->db->order_by('client_name');
-        return $this->db->get('ip_clients')->result();
+        return $this->db->get('clients')->result();
     }
 }

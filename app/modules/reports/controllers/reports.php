@@ -6,6 +6,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Reports
  * @package Modules\Reports\Controllers
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Reports $mdl_reports
  */
 class Reports extends Admin_Controller
 {
