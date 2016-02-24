@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Welcome
  * @package Modules\Start\Controllers
+ * @property CI_Loader $load
  */
 class Start extends CI_Controller
 {
