@@ -7,20 +7,23 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Quote_Tax_Rates
  * @package Modules\Quotes\Models
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
+ * @property Mdl_Quote_Amounts $mdl_quote_amounts
  */
 class Mdl_Quote_Tax_Rates extends Response_Model
 {
-    public $table = 'ip_quote_tax_rates';
-    public $primary_key = 'ip_quote_tax_rates.quote_tax_rate_id';
+    public $table = 'quote_tax_rates';
+    public $primary_key = 'quote_tax_rates.id';
 
     /**
      * The default select directive used in every query
      */
     public function default_select()
     {
-        $this->db->select('ip_tax_rates.tax_rate_name AS quote_tax_rate_name');
-        $this->db->select('ip_tax_rates.tax_rate_percent AS quote_tax_rate_percent');
-        $this->db->select('ip_quote_tax_rates.*');
+        $this->db->select('tax_rates.name AS quote_tax_rate_name');
+        $this->db->select('tax_rates.percent AS quote_tax_rate_percent');
+        $this->db->select('quote_tax_rates.*');
     }
 
     /**
@@ -28,7 +31,7 @@ class Mdl_Quote_Tax_Rates extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_quote_tax_rates.tax_rate_id');
+        $this->db->join('tax_rates', 'tax_rates.id = quote_tax_rates.tax_rate_id');
     }
 
     /**
@@ -56,18 +59,22 @@ class Mdl_Quote_Tax_Rates extends Response_Model
             'quote_id' => array(
                 'field' => 'quote_id',
                 'label' => lang('quote'),
-                'rules' => 'required'
+                'rules' => 'required',
             ),
             'tax_rate_id' => array(
                 'field' => 'tax_rate_id',
                 'label' => lang('tax_rate'),
-                'rules' => 'required'
+                'rules' => 'required',
             ),
             'include_item_tax' => array(
                 'field' => 'include_item_tax',
                 'label' => lang('tax_rate_placement'),
-                'rules' => 'required'
-            )
+                'rules' => 'required',
+            ),
+            'amount' => array(
+                'field' => 'amount',
+                'label' => lang('amount'),
+            ),
         );
     }
 }

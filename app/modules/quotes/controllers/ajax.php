@@ -6,6 +6,21 @@ if (!defined('BASEPATH')) {
 /**
  * Class Quotes_Ajax
  * @package Modules\Quotes\Controllers
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Clients $mdl_clients
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Invoice_Groups $mdl_invoice_groups
+ * @property Mdl_Invoice_Tax_Rates $mdl_invoice_tax_rates
+ * @property Mdl_Items $mdl_items
+ * @property Mdl_Quotes $mdl_quotes
+ * @property Mdl_Quote_Amounts mdl_quote_amounts
+ * @property Mdl_Quote_Custom mdl_quote_custom
+ * @property Mdl_Quote_Item_Amounts $mdl_quote_item_amounts
+ * @property Mdl_Quote_Items mdl_quote_items
+ * @property Mdl_Quote_Tax_Rates mdl_quote_tax_rates
+ * @property Mdl_Tax_Rates $mdl_tax_rates
  */
 class Quotes_Ajax extends Admin_Controller
 {
@@ -41,38 +56,38 @@ class Quotes_Ajax extends Admin_Controller
             $items = json_decode($this->input->post('items'));
 
             foreach ($items as $item) {
-                if ($item->item_name) {
-                    $item->item_quantity = standardize_amount($item->item_quantity);
-                    $item->item_price = standardize_amount($item->item_price);
-                    $item->item_discount_amount = standardize_amount($item->item_discount_amount);
+                if ($item->name) {
+                    $item->quantity = standardize_amount($item->quantity);
+                    $item->price = standardize_amount($item->price);
+                    $item->discount_amount = standardize_amount($item->discount_amount);
 
-                    $item_id = ($item->item_id) ?: null;
+                    $item_id = ($item->id) ?: null;
 
                     $this->mdl_quote_items->save($quote_id, $item_id, $item);
                 }
             }
 
-            if ($this->input->post('quote_discount_amount') === '') {
-                $quote_discount_amount = floatval(0);
+            if ($this->input->post('discount_amount') === '') {
+                $discount_amount = floatval(0);
             } else {
-                $quote_discount_amount = $this->input->post('quote_discount_amount');
+                $discount_amount = $this->input->post('discount_amount');
             }
 
-            if ($this->input->post('quote_discount_percent') === '') {
-                $quote_discount_percent = floatval(0);
+            if ($this->input->post('discount_percent') === '') {
+                $discount_percent = floatval(0);
             } else {
-                $quote_discount_percent = $this->input->post('quote_discount_percent');
+                $discount_percent = $this->input->post('discount_percent');
             }
 
             $db_array = array(
                 'quote_number' => $this->input->post('quote_number'),
-                'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
-                'quote_date_expires' => date_to_mysql($this->input->post('quote_date_expires')),
-                'quote_status_id' => $this->input->post('quote_status_id'),
-                'quote_password' => $this->input->post('quote_password'),
+                'date_created' => date_to_mysql($this->input->post('date_created')),
+                'date_expires' => date_to_mysql($this->input->post('date_expires')),
+                'status_id' => $this->input->post('status_id'),
+                'password' => $this->input->post('password'),
                 'notes' => $this->input->post('notes'),
-                'quote_discount_amount' => $quote_discount_amount,
-                'quote_discount_percent' => $quote_discount_percent,
+                'discount_amount' => $discount_amount,
+                'discount_percent' => $discount_percent,
             );
 
             $this->mdl_quotes->save($quote_id, $db_array);
@@ -96,7 +111,6 @@ class Quotes_Ajax extends Admin_Controller
             $db_array = array();
 
             foreach ($this->input->post('custom') as $custom) {
-                // I hate myself for this...
                 $db_array[str_replace(']', '', str_replace('custom[', '', $custom['name']))] = $custom['value'];
             }
 
@@ -168,7 +182,7 @@ class Quotes_Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         $data = array(
-            'client_name' => $this->input->post('client_name'),
+            'name' => $this->input->post('name'),
             'quote_id' => $this->input->post('quote_id'),
             'clients' => $this->mdl_clients->get()->result(),
         );
@@ -187,19 +201,19 @@ class Quotes_Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         // Get the client ID
-        $client_name = $this->input->post('client_name');
-        $client = $this->mdl_clients->where('client_name', $this->db->escape_str($client_name))
+        $name = $this->input->post('name');
+        $client = $this->mdl_clients->where('name', $this->db->escape_str($name))
             ->get()->row();
 
         if (!empty($client)) {
-            $client_id = $client->client_id;
+            $client_id = $client->id;
             $quote_id = $this->input->post('quote_id');
 
             $db_array = array(
                 'client_id' => $client_id,
             );
             $this->db->where('quote_id', $quote_id);
-            $this->db->update('ip_quotes', $db_array);
+            $this->db->update('quotes', $db_array);
 
             $response = array(
                 'success' => 1,
@@ -265,7 +279,7 @@ class Quotes_Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'quote_id' => $this->input->post('quote_id'),
-            'quote' => $this->mdl_quotes->where('ip_quotes.quote_id', $this->input->post('quote_id'))->get()->row()
+            'quote' => $this->mdl_quotes->where('quotes.id', $this->input->post('quote_id'))->get()->row()
         );
 
         $this->layout->load_view('quotes/modal_copy_quote', $data);
@@ -314,7 +328,7 @@ class Quotes_Ajax extends Admin_Controller
         $data = array(
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'quote_id' => $quote_id,
-            'quote' => $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row()
+            'quote' => $this->mdl_quotes->where('quotes.id', $quote_id)->get()->row()
         );
 
         $this->load->view('quotes/modal_quote_to_invoice', $data);
@@ -340,20 +354,20 @@ class Quotes_Ajax extends Admin_Controller
         if ($this->mdl_invoices->run_validation()) {
             $invoice_id = $this->mdl_invoices->create(null, false);
 
-            $this->db->where('quote_id', $this->input->post('quote_id'));
+            $this->db->where('id', $this->input->post('quote_id'));
             $this->db->set('invoice_id', $invoice_id);
-            $this->db->update('ip_quotes');
+            $this->db->update('quotes');
 
             $quote_items = $this->mdl_quote_items->where('quote_id', $this->input->post('quote_id'))->get()->result();
 
             foreach ($quote_items as $quote_item) {
                 $db_array = array(
                     'invoice_id' => $invoice_id,
-                    'item_tax_rate_id' => $quote_item->item_tax_rate_id,
-                    'item_name' => $quote_item->item_name,
-                    'item_description' => $quote_item->item_description,
-                    'item_quantity' => $quote_item->item_quantity,
-                    'item_price' => $quote_item->item_price,
+                    'tax_rate_id' => $quote_item->tax_rate_id,
+                    'name' => $quote_item->name,
+                    'description' => $quote_item->description,
+                    'quantity' => $quote_item->quantity,
+                    'price' => $quote_item->price,
                     'item_order' => $quote_item->item_order
                 );
 
@@ -368,7 +382,7 @@ class Quotes_Ajax extends Admin_Controller
                     'invoice_id' => $invoice_id,
                     'tax_rate_id' => $quote_tax_rate->tax_rate_id,
                     'include_item_tax' => $quote_tax_rate->include_item_tax,
-                    'invoice_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
+                    'amount' => $quote_tax_rate->amount
                 );
 
                 $this->mdl_invoice_tax_rates->save($invoice_id, null, $db_array);

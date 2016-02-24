@@ -6,19 +6,23 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Quote_Items
  * @package Modules\Quotes\Models
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
+ * @property Mdl_Quote_Amounts $mdl_quote_amounts
+ * @property Mdl_Quote_Item_Amounts $mdl_quote_item_amounts
  */
 class Mdl_Quote_Items extends Response_Model
 {
-    public $table = 'ip_quote_items';
-    public $primary_key = 'ip_quote_items.item_id';
-    public $date_created_field = 'item_date_added';
+    public $table = 'quote_items';
+    public $primary_key = 'quote_items.id';
+    public $date_created_field = 'date_created';
 
     /**
      * The default select directive used in every query
      */
     public function default_select()
     {
-        $this->db->select('ip_quote_item_amounts.*, ip_quote_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
+        $this->db->select('quote_item_amounts.*, quote_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
     }
 
     /**
@@ -26,7 +30,7 @@ class Mdl_Quote_Items extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_quote_items.item_order');
+        $this->db->order_by('quote_items.item_order');
     }
 
     /**
@@ -34,9 +38,9 @@ class Mdl_Quote_Items extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_quote_item_amounts', 'ip_quote_item_amounts.item_id = ip_quote_items.item_id', 'left');
-        $this->db->join('ip_tax_rates AS item_tax_rates',
-            'item_tax_rates.tax_rate_id = ip_quote_items.item_tax_rate_id', 'left');
+        $this->db->join('quote_item_amounts', 'quote_item_amounts.id = quote_items.item_id', 'left');
+        $this->db->join('products', 'products.id = quote_items.product_id', 'left');
+        $this->db->join('tax_rates', 'tax_rates.id = quote_items.tax_rate_id', 'left');
     }
 
     /**
@@ -49,31 +53,39 @@ class Mdl_Quote_Items extends Response_Model
             'quote_id' => array(
                 'field' => 'quote_id',
                 'label' => lang('quote'),
-                'rules' => 'required'
+                'rules' => 'required',
             ),
-            'item_name' => array(
-                'field' => 'item_name',
-                'label' => lang('item_name'),
-                'rules' => 'required'
+            'tax_rate_id' => array(
+                'field' => 'tax_rate_id',
+                'label' => lang('tax_rate'),
             ),
-            'item_description' => array(
-                'field' => 'item_description',
-                'label' => lang('description')
+            'product_id' => array(
+                'field' => 'product_id',
+                'label' => lang('product'),
             ),
-            'item_quantity' => array(
-                'field' => 'item_quantity',
+            'name' => array(
+                'field' => 'name',
+                'label' => lang('name'),
+                'rules' => 'required',
+            ),
+            'description' => array(
+                'field' => 'description',
+                'label' => lang('description'),
+            ),
+            'quantity' => array(
+                'field' => 'quantity',
                 'label' => lang('quantity'),
-                'rules' => 'required'
+                'rules' => 'required',
             ),
-            'item_price' => array(
-                'field' => 'item_price',
+            'price' => array(
+                'field' => 'price',
                 'label' => lang('price'),
-                'rules' => 'required'
+                'rules' => 'required',
             ),
-            'item_tax_rate_id' => array(
-                'field' => 'item_tax_rate_id',
-                'label' => lang('item_tax_rate')
-            )
+            'discount_amount' => array(
+                'field' => 'discount_amount',
+                'label' => lang('discount_amount'),
+            ),
         );
     }
 
@@ -106,14 +118,14 @@ class Mdl_Quote_Items extends Response_Model
         // Get the quote id so we can recalculate quote amounts
         $this->db->select('quote_id');
         $this->db->where('item_id', $item_id);
-        $quote_id = $this->db->get('ip_quote_items')->row()->quote_id;
+        $quote_id = $this->db->get('quote_items')->row()->quote_id;
 
         // Delete the item
         parent::delete($item_id);
 
         // Delete the item amounts
         $this->db->where('item_id', $item_id);
-        $this->db->delete('ip_quote_item_amounts');
+        $this->db->delete('quote_item_amounts');
 
         // Recalculate quote amounts
         $this->load->model('quotes/mdl_quote_amounts');

@@ -6,6 +6,17 @@ if (!defined('BASEPATH')) {
 /**
  * Class Quotes
  * @package Modules\Quotes\Controllers
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Custom_Fields $mdl_custom_fields
+ * @property Mdl_Quotes $mdl_quotes
+ * @property Mdl_Quote_Amounts mdl_quote_amounts
+ * @property Mdl_Quote_Custom mdl_quote_custom
+ * @property Mdl_Quote_Item_Amounts $mdl_quote_item_amounts
+ * @property Mdl_Quote_Items mdl_quote_items
+ * @property Mdl_Quote_Tax_Rates mdl_quote_tax_rates
+ * @property Mdl_Tax_Rates $mdl_tax_rates
  */
 class Quotes extends Admin_Controller
 {
@@ -115,7 +126,7 @@ class Quotes extends Admin_Controller
                 'quote_id' => $quote_id,
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result(),
+                'custom_fields' => $this->mdl_custom_fields->by_table('custom_quote')->get()->result(),
                 'custom_js_vars' => array(
                     'currency_symbol' => $this->mdl_settings->setting('currency_symbol'),
                     'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
@@ -203,7 +214,7 @@ class Quotes extends Admin_Controller
     public function recalculate_all_quotes()
     {
         $this->db->select('quote_id');
-        $quote_ids = $this->db->get('ip_quotes')->result();
+        $quote_ids = $this->db->get('quotes')->result();
 
         $this->load->model('mdl_quote_amounts');
 
