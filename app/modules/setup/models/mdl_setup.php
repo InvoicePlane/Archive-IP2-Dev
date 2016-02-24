@@ -61,7 +61,7 @@ class Mdl_Setup extends CI_Model
         foreach ($sql_files as $sql_file) {
             if (substr($sql_file, -4) == '.sql') {
                 
-                $this->db->where('version_file', $sql_file);
+                $this->db->where('file', $sql_file);
                 $update_applied = $this->db->get('versions');
 
                 if (!$update_applied->num_rows()) {
