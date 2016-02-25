@@ -29,7 +29,6 @@ class Base_Controller extends MX_Controller
             exit;
         }
 
-        $this->load->library('session');
         $this->load->helper('url');
 
         // Check if database has been configured, if not show the welcome page
@@ -66,6 +65,13 @@ class Base_Controller extends MX_Controller
             
             // Get the app key
             define('APP_KEY', $this->mdl_settings->setting('app_key'));
+
+            // Define encryption key
+            $this->config->set_item('encryption_key', $this->mdl_settings->setting('encryption_key'));
+
+            // Load session
+            $this->config->set_item('sess_save_path', STORAGE_SESSIONS);
+            $this->load->library('session');
 
             // Load language strings
             $this->lang->load('ip', $this->mdl_settings->setting('default_language'));

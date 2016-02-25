@@ -1,5 +1,7 @@
 /app/config/development
 /app/config/database.php
+/app/storage/*/*
+!/app/storage/*/index.html
 /data/archive/*
 /data/customer_files/*
 /data/images/*

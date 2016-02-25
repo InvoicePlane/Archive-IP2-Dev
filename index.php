@@ -272,6 +272,13 @@ if (($_temp = realpath($view_folder)) !== false) {
 define('VIEWPATH', $view_folder);
 
 /*
+ * Storage paths
+ */
+define('STORAGE_SESSIONS', APPPATH . 'storage' . DIRECTORY_SEPARATOR . 'sessions');
+define('STORAGE_TEMP', APPPATH . 'storage' . DIRECTORY_SEPARATOR . 'temp');
+define('STORAGE_LOGS', APPPATH . 'storage' . DIRECTORY_SEPARATOR . 'logs');
+
+/*
  * Path to the data directory and all sub paths 
  */
 define('DATAFOLDER', IP_PATH . 'data' . DIRECTORY_SEPARATOR);
@@ -279,7 +286,6 @@ define('DATAFOLDER_ARCHIVES', IP_PATH . 'data' . DIRECTORY_SEPARATOR . 'archive'
 define('DATAFOLDER_CFILES', IP_PATH . 'data' . DIRECTORY_SEPARATOR . 'customer_files' . DIRECTORY_SEPARATOR);
 define('DATAFOLDER_IMAGES', IP_PATH . 'data' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR);
 define('DATAFOLDER_IMPORT', IP_PATH . 'data' . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR);
-define('DATAFOLDER_TEMP', IP_PATH . 'data' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR);
 
 
 /*

@@ -19,6 +19,24 @@ function generate_password_suggestion()
 }
 
 /**
+ * Generates a new app key
+ * @return string
+ */
+function generate_app_key()
+{
+    return hash('sha1', time() . microtime());
+}
+
+/**
+ * Generates a new encryption key
+ * @return string
+ */
+function generate_encryption_key()
+{
+    return hash('sha1', microtime()) . hash('sha1', time());
+}
+
+/**
  * Generates a new API key
  * @return string
  */

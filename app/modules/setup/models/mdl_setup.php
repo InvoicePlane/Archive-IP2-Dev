@@ -165,7 +165,8 @@ class Mdl_Setup extends CI_Model
         $this->load->helper('string');
 
         $default_settings = array(
-            'app_key' => hash('sha1', time() . microtime()),
+            'app_key' => generate_app_key(),
+            'encryption_key' => generate_encryption_key(),
             'api_key' => generate_api_key(),
             'default_language' => $this->session->userdata('ip_lang'),
             'date_format' => 'm/d/Y',

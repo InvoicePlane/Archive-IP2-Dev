@@ -250,7 +250,7 @@ $config['log_threshold'] = 0;
 | application/logs/ directory. Use a full server path with trailing slash.
 |
 */
-$config['log_path'] = '';
+$config['log_path'] = STORAGE_LOGS . DIRECTORY_SEPARATOR;
 
 /*
 |--------------------------------------------------------------------------
@@ -394,12 +394,12 @@ $config['encryption_key'] = 'invoiceplane';
 |
 */
 $config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = 'ip_session';
-$config['sess_expiration'] = 864000; // 10 Days
+$config['sess_cookie_name'] = 'ip_cookie';
+$config['sess_expiration'] = 86400; // 1 day
 $config['sess_save_path'] = null;
-$config['sess_match_ip'] = false;
+$config['sess_match_ip'] = true;
 $config['sess_time_to_update'] = 300;
-$config['sess_regenerate_destroy'] = false;
+$config['sess_regenerate_destroy'] = true;
 
 /*
 |--------------------------------------------------------------------------

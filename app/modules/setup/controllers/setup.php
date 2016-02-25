@@ -318,9 +318,10 @@ class Setup extends Setup_Controller
             DATAFOLDER_CFILES,
             DATAFOLDER_IMAGES,
             DATAFOLDER_IMPORT,
-            DATAFOLDER_TEMP,
+            STORAGE_LOGS,
+            STORAGE_TEMP,
+            STORAGE_SESSIONS,
             APPPATH . 'config/',
-            APPPATH . 'logs',
         );
 
         foreach ($writables as $writable) {
