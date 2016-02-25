@@ -6,6 +6,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Upload
  * @package Modules\Upload\Controllers
+ * @property CI_Loader $load
+ * @property Mdl_Uploads $mdl_uploads
  */
 class Upload extends Admin_Controller
 {
@@ -102,6 +104,7 @@ class Upload extends Admin_Controller
         $path = $this->targetPath;
 
         $files = scandir($path);
+
         if ($files !== false) {
             foreach ($files as $file) {
                 if ('.' != $file && '..' != $file && strpos($file, $url_key) !== false) {
@@ -114,7 +117,7 @@ class Upload extends Admin_Controller
             }
         } else {
 
-            return false;
+            echo false;
         }
         
         echo json_encode($result);

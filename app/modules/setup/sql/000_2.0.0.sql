@@ -538,12 +538,11 @@ CREATE TABLE `uploads` (
   `invoice_id`         INT(11) UNSIGNED          DEFAULT NULL,
   `payment_id`         INT(11) UNSIGNED          DEFAULT NULL,
   `project_id`         INT(11) UNSIGNED          DEFAULT NULL,
-  `url_key`            VARCHAR(50)      NOT NULL DEFAULT '',
   `file_name_original` LONGTEXT         NOT NULL,
   `file_name_new`      LONGTEXT         NOT NULL,
   `date_uploaded`      DATE             NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `url_key` (`url_key`)
+  `date_modified`      DATE             NOT NULL,
+  PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;

@@ -6,19 +6,26 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Uploads
  * @package Modules\Upload\Models
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Quotes $mdl_quotes
+ *
+ * @TODO Merge get_*_uploads functions into one function with new argument to address all available upload possibilities
  */
 class Mdl_Uploads extends Response_Model
 {
-    public $table = 'ip_uploads';
-    public $primary_key = 'ip_uploads.upload_id';
-    public $date_modified_field = 'uploaded_date';
+    public $table = 'uploads';
+    public $primary_key = 'uploads.id';
+    public $date_created_field = 'date_uploaded';
+    public $date_modified_field = 'date_modified';
 
     /**
      * The default order directive used in every query
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_uploads.upload_id ASC');
+        $this->db->order_by('uploads.id ASC');
     }
 
     /**
@@ -41,9 +48,17 @@ class Mdl_Uploads extends Response_Model
     public function get_quote_uploads($id)
     {
         $this->load->model('quotes/mdl_quotes');
+
         $quote = $this->mdl_quotes->get_by_id($id);
-        $query = $this->db->query("Select file_name_new,file_name_original from ip_uploads where url_key = '" . $quote->quote_url_key . "'");
+
+        $query = $this->db->query("
+            SELECT file_name_new, file_name_original
+            FROM uploads
+            WHERE url_key = '" . $quote->quote_url_key . "'"
+        );
+
         $names = array();
+
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 array_push($names, array(
@@ -52,6 +67,7 @@ class Mdl_Uploads extends Response_Model
                 ));
             }
         }
+
         return $names;
     }
 
@@ -63,10 +79,17 @@ class Mdl_Uploads extends Response_Model
     public function get_invoice_uploads($id)
     {
         $this->load->model('invoices/mdl_invoices');
+
         $invoice = $this->mdl_invoices->get_by_id($id);
-        $query = $this->db->query("Select file_name_new,file_name_original from ip_uploads where url_key = '" . $invoice->invoice_url_key . "'");
+
+        $query = $this->db->query("
+            SELECT file_name_new, file_name_original
+            FROM uploads
+            WHERE url_key = '" . $invoice->invoice_url_key . "'"
+        );
 
         $names = array();
+
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 array_push($names, array(
@@ -75,6 +98,7 @@ class Mdl_Uploads extends Response_Model
                 ));
             }
         }
+
         return $names;
     }
 
@@ -87,7 +111,7 @@ class Mdl_Uploads extends Response_Model
     {
         $this->db->where('url_key', $url_key);
         $this->db->where('file_name_original', $filename);
-        $this->db->delete('ip_uploads');
+        $this->db->delete('uploads');
     }
 
     /**
@@ -97,7 +121,7 @@ class Mdl_Uploads extends Response_Model
      */
     public function by_client($client_id)
     {
-        $this->filter_where('ip_uploads.client_id', $client_id);
+        $this->filter_where('uploads.client_id', $client_id);
         return $this;
     }
 }
