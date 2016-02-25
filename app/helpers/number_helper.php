@@ -8,10 +8,12 @@ if (!defined('BASEPATH'))
 
 /**
  * Formats an amount based on the format set in the settings with the currency
+ *
  * @param $amount
+ * @param bool $is_quantity
  * @return string
-*/
-function format_currency($amount, $decimals = 2)
+ */
+function format_currency($amount, $is_quantity = false)
 {
     $CI =& get_instance();
 
@@ -20,38 +22,49 @@ function format_currency($amount, $decimals = 2)
     $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
     $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
-    if ($currency_symbol_placement == 'before') {
-        return $currency_symbol . number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point,
-            $thousands_separator);
-    } elseif ($currency_symbol_placement == 'afterspace') {
-        return number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point,
-            $thousands_separator) . '&nbsp;' . $currency_symbol;
+    if ($is_quantity) {
+        $decimal_places = $CI->mdl_settings->setting('quantity_decimal_places');
     } else {
-        return number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point,
-            $thousands_separator) . $currency_symbol;
+        $decimal_places = $CI->mdl_settings->setting('amount_decimal_places');
+    }
+
+    $number = number_format($amount, $decimal_places, $decimal_point, $thousands_separator);
+
+    if ($currency_symbol_placement == 'before') {
+        return $currency_symbol . $number;
+    } elseif ($currency_symbol_placement == 'afterspace') {
+        return $number . '&nbsp;' . $currency_symbol;
+    } else {
+        return $number . $currency_symbol;
     }
 }
 
 /**
  * Formats an amount based on the format set in the settings
- * @param null $amount
- * @param int $decimals
+ *
+ * @param float $amount
+ * @param bool $is_quantity
  * @return null|string
  */
-function format_amount($amount = null, $decimals = 2)
+function format_amount($amount, $is_quantity = false)
 {
-    if ($amount) {
-        $CI =& get_instance();
-        $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
-        $decimal_point = $CI->mdl_settings->setting('decimal_point');
+    $CI =& get_instance();
 
-        return number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point, $thousands_separator);
+    $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
+    $decimal_point = $CI->mdl_settings->setting('decimal_point');
+
+    if ($is_quantity) {
+        $decimal_places = $CI->mdl_settings->setting('quantity_decimal_places');
+    } else {
+        $decimal_places = $CI->mdl_settings->setting('amount_decimal_places');
     }
-    return null;
+
+    return number_format($amount, $decimal_places, $decimal_point, $thousands_separator);
 }
 
 /**
  * Standardized an amount based on the set number format
+ *
  * @param $amount
  * @return mixed
  */
