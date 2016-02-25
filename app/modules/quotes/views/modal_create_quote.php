@@ -44,7 +44,7 @@
                     client_name: $('#client_name').val(),
                     quote_date_created: $('#quote_date_created').val(),
                     quote_password: $('#quote_password').val(),
-                    user_id: '<?php echo $this->session->userdata('user_id'); ?>',
+                    user_id: '<?php echo $this->session->user['id']; ?>',
                     invoice_group_id: $('#invoice_group_id').val()
                 },
                 function (data) {

@@ -1,12 +1,11 @@
 <div class="sidebar-inner">
 
     <div class="sidebar-top">
-        <a href="<?php echo site_url('users/form/' .
-            $this->session->userdata('user_id')); ?>">
+        <a href="<?php echo site_url('users/form/' . $this->session->user['id']); ?>">
             <?php
-            print($this->session->userdata('user_name'));
-            if ($this->session->userdata('user_company')) {
-                print(" (" . $this->session->userdata('user_company') . ")");
+            echo $this->session->user['name'];
+            if ($this->session->user['company']) {
+                echo " (" . $this->session->user['company'] . ")";
             }
             ?>
         </a>
