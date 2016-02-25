@@ -6,6 +6,10 @@ if (!defined('BASEPATH')) {
 /**
  * Class Users_Ajax
  * @package Modules\Users\Controllers
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Clients $mdl_clients
+ * @property Mdl_User_Clients $mdl_user_clients
  */
 class Users_Ajax extends Admin_Controller
 {
@@ -24,7 +28,7 @@ class Users_Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
         $this->load->model('users/mdl_user_clients');
 
-        $client = $this->mdl_clients->where('client_name', $client_name)->get();
+        $client = $this->mdl_clients->where('name', $client_name)->get();
 
         if ($client->num_rows() == 1) {
             $client_id = $client->row()->client_id;
@@ -33,11 +37,16 @@ class Users_Ajax extends Admin_Controller
             if ($user_id) {
                 // Existing user - go ahead and save the entries
 
-                $user_client = $this->mdl_user_clients->where('ip_user_clients.user_id',
-                    $user_id)->where('ip_user_clients.client_id', $client_id)->get();
+                $user_client = $this->mdl_user_clients
+                    ->where('user_clients.user_id', $user_id)
+                    ->where('user_clients.client_id', $client_id)
+                    ->get();
 
                 if (!$user_client->num_rows()) {
-                    $this->mdl_user_clients->save(null, array('user_id' => $user_id, 'client_id' => $client_id));
+                    $this->mdl_user_clients->save(null, array(
+                        'user_id' => $user_id,
+                        'client_id' => $client_id
+                    ));
                 }
             } else {
                 // New user - assign the entries to a session variable until user record is saved
@@ -61,16 +70,18 @@ class Users_Ajax extends Admin_Controller
 
             $data = array(
                 'id' => null,
-                'user_clients' => $this->mdl_clients->where_in('ip_clients.client_id',
-                    $session_user_clients)->get()->result()
+                'user_clients' => $this->mdl_clients
+                    ->where_in('clients.id', $session_user_clients)
+                    ->get()->result()
             );
         } else {
             $this->load->model('users/mdl_user_clients');
 
             $data = array(
                 'id' => $this->input->post('user_id'),
-                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id',
-                    $this->input->post('user_id'))->get()->result()
+                'user_clients' => $this->mdl_user_clients
+                    ->where('user_clients.user_id', $this->input->post('user_id'))
+                    ->get()->result()
             );
         }
 

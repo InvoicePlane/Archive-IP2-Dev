@@ -6,18 +6,20 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_User_Clients
  * @package Modules\Users\Models
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
  */
 class Mdl_User_Clients extends MY_Model
 {
-    public $table = 'ip_user_clients';
-    public $primary_key = 'ip_user_clients.user_client_id';
+    public $table = 'user_clients';
+    public $primary_key = 'user_clients.id';
 
     /**
      * The default select directive used in every query
      */
     public function default_select()
     {
-        $this->db->select('ip_user_clients.*, ip_users.user_name, ip_clients.client_name');
+        $this->db->select('user_clients.*, users.name, clients.name');
     }
 
     /**
@@ -25,8 +27,8 @@ class Mdl_User_Clients extends MY_Model
      */
     public function default_join()
     {
-        $this->db->join('ip_users', 'ip_users.user_id = ip_user_clients.user_id');
-        $this->db->join('ip_clients', 'ip_clients.client_id = ip_user_clients.client_id');
+        $this->db->join('users', 'users.id = user_clients.user_id');
+        $this->db->join('clients', 'clients.id = user_clients.client_id');
     }
 
     /**
@@ -34,7 +36,7 @@ class Mdl_User_Clients extends MY_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_clients.client_name');
+        $this->db->order_by('clients.name');
     }
 
     /**
@@ -44,7 +46,7 @@ class Mdl_User_Clients extends MY_Model
      */
     public function assigned_to($user_id)
     {
-        $this->filter_where('ip_user_clients.user_id', $user_id);
+        $this->filter_where('user_clients.user_id', $user_id);
         return $this;
     }
 }

@@ -6,6 +6,10 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Users
  * @package Modules\Users\Models
+ * @property Crypt $crypt
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
+ * @property Mdl_User_Clients $mdl_user_clients
  */
 class Mdl_Users extends Response_Model
 {
@@ -40,7 +44,7 @@ class Mdl_Users extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('user_custom', 'user_custom.user_id = users.user_id', 'left');
+        $this->db->join('user_custom', 'custom_user.user_id = users.id', 'left');
     }
 
     /**
@@ -48,7 +52,7 @@ class Mdl_Users extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('users.user_name');
+        $this->db->order_by('users.name');
     }
 
     /**

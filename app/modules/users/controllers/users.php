@@ -6,6 +6,12 @@ if (!defined('BASEPATH')) {
 /**
  * Class Users
  * @package Modules\Users\Controllers
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Custom_Fields $mdl_custom_fields
+ * @property Mdl_Users $mdl_users
+ * @property Mdl_User_Clients $mdl_user_clients
+ * @property Mdl_User_Custom $mdl_user_custom
  */
 class Users extends Admin_Controller
 {
@@ -91,8 +97,9 @@ class Users extends Admin_Controller
             array(
                 'id' => $id,
                 'user_types' => $this->mdl_users->user_types(),
-                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $id)->get()->result(),
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result(),
+                'user_clients' => $this->mdl_user_clients
+                    ->where('user_clients.user_id', $id)->get()->result(),
+                'custom_fields' => $this->mdl_custom_fields->by_table('custom_user')->get()->result(),
                 'countries' => get_country_list(lang('cldr')),
                 'selected_country' => $this->mdl_users->form_value('user_country') ?:
                     $this->mdl_settings->setting('default_country')
