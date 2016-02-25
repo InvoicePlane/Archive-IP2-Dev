@@ -19,7 +19,7 @@ if (!defined('BASEPATH')) {
 class Mdl_Quotes extends Response_Model
 {
     public $table = 'quotes';
-    public $primary_key = 'quotes.quote_id';
+    public $primary_key = 'quotes.id';
     public $date_created_field = 'date_created';
     public $date_modified_field = 'date_modified';
 
@@ -89,7 +89,7 @@ class Mdl_Quotes extends Response_Model
 			users.web,
 			users.vat_id,
 			users.tax_code,
-			quote_amounts.quote_amount_id,
+			quote_amounts.id,
 			IFNULL(quote_amounts.item_subtotal, '0.00') AS item_subtotal,
 			IFNULL(quote_amounts.item_tax_total, '0.00') AS item_tax_total,
 			IFNULL(quote_amounts.tax_total, '0.00') AS tax_total,
@@ -113,11 +113,11 @@ class Mdl_Quotes extends Response_Model
     {
         $this->db->join('clients', 'clients.id = quotes.client_id');
         $this->db->join('users', 'users.id = quotes.user_id');
-        $this->db->join('quote_amounts', 'quote_amounts.id = quotes.quote_id', 'left');
+        $this->db->join('quote_amounts', 'quote_amounts.id = quotes.id', 'left');
         $this->db->join('invoices', 'invoices.id = quotes.invoice_id', 'left');
-        $this->db->join('custom_client', 'client_custom.client_id = clients.client_id', 'left');
-        $this->db->join('custom_user', 'user_custom.user_id = users.user_id', 'left');
-        $this->db->join('custom_quote', 'quote_custom.quote_id = quotes.quote_id', 'left');
+        $this->db->join('custom_client', 'custom_client.client_id = clients.id', 'left');
+        $this->db->join('custom_user', 'custom_user.user_id = users.id', 'left');
+        $this->db->join('custom_quote', 'custom_quote.quote_id = quotes.id', 'left');
     }
 
     /**

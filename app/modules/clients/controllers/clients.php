@@ -6,6 +6,16 @@ if (!defined('BASEPATH')) {
 /**
  * Class Clients
  * @package Modules\Clients\Controllers
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Clients $mdl_clients
+ * @property Mdl_Client_Custom $mdl_client_custom
+ * @property Mdl_Client_Notes $mdl_client_notes
+ * @property Mdl_Custom_Fields $mdl_custom_fields
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Payments $mdl_payments
+ * @property Mdl_Quotes $mdl_quotes
  */
 class Clients extends User_Controller
 {
@@ -119,7 +129,7 @@ class Clients extends User_Controller
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->helper('country');
 
-        $this->layout->set('custom_fields', $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result());
+        $this->layout->set('custom_fields', $this->mdl_custom_fields->by_table('custom_client')->get()->result());
         $this->layout->set('countries', get_country_list(lang('cldr')));
         $this->layout->set('selected_country', $this->mdl_clients->form_value('client_country') ?:
             $this->mdl_settings->setting('default_country'));
@@ -140,7 +150,7 @@ class Clients extends User_Controller
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
 
-        $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id',
+        $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('clients.id',
             $client_id)->get()->row();
 
         if (!$client) {
@@ -154,7 +164,7 @@ class Clients extends User_Controller
                 'invoices' => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
                 'quotes' => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
                 'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result(),
+                'custom_fields' => $this->mdl_custom_fields->by_table('custom_client')->get()->result(),
                 'quote_statuses' => $this->mdl_quotes->statuses(),
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
             )

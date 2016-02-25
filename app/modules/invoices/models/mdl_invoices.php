@@ -56,9 +56,9 @@ class Mdl_Invoices extends Response_Model
     public function default_select()
     {
         $this->db->select("
-            SQL_CALC_FOUND_ROWS invoice_custom.*,
-            client_custom.*,
-            user_custom.*,
+            SQL_CALC_FOUND_ROWS custom_invoice.*,
+            custom_client.*,
+            custom_user.*,
             users.name,
 			users.company,
 			users.address_1,
@@ -75,8 +75,8 @@ class Mdl_Invoices extends Response_Model
 			users.vat_id,
 			users.tax_code,
 			clients.*,
-			invoice_amounts.invoice_amount_id,
-			IFNULL(invoice_amounts.subtotal, '0.00') AS subtotal,
+			invoice_amounts.id,
+			IFNULL(invoice_amounts.item_subtotal, '0.00') AS item_subtotal,
 			IFNULL(invoice_amounts.tax_total, '0.00') AS tax_total,
 			IFNULL(invoice_amounts.tax_total, '0.00') AS tax_total,
 			IFNULL(invoice_amounts.total, '0.00') AS total,
@@ -105,9 +105,9 @@ class Mdl_Invoices extends Response_Model
         $this->db->join('clients', 'clients.id = invoices.client_id');
         $this->db->join('users', 'users.id = invoices.user_id');
         $this->db->join('invoice_amounts', 'invoice_amounts.invoice_id = invoices.id', 'left');
-        $this->db->join('client_custom', 'client_custom.client_id = clients.id', 'left');
-        $this->db->join('user_custom', 'user_custom.user_id = users.id', 'left');
-        $this->db->join('invoice_custom', 'invoice_custom.invoice_id = invoices.id', 'left');
+        $this->db->join('custom_client', 'custom_client.client_id = clients.id', 'left');
+        $this->db->join('custom_user', 'custom_user.user_id = users.id', 'left');
+        $this->db->join('custom_invoice', 'custom_invoice.invoice_id = invoices.id', 'left');
     }
 
     /**

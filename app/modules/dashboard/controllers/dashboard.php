@@ -6,6 +6,12 @@ if (!defined('BASEPATH')) {
 /**
  * Class Dashboard
  * @package Modules\Dashboard\Controllers
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Invoice_Amounts $mdl_invoice_amounts
+ * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Quote_Amounts $mdl_quote_amounts
+ * @property Mdl_Quotes $mdl_quotes
  */
 class Dashboard extends User_Controller
 {

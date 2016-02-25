@@ -99,7 +99,7 @@ class Mailer extends Admin_Controller
         $this->layout->set('selected_email_template', $email_template_id);
         $this->layout->set('email_templates',
             $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result());
-        $this->layout->set('quote', $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row());
+        $this->layout->set('quote', $this->mdl_quotes->where('quotes.id', $quote_id)->get()->row());
         $this->layout->set('pdf_templates', $this->mdl_templates->get_quote_templates());
         $this->layout->buffer('content', 'mailer/quote');
         $this->layout->render();

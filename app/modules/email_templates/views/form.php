@@ -250,7 +250,7 @@
                    data-tag="{{{client_zip}}}"><?php echo lang('client'); ?><?php echo lang('zip_code'); ?></a><br>
                 <a href="#" class="text-tag"
                    data-tag="{{{client_country}}}"><?php echo lang('client'); ?><?php echo lang('country'); ?></a><br>
-                <?php foreach ($custom_fields['ip_client_custom'] as $custom) { ?>
+                <?php foreach ($custom_fields['custom_client'] as $custom) { ?>
                     <a href="#" class="text-tag"
                        data-tag="{{{<?php echo $custom->custom_field_column; ?>}}}"><?php echo $custom->custom_field_label; ?></a>
                     <br>
@@ -285,7 +285,7 @@
                    data-tag="{{{user_email}}}"><?php echo lang('user'); ?><?php echo lang('email'); ?></a><br>
                 <a href="#" class="text-tag"
                    data-tag="{{{user_web}}}"><?php echo lang('user'); ?><?php echo lang('web_address'); ?></a><br>
-                <?php foreach ($custom_fields['ip_user_custom'] as $custom) { ?>
+                <?php foreach ($custom_fields['custom_user'] as $custom) { ?>
                     <a href="#" class="text-tag"
                        data-tag="{{{<?php echo $custom->custom_field_column; ?>}}}"><?php echo $custom->custom_field_label; ?></a>
                     <br>
@@ -311,7 +311,7 @@
                    data-tag="{{{invoice_balance}}}"><?php echo lang('invoice'); ?><?php echo lang('balance'); ?></a><br>
                 <a href="#" class="text-tag"
                    data-tag="{{{invoice_status}}}"><?php echo lang('invoice'); ?><?php echo lang('status'); ?></a><br>
-                <?php foreach ($custom_fields['ip_invoice_custom'] as $custom) { ?>
+                <?php foreach ($custom_fields['custom_invoice'] as $custom) { ?>
                     <a href="#" class="text-tag"
                        data-tag="{{{<?php echo $custom->custom_field_column; ?>}}}"><?php echo $custom->custom_field_label; ?></a>
                     <br>
@@ -330,7 +330,7 @@
                    data-tag="{{{quote_number}}}"><?php echo lang('quote'); ?><?php echo lang('id'); ?></a><br>
                 <a href="#" class="text-tag"
                    data-tag="{{{quote_guest_url}}}"><?php echo lang('quote'); ?><?php echo lang('guest_url'); ?></a><br>
-                <?php foreach ($custom_fields['ip_quote_custom'] as $custom) { ?>
+                <?php foreach ($custom_fields['custom_quote'] as $custom) { ?>
                     <a href="#" class="text-tag"
                        data-tag="{{{<?php echo $custom->custom_field_column; ?>}}}"><?php echo $custom->custom_field_label; ?></a>
                     <br>
