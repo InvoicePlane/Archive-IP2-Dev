@@ -19,11 +19,18 @@
             <div class="m-y-2">
                 <?php foreach ($basics as $basic) {
                     if ($basic['success']) {?>
-                        <p><i class="fa fa-check text-success fa-margin-right"></i> <?php echo $basic['message']; ?></p>
+                        <p>
+                            <i class="fa fa-check text-success fa-margin-right"></i>
+                            <?php echo $basic['message']; ?>
+                        </p>
                     <?php } elseif ($basic['warning']) { ?>
-                        <p><i class="fa fa-exclamation text-warning fa-margin-right"></i> <?php echo $basic['message']; ?></p>
+                        <p>
+                            <i class="fa fa-exclamation text-warning fa-margin-right"></i>
+                            <?php echo $basic['message']; ?></p>
                     <?php } else { ?>
-                        <p><i class="fa fa-close text-danger fa-margin-right"></i> <?php echo $basic['message']; ?></p>
+                        <p>
+                            <i class="fa fa-close text-danger fa-margin-right"></i>
+                            <?php echo $basic['message']; ?></p>
                     <?php }
                 } ?>
 
@@ -31,20 +38,26 @@
 
                 <?php foreach ($writables as $writable) {
                     if ($writable['success']) { ?>
-                        <p><i class="fa fa-check text-success fa-margin-right"></i> <?php echo $writable['message']; ?></p>
+                        <p>
+                            <i class="fa fa-check text-success fa-margin-right"></i>
+                            <?php echo $writable['message']; ?>
+                        </p>
                     <?php } else { ?>
-                        <p><i class="fa fa-close text-danger fa-margin-right"></i> <?php echo $writable['message']; ?></p>
+                        <p>
+                            <i class="fa fa-close text-danger fa-margin-right"></i>
+                            <?php echo $writable['message']; ?>
+                        </p>
                     <?php }
                 } ?>
             </div>
 
             <?php if ($errors) { ?>
                 <a href="javascript:location.reload()" class="btn btn-danger">
-                    <i class="fa fa-warning fa-margin-right"><?php echo lang('try_again'); ?>
+                    <i class="fa fa-warning fa-margin-right"></i> <?php echo lang('try_again'); ?>
                 </a>
             <?php } else { ?>
                 <button type="submit" class="btn btn-success" name="btn_continue" value="1">
-                    <i class="fa fa-angle-right fa-margin-right"></i><?php echo lang('continue'); ?>
+                    <i class="fa fa-angle-right fa-margin-right"></i> <?php echo lang('continue'); ?>
                 </button>
             <?php } ?>
 

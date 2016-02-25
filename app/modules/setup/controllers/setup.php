@@ -9,6 +9,7 @@ if (!defined('BASEPATH')) {
  * @property CI_DB_query_builder $db
  * @property CI_Encrypt $encrypt
  * @property CI_Input $input
+ * @property CI_Loader $load
  * @property CI_Session $session
  * @property Layout $layout
  * @property Mdl_Settings $mdl_settings
@@ -295,6 +296,9 @@ class Setup extends Setup_Controller
         if ($this->session->userdata('install_step') != 'complete') {
             $this->restart_setup();
         }
+
+        // Clear the alerts cache
+        clear_alerts();
 
         $this->layout->buffer('content', 'setup/complete');
         $this->layout->render('base');
