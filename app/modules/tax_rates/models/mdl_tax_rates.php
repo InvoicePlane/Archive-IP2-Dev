@@ -6,11 +6,12 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Tax_Rates
  * @package Modules\TaskRates\Models
+ * @property CI_DB_query_builder $db
  */
 class Mdl_Tax_Rates extends Response_Model
 {
-    public $table = 'ip_tax_rates';
-    public $primary_key = 'ip_tax_rates.tax_rate_id';
+    public $table = 'tax_rates';
+    public $primary_key = 'tax_rates.id';
 
     /**
      * The default select directive used in every query
@@ -25,7 +26,7 @@ class Mdl_Tax_Rates extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('ip_tax_rates.tax_rate_percent');
+        $this->db->order_by('tax_rates.percent');
     }
 
     /**
@@ -35,13 +36,13 @@ class Mdl_Tax_Rates extends Response_Model
     public function validation_rules()
     {
         return array(
-            'tax_rate_name' => array(
-                'field' => 'tax_rate_name',
+            'name' => array(
+                'field' => 'name',
                 'label' => lang('tax_rate_name'),
                 'rules' => 'required'
             ),
-            'tax_rate_percent' => array(
-                'field' => 'tax_rate_percent',
+            'percent' => array(
+                'field' => 'percent',
                 'label' => lang('tax_rate_percent'),
                 'rules' => 'required'
             )
