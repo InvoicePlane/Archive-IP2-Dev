@@ -1,13 +1,21 @@
 <?php
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+/**
+ * Class MY_Form_validation
+ * @package Libraries
+ */
 class MY_Form_validation extends CI_Form_validation
 {
     public $CI;
 
+    /**
+     * @param string $str
+     * @param string $field
+     * @return bool
+     */
     public function is_unique($str, $field)
     {
         if (substr_count($field, '.') == 3) {
@@ -27,7 +35,6 @@ class MY_Form_validation extends CI_Form_validation
      * @param   string
      * @return  bool
      */
-
     public function valid_email($str)
     {
         if (function_exists('idn_to_ascii') && $atpos = strpos($str, '@')) {
