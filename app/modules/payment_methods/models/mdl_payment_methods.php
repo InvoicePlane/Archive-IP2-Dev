@@ -7,6 +7,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Payment_Methods
  * @package Modules\PaymentMethods\Controllers
+ *
+ * @property CI_DB_query_builder $db
  */
 class Mdl_Payment_Methods extends Response_Model
 {

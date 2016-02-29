@@ -6,6 +6,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Invoices_Recurring
  * @package Modules\Invoices\Models
+ *
+ * @property CI_DB_query_builder $db
  */
 class Mdl_Invoices_Recurring extends Response_Model
 {

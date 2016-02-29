@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Versions
  * @package Modules\Settings\Models
+ *
  * @property CI_DB_query_builder $db
  */
 class Mdl_Versions extends Response_Model

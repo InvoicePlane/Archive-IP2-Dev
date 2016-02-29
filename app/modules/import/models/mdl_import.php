@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Import
  * @package Modules\Import\Models
+ *
  * @property CI_DB_query_builder $db
  * @property Mdl_Invoices $mdl_invoices
  * @property Mdl_Items $mdl_items
@@ -15,6 +16,7 @@ class Mdl_Import extends Response_Model
 {
     public $table = 'imports';
     public $primary_key = 'imports.id';
+
     public $expected_headers = array(
         'clients.csv' => array(
             'name',
@@ -83,11 +85,32 @@ class Mdl_Import extends Response_Model
      */
     public function default_select()
     {
-        $this->db->select("SQL_CALC_FOUND_ROWS imports.*,
-            (SELECT COUNT(*) FROM import_details WHERE table_name = 'clients' AND import_details.id = imports.id) AS num_clients,
-            (SELECT COUNT(*) FROM import_details WHERE table_name = 'invoices' AND import_details.id = imports.id) AS num_invoices,
-            (SELECT COUNT(*) FROM import_details WHERE table_name = 'invoice_items' AND import_details.id = imports.id) AS num_invoice_items,
-            (SELECT COUNT(*) FROM import_details WHERE table_name = 'payments' AND import_details.id = imports.id) AS num_payments",
+        $this->db->select("
+            SQL_CALC_FOUND_ROWS imports.*,
+            (
+                SELECT COUNT(*)
+                FROM import_details
+                WHERE table_name = 'clients'
+                    AND import_details.id = imports.id
+            ) AS num_clients,
+            (
+                SELECT COUNT(*)
+                FROM import_details
+                WHERE table_name = 'invoices'
+                    AND import_details.id = imports.id
+            ) AS num_invoices,
+            (
+                SELECT COUNT(*)
+                FROM import_details
+                WHERE table_name = 'invoice_items'
+                    AND import_details.id = imports.id
+            ) AS num_invoice_items,
+            (
+                SELECT COUNT(*)
+                FROM import_details
+                WHERE table_name = 'payments'
+                    AND import_details.id = imports.id
+            ) AS num_payments",
             false);
     }
 
@@ -126,6 +149,7 @@ class Mdl_Import extends Response_Model
         $handle = fopen('./uploads/import/' . $file, 'r');
 
         $row = 1;
+        $fileheaders = array();
 
         // Get the expected file headers
         $headers = $this->expected_headers[$file];
@@ -200,7 +224,7 @@ class Mdl_Import extends Response_Model
                         // Attempt to replace email address with user id
                         $this->db->where('email', $data[$key]);
                         $user = $this->db->get('users');
-                        
+
                         if ($user->num_rows()) {
                             $header = 'user_id';
                             $data[$key] = $user->row()->user_id;
@@ -213,7 +237,7 @@ class Mdl_Import extends Response_Model
                         $header = 'client_id';
                         $this->db->where('name', $data[$key]);
                         $client = $this->db->get('clients');
-                        
+
                         if ($client->num_rows()) {
                             // Existing client found
                             $data[$key] = $client->row()->client_id;
@@ -283,7 +307,7 @@ class Mdl_Import extends Response_Model
                         // Replace invoice_number with invoice_id
                         $this->db->where('invoice_number', $data[$key]);
                         $invoices = $this->db->get('invoices');
-                        
+
                         if ($invoices->num_rows()) {
                             $header = 'invoice_id';
                             $data[$key] = $invoices->row()->id;
@@ -296,13 +320,13 @@ class Mdl_Import extends Response_Model
                         if ($data[$key] > 0) {
                             $this->db->where('tax_rate_percent', $data[$key]);
                             $tax_rate = $this->db->get('tax_rates');
-                            
+
                             if ($tax_rate->num_rows()) {
                                 $data[$key] = $tax_rate->row()->tax_rate_id;
                             } else {
                                 $this->db->insert('tax_rates', array(
-                                    'name' => $data[$key],
-                                    'percent' => $data[$key],
+                                        'name' => $data[$key],
+                                        'percent' => $data[$key],
                                     )
                                 );
                                 $data[$key] = $this->db->insert_id();
@@ -355,7 +379,7 @@ class Mdl_Import extends Response_Model
                     if ($header == 'invoice_number') {
                         $this->db->where('invoice_number', $data[$key]);
                         $invoices = $this->db->get('invoices');
-                        
+
                         if ($invoices->num_rows()) {
                             $header = 'invoice_id';
                             $data[$key] = $invoices->row()->id;
@@ -368,7 +392,7 @@ class Mdl_Import extends Response_Model
                         if ($data[$key]) {
                             $this->db->where('payment_method_name', $data[$key]);
                             $payment_method = $this->db->get('payment_methods');
-                            
+
                             if ($payment_method->num_rows()) {
                                 $data[$key] = $payment_method->row()->id;
                             } else {

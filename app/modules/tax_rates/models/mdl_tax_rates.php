@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Tax_Rates
  * @package Modules\TaskRates\Models
+ *
  * @property CI_DB_query_builder $db
  */
 class Mdl_Tax_Rates extends Response_Model

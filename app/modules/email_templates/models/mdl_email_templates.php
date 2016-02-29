@@ -6,6 +6,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Email_Templates
  * @package Modules\EmailTemplates\Models
+ *
+ * @property CI_DB_query_builder $db
  */
 class Mdl_Email_Templates extends Response_Model
 {

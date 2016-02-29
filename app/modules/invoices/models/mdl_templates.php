@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Templates
  * @package Modules\Invoices\Models
+ *
  * @property CI_Loader $load
  */
 class Mdl_Templates extends CI_Model

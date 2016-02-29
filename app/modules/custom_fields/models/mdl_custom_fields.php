@@ -6,6 +6,10 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Custom_Fields
  * @package Modules\CustomFields\Models
+ *
+ * @property CI_DB_query_builder $db
+ * @property CI_DB_forge $dbforge
+ * @property CI_Loader $load
  */
 class Mdl_Custom_Fields extends MY_Model
 {

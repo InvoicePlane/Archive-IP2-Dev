@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Modules\Mailer\Helpers
+ */
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }

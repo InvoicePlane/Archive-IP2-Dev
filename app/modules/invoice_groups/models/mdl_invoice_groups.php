@@ -6,6 +6,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Invoice_Groups
  * @package Modules\InvoiceGroups\Models
+ *
+ * @property CI_DB_query_builder $db
  */
 class Mdl_Invoice_Groups extends Response_Model
 {

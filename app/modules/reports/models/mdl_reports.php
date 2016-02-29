@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Reports
  * @package Modules\Reports\Modules
+ *
  * @property CI_DB_query_builder $db
  * @property CI_Loader $load
  * @property Mdl_Payments $mdl_payments

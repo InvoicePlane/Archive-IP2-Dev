@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Tasks
  * @package Modules\Tasks\Models
+ *
  * @property CI_DB_query_builder $db
  * @property CI_Loader $load
  */

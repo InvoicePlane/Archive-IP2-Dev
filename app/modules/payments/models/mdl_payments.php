@@ -6,7 +6,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Payments
  * @package Modules\Payments\Models
+ *
  * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
  * @property Mdl_Invoice_Amounts $mdl_invoice_amounts
  */
 class Mdl_Payments extends Response_Model

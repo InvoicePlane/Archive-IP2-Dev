@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Settings
  * @package Modules\Settings\Models
+ *
  * @property CI_DB_query_builder $db
  */
 class Mdl_Settings extends CI_Model

@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Quote_Items
  * @package Modules\Quotes\Models
+ *
  * @property CI_DB_query_builder $db
  * @property CI_Loader $load
  * @property Mdl_Quote_Amounts $mdl_quote_amounts

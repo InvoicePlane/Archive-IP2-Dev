@@ -6,6 +6,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Invoice_Tax_Rates
  * @package Modules\Invoices\Models
+ *
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
  * @property Mdl_Invoice_Amounts $mdl_invoice_amounts
  */
 class Mdl_Invoice_Tax_Rates extends Response_Model

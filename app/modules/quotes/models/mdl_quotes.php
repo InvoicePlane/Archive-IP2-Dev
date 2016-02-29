@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Quotes
  * @package Modules\Quotes\Models
+ *
  * @property CI_DB_query_builder $db
  * @property CI_Loader $load
  * @property Mdl_Clients $mdl_clients

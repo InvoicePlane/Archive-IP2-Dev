@@ -7,6 +7,8 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Products
  * @package Modules\Products\Models
+ *
+ * @property CI_DB_query_builder $db
  */
 class Mdl_Products extends Response_Model
 {

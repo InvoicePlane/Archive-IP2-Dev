@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Uploads
  * @package Modules\Upload\Models
+ *
  * @property CI_DB_query_builder $db
  * @property CI_Loader $load
  * @property Mdl_Invoices $mdl_invoices

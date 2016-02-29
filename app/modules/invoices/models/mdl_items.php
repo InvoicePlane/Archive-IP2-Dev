@@ -6,6 +6,9 @@ if (!defined('BASEPATH')) {
 /**
  * Class Mdl_Items
  * @package Modules\Invoices\Models
+ *
+ * @property CI_DB_query_builder $db
+ * @property CI_Loader $load
  * @property Mdl_Amounts $mdl_item_amounts
  * @property Mdl_Invoice_Amounts $mdl_invoice_amounts
  */
