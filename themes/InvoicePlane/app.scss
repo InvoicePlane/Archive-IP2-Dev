@@ -1,6 +1,7 @@
 /*
 |   =========================================================
 |   InvoicePlane Theme
+|   (C) Copyright InvoicePlane / Kovah.de
 |   =========================================================
 */
 
@@ -9,6 +10,9 @@
 
 // Import fonts
 @import "source-sans-pro";
+
+// Import core variables
+@import "core-vars";
 
 // Import the core styles
 @import "../core/sass/app";

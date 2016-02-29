@@ -1,15 +1,10 @@
 /*
 |   =========================================================
-|   InvoicePlane
-|   Templates Sass Stylesheet
+|   InvoicePlane PDF Template Stylesheet
 |   =========================================================
 */
-/*
-|   =========================================================
-|   Import Bootstrap and other assets
-|   =========================================================
-*/
-// Bootstrap
+
+// Load Bootstrap
 @import "dependencies/bootstrap";
 
 /*
@@ -32,33 +27,33 @@ $color_status_canceled: #333333;
 */
 
 body {
-    color: $gray-dark;
-    font-size: 1em;
-    font-family: Arial, Verdana, sans-serif;
+  color: $gray-dark;
+  font-size: 1em;
+  font-family: Arial, Verdana, sans-serif;
 }
 
 table {
-    width: 100%;
-    border-spacing: 0;
-    border-collapse: collapse;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
 }
 
 .text-right {
-    text-align: right;
+  text-align: right;
 }
 
 #invoice-logo {
-    max-width: 10em !important;
-    max-height: 10em !important;
-    margin-bottom: 1em;
+  max-width: 10em !important;
+  max-height: 10em !important;
+  margin-bottom: 1em;
 }
 
 .color-paid {
-    color: $color_status_paid_approved;
+  color: $color_status_paid_approved;
 }
 
 .color-overdue {
-    color: $color_status_rejected_overdue;
+  color: $color_status_rejected_overdue;
 }
 
 .border-bottom-l,
@@ -67,37 +62,37 @@ table {
 .border-top-l,
 .border-top-n,
 .border-top-d {
-    border-bottom-width: 1px;
-    border-style: solid;
+  border-bottom-width: 1px;
+  border-style: solid;
 }
 
 #header table {
-    width: 100%;
-    padding: 0;
+  width: 100%;
+  padding: 0;
 }
 
 .company-details,
 .company-details h3,
 .company-details p,
 .invoice-details {
-    text-align: right;
+  text-align: right;
 }
 
 .invoice-details td {
-    padding: 0.2em 0.3em;
+  padding: 0.2em 0.3em;
 }
 
 .invoice-items td,
 .invoice-items th {
-    padding: 0.2em 0.4em 0.4em;
+  padding: 0.2em 0.4em 0.4em;
 }
 
 .seperator {
-    height: 25px;
-    margin-bottom: 15px;
+  height: 25px;
+  margin-bottom: 15px;
 }
 
 .footer-including-page-number {
-    border-top: 1px solid grey;
-    text-align: center;
+  border-top: 1px solid grey;
+  text-align: center;
 }
