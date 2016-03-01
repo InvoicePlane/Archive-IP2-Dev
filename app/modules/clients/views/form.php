@@ -9,12 +9,12 @@
 
     <div id="headerbar">
         <h1><?php echo lang('client_form'); ?></h1>
-        <?php $this->layout->load_view('layout/header_buttons'); ?>
+        <?php $this->layout->load_view('layout/includes/header_buttons'); ?>
     </div>
 
     <div id="content">
 
-        <?php $this->layout->load_view('layout/alerts'); ?>
+        <?php echo $this->layout->load_view('layout/includes/alerts'); ?>
 
         <input class="hidden" name="is_update" type="hidden"
                value="<?php if ($this->mdl_clients->form_value('is_update')) : ?>1<?php else : ?>0<?php endif; ?>">

@@ -3,7 +3,7 @@
     <div class="sidebar-top">
         <a href="<?php echo site_url('users/form/' . $this->session->user['id']); ?>">
             <?php
-            echo $this->session->user['name'];
+            echo '<b>' . $this->session->user['name'] . '</b>';
             if ($this->session->user['company']) {
                 echo " (" . $this->session->user['company'] . ")";
             }

@@ -1,4 +1,5 @@
 <div id="content">
+
     <?php echo $this->layout->load_view('layout/includes/alerts'); ?>
 
     <div class="row <?php if ($this->mdl_settings->setting('disable_quickactions') == 1) {
@@ -251,4 +252,5 @@
 
         </div>
     </div>
+
 </div>
