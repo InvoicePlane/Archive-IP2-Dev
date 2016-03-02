@@ -16,7 +16,7 @@ $color-status-paid-approved: #468847;
 $color-status-rejected-overdue: #B94A48;
 $color-status-canceled: #333333;
 
-$sidebar-background: $gray-dark;
+$sidebar-background: #303841;
 $sidebar-text: $gray-lighter;
 
 /*
@@ -25,9 +25,9 @@ $sidebar-text: $gray-lighter;
 |   =========================================================
 */
 
-@mixin transition-std($transition) {
-  transition: $transition 0.2s ease-out;
-  -moz-transition: $transition 0.2s ease-out;
-  -webkit-transition: $transition 0.2s ease-out;
-  -o-transition: $transition 0.2s ease-out;
+@mixin transition-std($transition, $time: 0.2s) {
+  transition: $transition $time ease-out;
+  -moz-transition: $transition $time ease-out;
+  -webkit-transition: $transition $time ease-out;
+  -o-transition: $transition $time ease-out;
 }
