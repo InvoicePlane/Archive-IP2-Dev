@@ -37,6 +37,17 @@ module.exports = function (grunt) {
                 }
             }
         },
+        autoprefixer: {
+            options: {
+                browsers: ['last 2 versions']
+            },
+            main: {
+                expand: true,
+                flatten: true,
+                src: 'themes/InvoicePlane/css/*.min.css',
+                dest: 'themes/InvoicePlane/css/'
+            }
+        },
         uglify: {
             dist: {
                 files: {
@@ -95,14 +106,14 @@ module.exports = function (grunt) {
     });
 
     // Register tasks
-    grunt.registerTask("build", [
+    grunt.registerTask('default', ['dev']);
+
+    grunt.registerTask("dev", [
         "clean",
         "sass",
+        "autoprefixer:main",
         "jshint",
-        "uglify"
-    ]);
-    grunt.registerTask("dev", [
-        "build",
+        "uglify",
         "watch"
     ]);
 
