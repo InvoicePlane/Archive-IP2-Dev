@@ -378,12 +378,22 @@ class MY_Model extends CI_Model
     /**
      * Returns the assigned form value to a form input element.
      * 
-     * @param $key
+     * @param string $key
+     * @param bool $escape
      * @return string
      */
-    public function form_value($key)
+    public function form_value($key, $escape = false)
     {
-        return (isset($this->form_values[$key])) ? $this->form_values[$key] : '';
+        if (!isset($this->form_values[$key])) {
+            return '';
+        }
+
+        if ($escape) {
+            return html_escape($this->form_values[$key]);
+        } else {
+            return $this->form_values[$key];
+        }
+
     }
 
     /**
