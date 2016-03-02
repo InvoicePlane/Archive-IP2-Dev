@@ -168,6 +168,9 @@
 |   =========================================================
 */
 
+$sidebar-background-light: lighten($sidebar-background, 5%);
+$sidebar-background-lighter: lighten($sidebar-background, 10%);
+
 .menu {
   list-style: none;
   padding: 0;
@@ -182,23 +185,35 @@
       text-decoration: none;
       padding: ($spacer * 0.3) ($spacer * 0.6);
       font-size: 1rem;
+      border-left: 3px solid $sidebar-background;
 
       &:hover {
-        background-color: lighten($sidebar-background, 5%);
+        background-color: $sidebar-background-light;
+        border-left: 3px solid $sidebar-background-light;
+      }
+
+      .fa {
+        margin-right: 1rem;
       }
     }
 
     &.divider {
       margin: 1rem 0;
-      border-bottom: 1px solid lighten($sidebar-background, 10%);
+      border-bottom: 1px solid $sidebar-background-lighter;
     }
   }
 
   .has-submenu {
-    background-color: lighten($sidebar-background, 5%);
+    background-color: $sidebar-background-light;
+    border-left: 3px solid $brand-primary;
+
+    &:hover {
+      border-left: 3px solid $brand-primary;
+    }
 
     .menu-icon {
       padding: ($spacer * 0.2) ($spacer * 0.5);
+      margin-right: 0;
 
       &:before {
         content: "\f107";
@@ -207,13 +222,19 @@
 
     &.collapsed {
       background-color: $sidebar-background;
+      border-left: 3px solid $sidebar-background;
 
       &:hover {
-        background-color: lighten($sidebar-background, 5%);
+        background-color: $sidebar-background-light;
+        border-left: 3px solid $sidebar-background-light;
       }
 
       .menu-icon:before {
         content: "\f104";
+      }
+
+      + .submenu {
+        border-left: 3px solid $sidebar-background-light;
       }
     }
   }
@@ -222,16 +243,19 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    background-color: lighten($sidebar-background, 5%);
+    background-color: $sidebar-background-light;
+    border-left: 3px solid $brand-primary;
 
     li {
       padding: 0;
 
       a {
         font-size: 0.85rem;
+        padding: ($spacer * 0.3) ($spacer * 0.6) ($spacer * 0.3) ($spacer * 0.6) + 2rem;
+        border-left: none;
 
         &:hover {
-          background-color: lighten($sidebar-background, 10%);
+          background-color: $sidebar-background-lighter;
         }
       }
 

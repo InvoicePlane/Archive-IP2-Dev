@@ -27,7 +27,4 @@ $sidebar-text: $gray-lighter;
 
 @mixin transition-std($transition, $time: 0.2s) {
   transition: $transition $time ease-out;
-  -moz-transition: $transition $time ease-out;
-  -webkit-transition: $transition $time ease-out;
-  -o-transition: $transition $time ease-out;
 }

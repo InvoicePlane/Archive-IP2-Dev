@@ -5,7 +5,7 @@
             <?php
             echo '<b>' . $this->session->user['name'] . '</b>';
             if ($this->session->user['company']) {
-                echo " (" . $this->session->user['company'] . ")";
+                echo '<br>' . $this->session->user['company'];
             }
             ?>
         </a>
@@ -14,11 +14,11 @@
 
     <ul class="menu">
         <li>
-            <?php echo anchor('dashboard', lang('dashboard'), 'class="visible-sm-inline-block"') ?>
+            <?php echo anchor('dashboard', '<i class="fa fa-dashboard fa-fw"></i>' . lang('dashboard')) ?>
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#submenu-clients" class="has-submenu collapsed">
-                <?php echo lang('clients'); ?>
+                <i class="fa fa-users fa-fw"></i><?php echo lang('clients'); ?>
                 <span class="pull-right"><span class="menu-icon fa fa-fw"></span></span>
             </a>
             <ul id="submenu-clients" class="submenu collapse">
@@ -28,7 +28,7 @@
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#submenu-quotes" class="has-submenu collapsed">
-                <?php echo lang('quotes'); ?>
+                <i class="fa fa-file-o fa-fw"></i><?php echo lang('quotes'); ?>
                 <span class="pull-right"><span class="menu-icon fa fa-fw"></span></span>
             </a>
             <ul id="submenu-quotes" class="submenu collapse">
@@ -38,7 +38,7 @@
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#submenu-invoices" class="has-submenu collapsed">
-                <?php echo lang('invoices'); ?>
+                <i class="fa fa-file-text-o fa-fw"></i><?php echo lang('invoices'); ?>
                 <span class="pull-right"><span class="menu-icon fa fa-fw"></span></span>
             </a>
             <ul id="submenu-invoices" class="submenu collapse">
@@ -49,7 +49,7 @@
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#submenu-products" class="has-submenu collapsed">
-                <?php echo lang('products'); ?>
+                <i class="fa fa-database fa-fw"></i><?php echo lang('products'); ?>
                 <span class="pull-right"><span class="menu-icon fa fa-fw"></span></span>
             </a>
             <ul id="submenu-products" class="submenu collapse">
@@ -60,7 +60,7 @@
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#submenu-payments" class="has-submenu collapsed">
-                <?php echo lang('payments'); ?>
+                <i class="fa fa-credit-card fa-fw"></i><?php echo lang('payments'); ?>
                 <span class="pull-right"><span class="menu-icon fa fa-fw"></span></span>
             </a>
             <ul id="submenu-payments" class="submenu collapse">
@@ -70,7 +70,7 @@
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#submenu-tasks" class="has-submenu collapsed">
-                <?php echo lang('tasks'); ?>
+                <i class="fa fa-check-square-o fa-fw"></i><?php echo lang('tasks'); ?>
                 <span class="pull-right"><span class="menu-icon fa fa-fw"></span></span>
             </a>
             <ul id="submenu-tasks" class="submenu collapse">
@@ -81,7 +81,7 @@
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#submenu-reports" class="has-submenu collapsed">
-                <?php echo lang('reports'); ?>
+                <i class="fa fa-bar-chart fa-fw"></i><?php echo lang('reports'); ?>
                 <span class="pull-right"><span class="menu-icon fa fa-fw"></span></span>
             </a>
             <ul id="submenu-reports" class="submenu collapse">
@@ -96,12 +96,12 @@
 
         <li>
             <a href="http://docs.invoiceplane.com/" target="_blank">
-                <?php echo lang('documentation'); ?>
+                <i class="fa fa-question fa-fw"></i><?php echo lang('documentation'); ?>
             </a>
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#submenu-settings" class="has-submenu collapsed">
-                <?php echo lang('settings'); ?>
+                <i class="fa fa-cogs fa-fw"></i><?php echo lang('settings'); ?>
                 <span class="pull-right"><span class="menu-icon fa fa-fw"></span></span>
             </a>
             <ul id="submenu-settings" class="submenu collapse">
@@ -119,7 +119,7 @@
         </li>
         <li>
             <a href="<?php echo site_url('sessions/logout'); ?>">
-                <?php echo lang('logout'); ?>
+                <i class="fa fa-lock fa-fw"></i><?php echo lang('logout'); ?>
             </a>
         </li>
     </ul>
