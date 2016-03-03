@@ -6,11 +6,16 @@
 
 // Import Bootstrap
 @import "dependencies/bootstrap";
+
 // Import fonts
 @import "fonts/font-awesome";
+
 // Load modules
 @import "modules/upload";
 @import "../../vendor/select2/src/scss/core";
+
+// Load mixins
+@import "mixins";
 
 /*
 |   =========================================================
@@ -80,12 +85,13 @@
   }
 }
 
-#content {
+#content,
+.tab-pane {
   padding: $spacer;
 }
 
 #headerbar {
-  padding: ($spacer * 0.75) $spacer;
+  padding: ($spacer * 0.5) $spacer;
   border-bottom: 1px solid $gray-lighter;
   height: (($spacer * 0.75) * 2) + ($font-size-base * $line-height);
   @include clearfix;
@@ -95,10 +101,7 @@
     font-weight: bold;
     display: inline-block;
     margin: 0;
-  }
-
-  .btn-group {
-    margin: -($btn-padding-y-sm) 0 0 $spacer;
+    line-height: ($font-size-sm * $line-height-sm) + ($btn-padding-y-sm * 2) + toRem(2);
   }
 }
 
@@ -124,43 +127,10 @@
   font-weight: bold;
 }
 
-#loader {
-  display: none;
-  z-index: 2000;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-
-  .loader-indicator {
-    position: fixed;
-    top: $spacer;
-    right: $spacer;
-    font-size: 3rem;
-  }
-
-  .loader-content {
-    display: none;
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    font-size: 1.5rem;
-    opacity: 0.85;
-    width: 100%;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.6);
-
-    .loader-message {
-      position: absolute;
-      width: 100%;
-      top: 20%;
-      left: 0;
-    }
-  }
+.nav.nav-tabs {
+  margin-top: $spacer * 0.35;
 }
+
 
 /*
 |   =========================================================
@@ -277,6 +247,50 @@ select {
   -moz-appearance: none;
   appearance: none;
   cursor: pointer;
+}
+
+/*
+|   =========================================================
+|   Loading Indicator
+|   =========================================================
+*/
+
+#loader {
+  display: none;
+  z-index: 2000;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  .loader-indicator {
+    position: fixed;
+    top: $spacer;
+    right: $spacer;
+    font-size: 3rem;
+  }
+
+  .loader-content {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    font-size: 1.5rem;
+    opacity: 0.85;
+    width: 100%;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.6);
+
+    .loader-message {
+      position: absolute;
+      width: 100%;
+      top: 20%;
+      left: 0;
+    }
+  }
 }
 
 /*

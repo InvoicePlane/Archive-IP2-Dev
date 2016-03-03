@@ -1,0 +1,20 @@
+/*
+|   =========================================================
+|   Mixins
+|   =========================================================
+*/
+
+@mixin transition-std ($transition, $time: 0.2s) {
+  transition: $transition $time ease-out;
+}
+
+/*
+|   =========================================================
+|   Functions
+|   =========================================================
+*/
+
+// Convert px values to rem
+@function toRem($value) {
+  @return ($value / $rem-base);
+}
