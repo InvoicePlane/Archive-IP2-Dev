@@ -124,22 +124,20 @@ function insert_html_tag(tag_type, destination_id) {
 
 $(document).ready(function () {
 
-    // Correct the height of the content area
-    var documentHeight = $("html").outerHeight(),
-        navbarHeight = $(".navbar").outerHeight(),
-        headerbarHeight = $("#headerbar").outerHeight(),
-        contentHeight = documentHeight - navbarHeight - headerbarHeight;
-    if ($("#content").outerHeight() < contentHeight) {
-        $("#content").outerHeight(contentHeight);
-    }
-
-    // Dropdown Datepicker fix
-    $("html").click(function () {
-        $(".dropdown-menu:visible").not(".datepicker").removeAttr("style");
-    });
-
     // Tooltips
     $("[data-toggle='tooltip]").tooltip();
+
+    // Loader
+    $("*[type='submit'], .show-loader").bind("click", function () {
+        $("#loader").fadeIn(200);
+        $("#loader-error").delay(10000).fadeIn(200);
+    });
+
+    // Sidebar toggle handling
+    $(".sidebar-toggle").click(function(e){
+        e.preventDefault();
+        $("#sidebar").toggleClass("show-sidebar");
+    });
 
     // Handle click event for Email Template Tags insertion
     // Example Usage
@@ -176,15 +174,5 @@ $(document).ready(function () {
 
     $("#email-template-preview-reload").click(function () {
         update_email_template_preview();
-    });
-
-    $("*[type='submit'], .ajax-loader").bind("click", function () {
-        $("#loader").fadeIn(200);
-        $("#loader-error").delay(10000).fadeIn(200);
-    });
-
-    $(".sidebar-toggle").click(function(e){
-        e.preventDefault();
-        $("#sidebar").toggleClass("show-sidebar");
     });
 });

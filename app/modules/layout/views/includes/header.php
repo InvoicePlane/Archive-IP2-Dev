@@ -25,20 +25,6 @@
 <script src="<?php echo base_url(); ?>themes/core/js/app.min.js"></script>
 
 <script>
-    Dropzone.autoDiscover = false;
-
-    $('.nav-tabs').tab();
-    $('.tip').tooltip();
-
-    $('body').on('focus', ".datepicker", function () {
-        $(this).datepicker({
-            autoclose: true,
-            format: '<?php echo date_format_datepicker(); ?>',
-            language: '<?php echo lang('cldr'); ?>',
-            weekStart: '<?php echo $this->mdl_settings->setting('first_day_of_week'); ?>'
-        });
-    });
-
     $('.create-invoice').click(function () {
         $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>");
     });
@@ -48,23 +34,25 @@
     });
 
     $('#btn_quote_to_invoice').click(function () {
-        quote_id = $(this).data('quote-id');
-        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_quote_to_invoice'); ?>/" + quote_id);
+        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_quote_to_invoice'); ?>/" + $(this).data('quote-id'));
     });
 
     $('#btn_copy_invoice').click(function () {
-        invoice_id = $(this).data('invoice-id');
-        $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {invoice_id: invoice_id});
+        $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {
+            invoice_id: $(this).data('invoice-id')
+        });
     });
 
     $('#btn_create_credit').click(function () {
-        invoice_id = $(this).data('invoice-id');
-        $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_credit'); ?>", {invoice_id: invoice_id});
+        $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_credit'); ?>", {
+            invoice_id: $(this).data('invoice-id')
+        });
     });
 
     $('#btn_copy_quote').click(function () {
-        quote_id = $(this).data('quote-id');
-        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_copy_quote'); ?>", {quote_id: quote_id});
+        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_copy_quote'); ?>", {
+            quote_id: $(this).data('quote-id')
+        });
     });
 
     $('.client-create-invoice').click(function () {
@@ -72,19 +60,18 @@
             client_name: $(this).data('client-name')
         });
     });
+
     $('.client-create-quote').click(function () {
         $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>", {
             client_name: $(this).data('client-name')
         });
     });
+
     $(document).on('click', '.invoice-add-payment', function () {
-        invoice_id = $(this).data('invoice-id');
-        invoice_balance = $(this).data('invoice-balance');
-        invoice_payment_method = $(this).data('invoice-payment-method');
         $('#modal-placeholder').load("<?php echo site_url('payments/ajax/modal_add_payment'); ?>", {
-            invoice_id: invoice_id,
-            invoice_balance: invoice_balance,
-            invoice_payment_method: invoice_payment_method
+            invoice_id: $(this).data('invoice-id'),
+            invoice_balance: $(this).data('invoice-balance'),
+            invoice_payment_method: $(this).data('invoice-payment-method')
         });
     });
 </script>
