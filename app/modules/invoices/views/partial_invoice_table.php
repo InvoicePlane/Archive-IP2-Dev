@@ -22,9 +22,9 @@
             ?>
             <tr>
                 <td>
-                    <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
-                        <?php echo $invoice_statuses[$invoice->invoice_status_id]['label'];
-                        if ($invoice->invoice_sign == '-1') { ?>
+                    <span class="label <?php echo $invoice_statuses[$invoice->status_id]['class']; ?>">
+                        <?php echo $invoice_statuses[$invoice->status_id]['label'];
+                        if ($invoice->sign == '-1') { ?>
                             &nbsp;<i class="fa fa-credit-invoice"
                                      title="<?php echo lang('credit_invoice') ?>"></i>
                         <?php }
@@ -36,19 +36,19 @@
                 </td>
 
                 <td>
-                    <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>"
+                    <a href="<?php echo site_url('invoices/view/' . $invoice->id); ?>"
                        title="<?php echo lang('edit'); ?>">
-                        <?php echo $invoice->invoice_number; ?>
+                        <?php echo $invoice->number; ?>
                     </a>
                 </td>
 
                 <td>
-                    <?php echo date_from_mysql($invoice->invoice_date_created); ?>
+                    <?php echo date_from_mysql($invoice->date_created); ?>
                 </td>
 
                 <td>
                     <span class="<?php if ($invoice->is_overdue) { ?>font-overdue<?php } ?>">
-                        <?php echo date_from_mysql($invoice->invoice_date_due); ?>
+                        <?php echo date_from_mysql($invoice->date_due); ?>
                     </span>
                 </td>
 
@@ -59,14 +59,14 @@
                     </a>
                 </td>
 
-                <td class="amount <?php if ($invoice->invoice_sign == '-1') {
+                <td class="amount <?php if ($invoice->sign == '-1') {
                     echo 'text-danger';
                 }; ?>">
-                    <?php echo format_currency($invoice->invoice_total); ?>
+                    <?php echo format_currency($invoice->total); ?>
                 </td>
 
                 <td class="amount">
-                    <?php echo format_currency($invoice->invoice_balance); ?>
+                    <?php echo format_currency($invoice->balance); ?>
                 </td>
 
                 <td>
@@ -77,34 +77,34 @@
                         <ul class="dropdown-menu">
                             <?php if ($invoice->is_read_only != 1) { ?>
                                 <li>
-                                    <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>">
+                                    <a href="<?php echo site_url('invoices/view/' . $invoice->id); ?>">
                                         <i class="fa fa-edit fa-margin"></i> <?php echo lang('edit'); ?>
                                     </a>
                                 </li>
                             <?php } ?>
                             <li>
-                                <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
+                                <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->id); ?>"
                                    target="_blank">
                                     <i class="fa fa-print fa-margin"></i> <?php echo lang('download_pdf'); ?>
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
+                                <a href="<?php echo site_url('mailer/invoice/' . $invoice->id); ?>">
                                     <i class="fa fa-send fa-margin"></i> <?php echo lang('send_email'); ?>
                                 </a>
                             </li>
                             <li>
                                 <a href="#" class="invoice-add-payment"
-                                   data-invoice-id="<?php echo $invoice->invoice_id; ?>"
-                                   data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
+                                   data-invoice-id="<?php echo $invoice->id; ?>"
+                                   data-invoice-balance="<?php echo $invoice->balance; ?>"
                                    data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
                                     <i class="fa fa-money fa-margin"></i>
                                     <?php echo lang('enter_payment'); ?>
                                 </a>
                             </li>
-                            <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
+                            <?php if ($invoice->status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
                                 <li>
-                                    <a href="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>"
+                                    <a href="<?php echo site_url('invoices/delete/' . $invoice->id); ?>"
                                        onclick="return confirm('<?php echo lang('delete_invoice_warning'); ?>');">
                                         <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
                                     </a>

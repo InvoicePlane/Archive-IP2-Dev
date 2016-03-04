@@ -130,7 +130,17 @@
 }
 
 .nav.nav-tabs {
-  margin-top: $spacer * 0.35;
+  margin-top: $spacer * 0.30;
+  padding-left: $spacer * 0.3;
+}
+
+.card-sm {
+
+  .card-block,
+  .card-header,
+  .card-footer {
+    padding: $spacer * 0.5;
+  }
 }
 
 
@@ -184,7 +194,7 @@ $sidebar-background-lighter: lighten($sidebar-background, 10%);
     }
 
     .menu-icon {
-      padding: ($spacer * 0.2) ($spacer * 0.5);
+      padding: ($spacer * 0.3) ($spacer * 0.6);
       margin-right: 0;
 
       &:before {
@@ -238,6 +248,7 @@ $sidebar-background-lighter: lighten($sidebar-background, 10%);
   }
 }
 
+
 /*
 |   =========================================================
 |   Forms
@@ -250,6 +261,16 @@ select {
   appearance: none;
   cursor: pointer;
 }
+
+
+/*
+|   =========================================================
+|   Quote / Invoie Tables
+|   =========================================================
+*/
+
+
+
 
 /*
 |   =========================================================
@@ -295,11 +316,16 @@ select {
   }
 }
 
+
 /*
 |   =========================================================
 |   Additional icon and text styles
 |   =========================================================
 */
+
+.amount {
+  text-align: right;
+}
 
 .fa-fw {
   width: 1rem;
@@ -326,11 +352,27 @@ select {
   text-align: center;
 }
 
+
 /*
 |   =========================================================
 |   Various other styles
 |   =========================================================
 */
+
+.btn-block-md {
+  @media screen and (min-width: $screen-md) {
+    display: block;
+    width: 100%;
+  }
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.table-inside {
+  padding: ($spacer * 0.3) 0 0 0;
+}
 
 .cursor-pointer {
   cursor: pointer;

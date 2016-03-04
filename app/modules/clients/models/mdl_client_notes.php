@@ -11,8 +11,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Client_Notes extends Response_Model
 {
-    public $table = 'notes';
-    public $primary_key = 'notes.id';
+    public $table = 'client_notes';
+    public $primary_key = 'client_notes.id';
     public $date_created_field = 'date_created';
 
     /**
@@ -20,7 +20,7 @@ class Mdl_Client_Notes extends Response_Model
      */
     public function default_order_by()
     {
-        $this->db->order_by('notes.date_created DESC');
+        $this->db->order_by('client_notes.date_created DESC');
     }
 
     /**

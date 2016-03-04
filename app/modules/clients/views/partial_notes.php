@@ -1,7 +1,10 @@
 <?php foreach ($client_notes as $client_note) : ?>
-    <div class="alert alert-default">
-        <p><strong><?php echo date_from_mysql($client_note->client_note_date, true); ?></strong>&nbsp;
-            <?php echo nl2br($client_note->client_note); ?>
-        </p>
+    <div class="card card-sm">
+        <div class="card-block">
+            <?php echo nl2br($client_note->note); ?>
+        </div>
+        <div class="card-footer text-right small">
+            <?php echo date_from_mysql($client_note->date_created, true); ?>
+        </div>
     </div>
 <?php endforeach; ?>

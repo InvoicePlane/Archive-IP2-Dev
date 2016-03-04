@@ -23,7 +23,7 @@ class Mdl_Payments extends Response_Model
     public function default_select()
     {
         $this->db->select("
-            SQL_CALC_FOUND_ROWS payment_custom.*,
+            SQL_CALC_FOUND_ROWS custom_payment.*,
             payment_methods.*,
             invoice_amounts.*,
             clients.name,
@@ -48,10 +48,10 @@ class Mdl_Payments extends Response_Model
     {
         $this->db->join('invoices', 'invoices.id = payments.invoice_id');
         $this->db->join('clients', 'clients.id = invoices.client_id');
-        $this->db->join('invoice_amounts', 'invoice_amounts.invoice_id = invoices.invoice_id');
+        $this->db->join('invoice_amounts', 'invoice_amounts.invoice_id = invoices.id');
         $this->db->join('payment_methods', 'payment_methods.id = payments.payment_method_id',
             'left');
-        $this->db->join('payment_custom', 'payment_custom.payment_id = payments.id', 'left');
+        $this->db->join('custom_payment', 'custom_payment.payment_id = payments.id', 'left');
     }
 
     /**
