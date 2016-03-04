@@ -67,8 +67,14 @@
   }
 
   .sidebar-top {
-    padding: ($spacer * 0.75) $spacer;
+    padding: ($spacer * 0.75) ($spacer * 2) ($spacer * 0.75) $spacer;
     border-bottom: 1px solid lighten($sidebar-background, 5%);
+
+    .sidebar-toggle {
+      position: absolute;
+      top: ($spacer * 0.75);
+      right: ($spacer * 0.5);
+    }
   }
 }
 
@@ -106,13 +112,9 @@
 }
 
 .sidebar-toggle-wrapper {
-  padding: ($spacer * 0.75) $spacer;
+  padding: ($spacer * 0.5) ($spacer - ($btn-padding-y-sm * 2));
   width: 100%;
   border-bottom: 1px solid $gray-lighter;
-}
-
-.sidebar-toggle {
-  cursor: pointer;
 }
 
 .login-logo {

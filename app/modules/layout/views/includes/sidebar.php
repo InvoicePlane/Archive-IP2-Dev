@@ -9,7 +9,7 @@
             }
             ?>
         </a>
-        <a href="#" class="sidebar-toggle pull-right"><i class="fa fa-close hidden-lg-up"></i></a>
+        <a href="#" class="sidebar-toggle btn btn-sm"><i class="fa fa-close hidden-lg-up"></i></a>
     </div>
 
     <ul class="menu">
