@@ -143,6 +143,20 @@
   }
 }
 
+.centerbox {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+
+  @media screen and (min-width: $screen-md) {
+    max-width: 50%;
+  }
+}
+
+.centerbox-wrapper {
+  padding-left: $spacer;
+  padding-right: $spacer;
+}
 
 /*
 |   =========================================================
