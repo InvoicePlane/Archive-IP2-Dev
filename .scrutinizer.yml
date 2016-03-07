@@ -23,8 +23,6 @@ filter:
     paths:
         - app/*
     excluded_paths:
-        - app/helpers/country-list/*
-        - app/helpers/mpdf/*
         - app/third_party/MX/*
 coding_style:
     php: {  }

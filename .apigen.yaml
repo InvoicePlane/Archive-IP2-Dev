@@ -3,9 +3,6 @@ source:
     - ./app/helpers
     - ./app/libraries
     - ./app/modules
-exclude:
-    - country-list/*
-    - mpdf/*
 destination: ./docs
 templateTheme: bootstrap
 todo: true

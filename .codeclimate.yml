@@ -13,7 +13,5 @@ ratings:
   paths:
   - app/**
 exclude_paths:
-- app/helpers/country-list/**/*
-- app/helpers/mpdf/**/*
 - app/third_party/MX/**/*
 - data/**/*
