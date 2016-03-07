@@ -19,7 +19,6 @@ class Admin_Controller extends Base_Controller
 
         // Check if user is admin
         if (!user_logged_in() || !user_is_admin()) {
-            set_alert('danger', lang('permissions_not_allowed'));
             redirect('dashboard');
         }
     }
