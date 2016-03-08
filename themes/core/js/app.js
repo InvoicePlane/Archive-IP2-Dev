@@ -124,6 +124,22 @@ function insert_html_tag(tag_type, destination_id) {
 
 $(document).ready(function () {
 
+    // Height calculation
+    var win = $(window);
+    var winHeight = win.height();
+    var main = $("#main");
+    var content = $("#content");
+    var mainHeight = winHeight - $(".sidebar-toggle-wrapper").outerHeight();
+    var contentHeight = mainHeight - $("#headerbar").outerHeight();
+
+    if (win.width() < 768 && main.height() < winHeight) {
+        main.outerHeight(mainHeight);
+    }
+
+    if (content.height() < winHeight) {
+        content.outerHeight(contentHeight);
+    }
+
     // Tooltips
     $("[data-toggle='tooltip]").tooltip();
 
