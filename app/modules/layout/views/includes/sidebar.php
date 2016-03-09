@@ -124,13 +124,11 @@
         </li>
     </ul>
 
-    <?php if (isset($filter_display) and $filter_display == TRUE) { ?>
+    <?php if (isset($filter_display) && $filter_display === true) { ?>
         <?php $this->layout->load_view('filter/jquery_filter'); ?>
-        <form role="search" onsubmit="return false;">
-            <div class="form-group">
-                <input id="filter" type="text" class="search-query form-control input-sm"
-                       placeholder="<?php echo $filter_placeholder; ?>">
-            </div>
+        <form role="search" onsubmit="return false;" class="sidebar-form">
+            <input id="filter" type="text" class="search-query form-control form-control-sm"
+                   placeholder="<?php echo $filter_placeholder; ?>">
         </form>
     <?php } ?>
 </div>

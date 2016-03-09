@@ -6,10 +6,13 @@ if (!defined('BASEPATH')) {
 /**
  * Class Filter_Ajax
  * @package Modules\Filter\Controllers
- * 
+ *
+ * @property Mdl_Clients $mdl_clients
+ * @property Layout $layout
+ *
  * @TODO Complete overhaul needed
  */
-class Filter_Ajax extends Admin_Controller
+class Filter_Ajax extends User_Controller
 {
     public $ajax_controller = true;
 
@@ -82,18 +85,17 @@ class Filter_Ajax extends Admin_Controller
         $query = $this->input->post('filter_query');
 
         $keywords = explode(' ', $query);
-        $params = array();
 
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = strtolower($keyword);
-                $this->mdl_clients->like("CONCAT_WS('^',LOWER(client_name),LOWER(client_email),client_phone,client_active)",
+                $this->mdl_clients->like("CONCAT_WS('^',LOWER(name),LOWER(email),phone,is_active)",
                     $keyword);
             }
         }
 
         $data = array(
-            'records' => $this->mdl_clients->with_total_balance()->get()->result()
+            'clients' => $this->mdl_clients->with_total_balance()->get()->result()
         );
 
         $this->layout->load_view('clients/partial_client_table', $data);

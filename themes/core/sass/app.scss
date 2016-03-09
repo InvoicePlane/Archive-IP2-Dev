@@ -90,6 +90,11 @@ body {
       right: ($spacer * 0.5);
     }
   }
+
+  .sidebar-form {
+    padding: $padding-sm;
+    border-left: 3px solid $sidebar-background;
+  }
 }
 
 #main {

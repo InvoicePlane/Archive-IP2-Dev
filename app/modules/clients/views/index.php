@@ -43,7 +43,7 @@
 
 </div>
 
-<div id="content" class="table-inside">
+<div id="content" class="filter-results table-inside">
 
     <?php $this->layout->load_view('layout/includes/alerts'); ?>
 

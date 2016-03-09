@@ -1,5 +1,4 @@
-<script type="text/javascript">
-
+<script>
     var delay = (function () {
         var timer = 0;
         return function (callback, ms) {
@@ -8,20 +7,21 @@
         };
     })();
 
-    $(function () {
-
+    $(document).ready(function () {
         $('#filter').keyup(function () {
             delay(function () {
-                $.post('<?php echo site_url('filter/ajax/' . $filter_method); ?>',
-                    {
+                $("#loader").fadeIn(200);
+                $.ajax({
+                    method: "post",
+                    url: "<?php echo site_url('filter/filter_ajax/' . $filter_method); ?>",
+                    data: {
                         filter_query: $('#filter').val()
-                    }, function (data) {
-                        $('#filter_results').html(data);
-                    });
-            }, 1000);
-
+                    }
+                }).done(function (data) {
+                    $("#loader").fadeOut(200);
+                    $('.filter-results').html(data);
+                });
+            }, 750);
         });
-
     });
-
 </script>
