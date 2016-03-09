@@ -125,23 +125,32 @@ function insert_html_tag(tag_type, destination_id) {
 $(document).ready(function () {
 
     // Height calculation
-    var win = $(window);
-    var winHeight = win.height();
+    var doc = $(document);
+    var docHeight = doc.height();
     var main = $("#main");
     var content = $("#content");
-    var mainHeight = winHeight - $(".sidebar-toggle-wrapper").outerHeight();
+    var mainHeight = docHeight - $(".sidebar-toggle-wrapper").outerHeight();
     var contentHeight = mainHeight - $("#headerbar").outerHeight();
 
-    if (win.width() < 768 && main.height() < winHeight) {
+    if (doc.width() < 768 && main.height() < docHeight) {
         main.outerHeight(mainHeight);
     }
 
-    if (content.height() < winHeight) {
+    if (content.height() < docHeight) {
         content.outerHeight(contentHeight);
     }
 
+    // Dropdowns {
+    var docFold = (docHeight / 3) * 2;
+    $("[data-toggle='dropdown']").each(function(){
+        var toggle = $(this);
+        if (toggle.offset().top > docFold) {
+            toggle.parent().find(".dropdown-menu").css("top", "auto").css("bottom", toggle.outerHeight());
+        }
+    });
+
     // Tooltips
-    $("[data-toggle='tooltip]").tooltip();
+    $("[data-toggle='tooltip']").tooltip();
 
     // Loader
     $("*[type='submit'], .show-loader").bind("click", function () {
