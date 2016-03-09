@@ -121,6 +121,7 @@ body {
     display: inline-block;
     vertical-align: middle;
     margin: 0;
+    line-height: ($font-size-base * $line-height) + ($btn-padding-y-sm * 2);
   }
 
   .topmenu,
@@ -130,7 +131,7 @@ body {
 
   .submenu {
     margin-top: $spacer * 0.5;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 
     &-item {
       float: right;
