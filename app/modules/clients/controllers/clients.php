@@ -56,7 +56,7 @@ class Clients extends User_Controller
 
         $this->layout->set(
             array(
-                'records' => $clients,
+                'clients' => $clients,
                 'filter_display' => true,
                 'filter_placeholder' => lang('filter_clients'),
                 'filter_method' => 'filter_clients'
