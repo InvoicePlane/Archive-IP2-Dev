@@ -1,5 +1,9 @@
 "use strict";
 
+/*
+ * Begin of functions
+ */
+
 // Insert text into textarea at Caret Position
 function insert_at_caret(areaId, text) {
     var txtarea = document.getElementById(areaId),
@@ -122,6 +126,17 @@ function insert_html_tag(tag_type, destination_id) {
     }
 }
 
+var delay = (function () {
+    var timer = 0;
+    return function (callback, ms) {
+        clearTimeout(timer);
+        timer = setTimeout(callback, ms);
+    };
+})();
+
+/*
+ * Begin of scripts
+ */
 $(document).ready(function () {
 
     // Height calculation
@@ -200,4 +215,5 @@ $(document).ready(function () {
     $("#email-template-preview-reload").click(function () {
         update_email_template_preview();
     });
+
 });

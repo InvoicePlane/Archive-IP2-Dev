@@ -1,12 +1,4 @@
 <script>
-    var delay = (function () {
-        var timer = 0;
-        return function (callback, ms) {
-            clearTimeout(timer);
-            timer = setTimeout(callback, ms);
-        };
-    })();
-
     $(document).ready(function () {
         $('#filter').keyup(function () {
             delay(function () {

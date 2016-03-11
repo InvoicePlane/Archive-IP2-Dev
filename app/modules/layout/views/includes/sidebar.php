@@ -125,7 +125,7 @@
     </ul>
 
     <?php if (isset($filter_display) && $filter_display === true) { ?>
-        <?php $this->layout->load_view('filter/jquery_filter'); ?>
+        <?php $this->layout->load_view('filter/filter'); ?>
         <form role="search" onsubmit="return false;" class="sidebar-form">
             <input id="filter" type="text" class="search-query form-control form-control-sm"
                    placeholder="<?php echo $filter_placeholder; ?>">

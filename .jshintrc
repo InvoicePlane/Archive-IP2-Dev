@@ -11,7 +11,7 @@
   "nonbsp"        : true,
   "quotmark"      : "double",
   "undef"         : true,
-  "unused"        : true,
+  "unused"        : false,
   "globalstrict"  : true,
   "browser"       : true,
   "devel"         : true,
