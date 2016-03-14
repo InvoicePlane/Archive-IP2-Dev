@@ -82,6 +82,29 @@ function date_from_mysql($date, $ignore_post_check = false)
 }
 
 /**
+ * Converts a given MySQL date to a formatted date
+ *
+ * @TODO H:i:s needs proper setting value
+ *
+ * @param $date
+ * @param bool $ignore_post_check
+ * @return DateTime|string
+ */
+function datetime_from_mysql($date, $ignore_post_check = false)
+{
+    if ($date <> '0000-00-00 00:00:00') {
+        if (!$_POST || $ignore_post_check) {
+            $CI = &get_instance();
+
+            $date = DateTime::createFromFormat('Y-m-d H:i:s', $date);
+            return $date->format($CI->mdl_settings->setting('date_format') . ' H:i');
+        }
+        return $date;
+    }
+    return '';
+}
+
+/**
  * Converts a given tmestamp date to a formatted date
  * @param $timestamp
  * @return string

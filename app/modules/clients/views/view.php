@@ -1,35 +1,3 @@
-<script>
-    $(function () {
-        $('#save_client_note').click(function () {
-            $.post('<?php echo site_url('clients/ajax/save_client_note'); ?>',
-                {
-                    id: $('#id').val(),
-                    client_note: $('#client_note').val()
-                }, function (data) {
-                    var response = JSON.parse(data);
-                    if (response.success == '1') {
-                        // The validation was successful
-                        $('.control-group').removeClass('error');
-                        $('#client_note').val('');
-
-                        $('#notes_list').load("<?php echo site_url('clients/ajax/load_client_notes'); ?>",
-                            {
-                                id: <?php echo $client->id; ?>
-                            });
-                    }
-                    else {
-                        // The validation was not successful
-                        $('.control-group').removeClass('error');
-                        for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('error');
-                        }
-                    }
-                });
-        });
-
-    });
-</script>
-
 <div id="headerbar">
     <h1><?php echo $client->name; ?></h1>
 
@@ -207,29 +175,13 @@
 
         <hr>
 
-        <div>
-            <h4><?php echo lang('notes'); ?></h4>
-
-            <div class="notes">
-                <?php echo $partial_notes; ?>
-            </div>
-
-            <div class="card card-block">
-                <form class="row">
-                    <div class="col-xs-12 col-md-9">
-                        <input type="hidden" name="client_id" id="client_id"
-                               value="<?php echo $client->id; ?>">
-                        <textarea id="note" class="form-control" rows="1"></textarea>
-                    </div>
-                    <div class="col-xs-12 col-md-3">
-                        <span class="hidden-md-up"><br></span>
-                        <button id="save_note" class="btn btn-secondary btn-block-md">
-                            <i class="fa fa-plus fa-margin-right"></i><?php echo lang('add_note'); ?>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <?php
+        $this->layout->load_view('notes/notes', [
+            'notes' => $notes,
+            'type' => 'client',
+            'type_id' => $client->id,
+        ]);
+        ?>
 
     </div>
     <div class="tab-pane table-inside" id="client-quotes" role="tabpanel">

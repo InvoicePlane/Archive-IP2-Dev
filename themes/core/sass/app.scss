@@ -381,7 +381,7 @@ select {
     opacity: 0.85;
     width: 100%;
     text-align: center;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.85);
 
     .loader-message {
       position: absolute;
@@ -434,6 +434,25 @@ select {
 |   Various other styles
 |   =========================================================
 */
+
+.input-group-addon {
+
+  &.with-button {
+    padding: 0;
+    border: none;
+    background: none;
+
+    .btn {
+      border-left: none;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+}
+
+.inline-block {
+  display: inline-block;
+}
 
 .btn-block-md {
   @media screen and (min-width: $screen-md) {

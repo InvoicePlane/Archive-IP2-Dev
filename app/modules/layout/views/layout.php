@@ -27,7 +27,9 @@
 
 </div>
 
-<?php $this->view('includes/loader') ?>
+<?php $this->view('includes/loader'); ?>
+
+<div id="site-url"><?php echo site_url(); ?></div>
 
 </body>
 </html>

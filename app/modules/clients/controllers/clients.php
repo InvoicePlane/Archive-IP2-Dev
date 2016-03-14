@@ -11,9 +11,9 @@ if (!defined('BASEPATH')) {
  * @property Layout $layout
  * @property Mdl_Clients $mdl_clients
  * @property Mdl_Client_Custom $mdl_client_custom
- * @property Mdl_Client_Notes $mdl_client_notes
  * @property Mdl_Custom_Fields $mdl_custom_fields
  * @property Mdl_Invoices $mdl_invoices
+ * @property Mdl_Notes $mdl_notes
  * @property Mdl_Payments $mdl_payments
  * @property Mdl_Quotes $mdl_quotes
  */
@@ -144,7 +144,7 @@ class Clients extends User_Controller
      */
     public function view($client_id)
     {
-        $this->load->model('clients/mdl_client_notes');
+        $this->load->model('notes/mdl_notes');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('payments/mdl_payments');
@@ -160,7 +160,7 @@ class Clients extends User_Controller
         $this->layout->set(
             array(
                 'client' => $client,
-                'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+                'notes' => $this->mdl_notes->get_notes('client', $client_id),
                 'invoices' => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
                 'quotes' => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
                 'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
@@ -183,10 +183,6 @@ class Clients extends User_Controller
                 array(
                     'payment_table',
                     'payments/partial_payment_table'
-                ),
-                array(
-                    'partial_notes',
-                    'clients/partial_notes'
                 ),
                 array(
                     'content',

@@ -3,19 +3,6 @@
 # Version 2.0.0
 # ************************************************************
 
-# client_notes
-# ------------------------------------------------------------
-
-CREATE TABLE `client_notes` (
-  `id`           INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `client_id`    INT(11) UNSIGNED NOT NULL,
-  `note`         LONGTEXT         NOT NULL,
-  `date_created` DATE             NOT NULL,
-  PRIMARY KEY (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
 # clients
 # ------------------------------------------------------------
 
@@ -286,6 +273,25 @@ CREATE TABLE `invoices_recurring` (
   `next_date`          DATE             NOT NULL,
   `invoices_due_after` INT(11)          NOT NULL DEFAULT '30',
   `date_deleted`       DATETIME                  DEFAULT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+# notes
+# ------------------------------------------------------------
+
+CREATE TABLE `notes` (
+  `id`           INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id`      INT(11) UNSIGNED NOT NULL,
+  `client_id`    INT(11) UNSIGNED,
+  `quote_id`     INT(11) UNSIGNED,
+  `invoice_id`   INT(11) UNSIGNED,
+  `payment_id`   INT(11) UNSIGNED,
+  `task_id`      INT(11) UNSIGNED,
+  `note`         LONGTEXT         NOT NULL,
+  `date_created` DATETIME         NOT NULL,
+  `date_deleted` DATETIME                  DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -624,10 +630,6 @@ CREATE TABLE `versions` (
 # Foreign keys
 # ------------------------------------------------------------
 
-ALTER TABLE `client_notes`
-ADD KEY `client_id` (`client_id`),
-ADD FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`);
-
 ALTER TABLE `custom_client`
 ADD KEY `client_id` (`client_id`),
 ADD FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`);
@@ -695,6 +697,14 @@ ADD KEY `email_template_id` (`email_template_id`),
 ADD KEY `invoice_id` (`invoice_id`),
 ADD FOREIGN KEY (`email_template_id`) REFERENCES `email_templates` (`id`),
 ADD FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`id`);
+
+ALTER TABLE `notes`
+ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+ADD FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`),
+ADD FOREIGN KEY (`quote_id`) REFERENCES `quotes` (`id`),
+ADD FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`id`),
+ADD FOREIGN KEY (`payment_id`) REFERENCES `payments` (`id`),
+ADD FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`);
 
 ALTER TABLE `online_payments`
 ADD KEY `invoice_id` (`invoice_id`),

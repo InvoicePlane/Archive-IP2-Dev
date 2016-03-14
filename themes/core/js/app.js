@@ -126,6 +126,120 @@ function insert_html_tag(tag_type, destination_id) {
     }
 }
 
+/*
+ * Notes handling
+ */
+function init_notes(siteUrl) {
+    // Save note form handling
+    $("#save-note").click(function (button) {
+        button.preventDefault();
+
+        // Prepare vars
+        var url = siteUrl + "/notes/notes_ajax/save_note",
+            type = $(this).data("type"),
+            type_id = $(this).data("id");
+
+        show_loader();
+
+        // Fire the ajax request
+        $.ajax({
+            method: "post",
+            url: url,
+            data: {
+                type: type,
+                type_id: type_id,
+                note: $("#note-content").val()
+            }
+        }).done(function (data) {
+            var response = JSON.parse(data);
+
+            hide_loader();
+
+            if (response.success === true) {
+                // The validation was successful
+                $(button).parents(".form-group").removeClass("has-danger");
+
+                window.setTimeout(function () {
+                    // Clear the textarea and update the notes
+                    $("#note-content").val("");
+                    reload_notes(siteUrl, type, type_id);
+                }, 500);
+            } else {
+                // The validation was not successful
+                $(button).addClass("has-danger");
+
+                for (var key in response.validation_errors) {
+                    $("#" + key).parents(".input-group").addClass("has-danger");
+                }
+            }
+        });
+    });
+
+    $(".delete-note").click(function (button) {
+        button.preventDefault();
+
+        // Prepare the vars
+        var url = siteUrl + "/notes/notes_ajax/delete_note",
+            save_button = $("#save-note"),
+            type = save_button.data("type"),
+            type_id = save_button.data("id");
+
+        show_loader();
+
+        // Fire the ajax request
+        $.ajax({
+            method: "post",
+            url: url,
+            data: {
+                user_id: $(this).data("user-id"),
+                note_id: $(this).data("note-id")
+            }
+        }).done(function (data) {
+            var response = JSON.parse(data);
+
+            hide_loader();
+
+            if (response.success === true) {
+                // The validation was successful
+                window.setTimeout(function () {
+                    // Update the notes
+                    reload_notes(siteUrl, type, type_id);
+                }, 500);
+            }
+        });
+    });
+}
+
+// Function to reload the notes by type and type id
+function reload_notes(siteUrl, type, type_id) {
+    var url = siteUrl + "/notes/notes_ajax/get_notes";
+
+    $.ajax({
+        method: "post",
+        url: url,
+        data: {
+            type: type,
+            type_id: type_id
+        }
+    }).done(function (data) {
+        $(".notes-content").html(data);
+        // Reinitialize the notes
+        init_notes(siteUrl);
+    });
+}
+
+/*
+ * Loader handling
+ */
+function show_loader() {
+    $("#loader").fadeIn(200);
+}
+
+function hide_loader() {
+    $("#loader").fadeOut(200);
+}
+
+// Delay function that only continues after a predefined time
 var delay = (function () {
     var timer = 0;
     return function (callback, ms) {
@@ -135,11 +249,18 @@ var delay = (function () {
 })();
 
 /*
- * Begin of scripts
+ |   =========================================================
+ |   Begin of the scripts fired afer document is ready
+ |   =========================================================
  */
 $(document).ready(function () {
 
-    // Height calculation
+    // Global variables
+    var siteUrl = $("#site-url").text();
+
+    /*
+     * Height calculation
+     */
     var doc = $(document);
     var docHeight = doc.height();
     var main = $("#main");
@@ -155,65 +276,90 @@ $(document).ready(function () {
         content.outerHeight(contentHeight);
     }
 
-    // Dropdowns {
+    /*
+     * Dropdown handling
+     * Dropdowns open above the button if below 2/3 of the page to prevent additional scrolling
+     */
     var docFold = (docHeight / 3) * 2;
-    $("[data-toggle='dropdown']").each(function(){
+    $("[data-toggle='dropdown']").each(function () {
         var toggle = $(this);
         if (toggle.offset().top > docFold) {
             toggle.parent().find(".dropdown-menu").css("top", "auto").css("bottom", toggle.outerHeight());
         }
     });
 
-    // Tooltips
+    /*
+     * Tooltip initialization
+     */
     $("[data-toggle='tooltip']").tooltip();
 
-    // Loader
+    /*
+     * Loader initialization
+     */
     $("*[type='submit'], .show-loader").bind("click", function () {
         $("#loader").fadeIn(200);
         $("#loader-error").delay(10000).fadeIn(200);
     });
 
-    // Sidebar toggle handling
-    $(".sidebar-toggle").click(function(e){
+    /*
+     * Sidebar toggle handling
+     */
+    $(".sidebar-toggle").click(function (e) {
         e.preventDefault();
         $("#sidebar").toggleClass("show-sidebar");
     });
 
-    // Handle click event for Email Template Tags insertion
-    // Example Usage
-    // <a href="#" class="text-tag" data-tag="{{{client_name}}}">Client Name</a>
-    var lastTaggableClicked;
-    $(".text-tag").bind("click", function () {
-        var templateTag = this.getAttribute("data-tag");
-        insert_at_caret(lastTaggableClicked.id, templateTag);
-        return false;
+    // Note initialization
+    init_notes(siteUrl);
+
+    /*
+     * Set the height of an element to 100%
+     */
+    $(".match-parent-height").each(function () {
+        $(this).height($(this).parent().height());
     });
 
-    // Keep track of the last "taggable" input/textarea
-    $(".taggable").on("focus", function () {
-        lastTaggableClicked = this;
-    });
+    /*
+     * Email Templatew form handling
+     * Handle click event for Email Template Tags insertion
+     * Example Usage
+     * <a href="#" class="text-tag" data-tag="{{{client_name}}}">Client Name</a>
+     */
+    if ($("#email-template")) {
 
-    // HTML tags to email templates textarea
-    $(".html-tag").click(function () {
-        var tag_type = $(this).data("tagType");
-        var body_id = $(".email-template-body").attr("id");
-        insert_html_tag(tag_type, body_id);
-    });
+        var lastTaggableClicked;
+        $(".text-tag").bind("click", function () {
+            var templateTag = this.getAttribute("data-tag");
+            insert_at_caret(lastTaggableClicked.id, templateTag);
+            return false;
+        });
 
-    // Email Template Preview handling
-    var email_template_body_id = $(".email-template-body").attr("id");
+        // Keep track of the last "taggable" input/textarea
+        $(".taggable").on("focus", function () {
+            lastTaggableClicked = this;
+        });
 
-    if ($("#email_template_preview").empty()) {
-        update_email_template_preview();
+        // HTML tags to email templates textarea
+        $(".html-tag").click(function () {
+            var tag_type = $(this).data("tagType");
+            var body_id = $(".email-template-body").attr("id");
+            insert_html_tag(tag_type, body_id);
+        });
+
+        // Email Template Preview handling
+        var email_template_body_id = $(".email-template-body").attr("id");
+
+        if ($("#email_template_preview").empty()) {
+            update_email_template_preview();
+        }
+
+        $(email_template_body_id).bind("input propertychange", function () {
+            update_email_template_preview();
+        });
+
+        $("#email-template-preview-reload").click(function () {
+            update_email_template_preview();
+        });
+
     }
-
-    $(email_template_body_id).bind("input propertychange", function () {
-        update_email_template_preview();
-    });
-
-    $("#email-template-preview-reload").click(function () {
-        update_email_template_preview();
-    });
-
 });
