@@ -1,8 +1,6 @@
-/*
-|   =========================================================
-|   Core Variables
-|   =========================================================
-*/
+//=========================================================
+// Core Variables
+//=========================================================
 
 $rem-base: 16;
 
@@ -16,12 +14,14 @@ $screen-sm-max: $screen-md - 1;
 $screen-md-max: $screen-lg - 1;
 $screen-lg-max: $screen-xl - 1;
 
-$color-status-draft: #999999;
-$color-status-sent: #3A87AD;
-$color-status-viewed: #F89406;
+$color-status-draft: #999;
+$color-status-sent: #3a87ad;
+$color-status-viewed: #f89406;
 $color-status-paid-approved: #468847;
-$color-status-rejected-overdue: #B94A48;
-$color-status-canceled: #333333;
+$color-status-rejected-overdue: #b94a48;
+$color-status-canceled: #333;
+
+$loader-background: rgba(255, 255, 255, .85);
 
 $sidebar-background: #303841;
 $sidebar-text: $gray-lighter;

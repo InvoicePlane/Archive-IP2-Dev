@@ -1,8 +1,6 @@
-/*
-|   =========================================================
-|   InvoicePlane Core Stylesheet
-|   =========================================================
-*/
+//=========================================================
+// InvoicePlane Core Stylesheet
+//=========================================================
 
 // Import Bootstrap
 @import "dependencies/bootstrap";
@@ -17,19 +15,19 @@
 // Load mixins
 @import "mixins";
 
-/*
-|   =========================================================
-|   Base layout
-|   =========================================================
-*/
 
-$bar-with-button-height: ($spacer * 0.5) + $font-size-base;
-$bar-with-button-padding: ($spacer * 0.5) ($spacer - ($btn-padding-y-sm * 2));
+//=========================================================
+// Base layout
+//=========================================================
 
-$padding-sm: ($spacer * 0.3) ($spacer * 0.6);
+$bar-with-button-height: ($spacer * .5) + $font-size-base;
+$bar-with-button-padding: ($spacer * .5) ($spacer - ($btn-padding-y-sm * 2));
+
+$padding-sm: ($spacer * .3) ($spacer * .6);
 
 html {
   height: 100%;
+  overflow-y: scroll;
 }
 
 body {
@@ -46,6 +44,7 @@ body {
 }
 
 #sidebar {
+  @include transition-std(left);
   width: 320px;
   position: fixed;
   top: 0;
@@ -55,11 +54,10 @@ body {
   left: -320px;
   z-index: $zindex-navbar;
   overflow: auto;
-  @include transition-std(left);
 
   &.show-sidebar {
-    left: 0;
     @include transition-std(left);
+    left: 0;
   }
 
   @media screen and (min-width: $screen-lg) {
@@ -75,19 +73,20 @@ body {
 
   a {
     color: lighten($sidebar-text, 10%);
+
     @include hover-focus-active {
       color: lighten($sidebar-text, 20%);
     }
   }
 
   .sidebar-top {
-    padding: ($spacer * 0.75) ($spacer * 2) ($spacer * 0.75) $spacer;
+    padding: ($spacer * .75) ($spacer * 2) ($spacer * .75) $spacer;
     border-bottom: 1px solid lighten($sidebar-background, 5%);
 
     .sidebar-toggle {
       position: absolute;
-      top: ($spacer * 0.75);
-      right: ($spacer * 0.5);
+      top: ($spacer * .75);
+      right: ($spacer * .5);
     }
   }
 
@@ -105,6 +104,7 @@ body {
     vertical-align: top;
     width: 70%;
   }
+
   @media screen and (min-width: $screen-xl) {
     width: 80%;
   }
@@ -116,9 +116,9 @@ body {
 }
 
 #headerbar {
-  padding: ($spacer * 0.5) $spacer;
-  border-bottom: 1px solid $gray-lighter;
   @include clearfix;
+  padding: ($spacer * .5) $spacer;
+  border-bottom: 1px solid $gray-lighter;
 
   h1 {
     font-size: $font-size-base;
@@ -135,8 +135,8 @@ body {
   }
 
   .submenu {
-    margin-top: $spacer * 0.5;
-    font-size: 0.8rem;
+    margin-top: $spacer * .5;
+    font-size: .8rem;
 
     &-item {
       float: right;
@@ -172,8 +172,8 @@ body {
 }
 
 .nav.nav-tabs {
-  margin-top: $spacer * 0.30;
-  padding-left: $spacer * 0.3;
+  margin-top: $spacer * .3;
+  padding-left: $spacer * .3;
 }
 
 .card-sm {
@@ -181,7 +181,7 @@ body {
   .card-block,
   .card-header,
   .card-footer {
-    padding: $spacer * 0.5;
+    padding: $spacer * .5;
   }
 }
 
@@ -205,7 +205,7 @@ body {
 }
 
 .dropdown-menu-sm {
-  font-size: 0.9rem;
+  font-size: .9rem;
 
   .dropdown-item {
     padding: $padding-sm;
@@ -216,15 +216,10 @@ body {
   text-align: right;
 }
 
-.table {
-  margin-bottom: 0;
-}
 
-/*
-|   =========================================================
-|   Menu
-|   =========================================================
-*/
+//=========================================================
+// Menu
+//=========================================================
 
 $sidebar-background-light: lighten($sidebar-background, 5%);
 $sidebar-background-lighter: lighten($sidebar-background, 10%);
@@ -249,10 +244,10 @@ $sidebar-background-lighter: lighten($sidebar-background, 10%);
         background-color: $sidebar-background-light;
         border-left: 3px solid $sidebar-background-light;
       }
+    }
 
-      .fa {
-        margin-right: 1rem;
-      }
+    .fa {
+      margin-right: 1rem;
     }
 
     &.divider {
@@ -273,7 +268,7 @@ $sidebar-background-lighter: lighten($sidebar-background, 10%);
       padding: $padding-sm;
       margin-right: 0;
 
-      &:before {
+      &::before {
         content: "\f107";
       }
     }
@@ -287,7 +282,7 @@ $sidebar-background-lighter: lighten($sidebar-background, 10%);
         border-left: 3px solid $sidebar-background-light;
       }
 
-      .menu-icon:before {
+      .menu-icon::before {
         content: "\f104";
       }
 
@@ -306,30 +301,28 @@ $sidebar-background-lighter: lighten($sidebar-background, 10%);
 
     li {
       padding: 0;
+    }
 
-      a {
-        font-size: 0.85rem;
-        padding: $padding-sm $padding-sm + 2rem;
-        border-left: none;
+    a {
+      font-size: .85rem;
+      padding: $padding-sm $padding-sm + 2rem;
+      border-left: 0;
 
-        &:hover {
-          background-color: $sidebar-background-lighter;
-        }
+      &:hover {
+        background-color: $sidebar-background-lighter;
       }
+    }
 
-      &.divider {
-        margin: ($spacer * 0.3) 0;
-      }
+    .divider {
+      margin: ($spacer * .3) 0;
     }
   }
 }
 
 
-/*
-|   =========================================================
-|   Forms
-|   =========================================================
-*/
+//=========================================================
+// Forms
+//=========================================================
 
 select {
   -webkit-appearance: none;
@@ -339,20 +332,15 @@ select {
 }
 
 
-/*
-|   =========================================================
-|   Quote / Invoie Tables
-|   =========================================================
-*/
+//=========================================================
+// Quote / Invoice Tables
+//=========================================================
 
 
 
-
-/*
-|   =========================================================
-|   Loading Indicator
-|   =========================================================
-*/
+//=========================================================
+// Loading Indicator
+//=========================================================
 
 #loader {
   display: none;
@@ -378,10 +366,10 @@ select {
     bottom: 0;
     left: 0;
     font-size: 1.5rem;
-    opacity: 0.85;
+    opacity: .85;
     width: 100%;
     text-align: center;
-    background: rgba(255, 255, 255, 0.85);
+    background: $loader-background;
 
     .loader-message {
       position: absolute;
@@ -393,11 +381,13 @@ select {
 }
 
 
-/*
-|   =========================================================
-|   Additional icon and text styles
-|   =========================================================
-*/
+//=========================================================
+// Additional icon and text styles
+//=========================================================
+
+.hidden {
+  display: none;
+}
 
 .amount {
   text-align: right;
@@ -409,11 +399,11 @@ select {
 }
 
 .fa-margin-right {
-  margin-right: 0.5rem;
+  margin-right: .5rem;
 }
 
 .fa-margin-left {
-  margin-left: 0.5rem;
+  margin-left: .5rem;
 }
 
 .text-right {
@@ -429,21 +419,19 @@ select {
 }
 
 
-/*
-|   =========================================================
-|   Various other styles
-|   =========================================================
-*/
+//=========================================================
+// Various other styles and helpers
+//=========================================================
 
 .input-group-addon {
 
   &.with-button {
     padding: 0;
-    border: none;
+    border: 0;
     background: none;
 
     .btn {
-      border-left: none;
+      border-left: 0;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
@@ -466,7 +454,7 @@ select {
 }
 
 .table-inside {
-  padding: $spacer * 0.5 !important;
+  padding: $spacer * .5;
 }
 
 .cursor-pointer {
@@ -474,7 +462,7 @@ select {
 }
 
 ::-webkit-scrollbar {
-  width: 1rem;
+  //width: 1rem;
 }
 
 ::-webkit-scrollbar-track {
