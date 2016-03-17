@@ -1,0 +1,83 @@
+//=========================================================
+// Content Layout and Styles
+//=========================================================
+
+#content,
+.tab-pane {
+  padding: $spacer;
+}
+
+.sidebar-toggle-wrapper {
+  padding: $bar-with-button-padding;
+  width: 100%;
+  border-bottom: 1px solid $gray-lighter;
+}
+
+//=========================================================
+// Header Bar
+
+#headerbar {
+  @include clearfix;
+  padding: ($spacer * .5) $spacer;
+  border-bottom: 1px solid $gray-lighter;
+
+  h1 {
+    font-size: $font-size-base;
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+    line-height: ($font-size-base * $line-height) + ($btn-padding-y-sm * 2);
+  }
+
+  .topmenu,
+  .submenu {
+    @include clearfix;
+  }
+
+  .submenu {
+    margin-top: $spacer * .5;
+    font-size: .8rem;
+
+    &-item {
+      float: right;
+      margin-left: $spacer;
+
+      &:last-child {
+        margin-left: 0;
+      }
+    }
+
+    .nav-link {
+      padding: $padding-sm;
+    }
+  }
+}
+
+//=========================================================
+// Content styles
+
+.nav.nav-tabs {
+  margin-top: $spacer * .3;
+  padding-left: $spacer * .3;
+}
+
+.table-responsive {
+  height: 100%;
+}
+
+.dropdown-menu-sm {
+  font-size: .9rem;
+
+  .dropdown-item {
+    padding: $padding-sm;
+  }
+}
+
+.options {
+  text-align: right;
+}
+
+.custom-field-label {
+  min-width: 10rem;
+}

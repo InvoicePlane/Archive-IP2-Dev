@@ -1,0 +1,137 @@
+//=========================================================
+// Base layout
+//=========================================================
+
+$bar-with-button-height: ($spacer * .5) + $font-size-base;
+$bar-with-button-padding: ($spacer * .5) ($spacer - ($btn-padding-y-sm * 2));
+
+$padding-sm: ($spacer * .3) ($spacer * .6);
+
+html {
+  height: 100%;
+  overflow-y: scroll;
+}
+
+body {
+  height: inherit;
+}
+
+//=========================================================
+// Sidebar / Main Layout
+
+#app {
+  width: 100%;
+  height: inherit;
+
+  @media screen and (min-width: $screen-lg) {
+    display: table;
+  }
+}
+
+#sidebar {
+  @include transition-std(left);
+  width: 320px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background: $sidebar-background;
+  color: $sidebar-text;
+  left: -320px;
+  z-index: $zindex-navbar;
+  overflow: auto;
+
+  &.show-sidebar {
+    @include transition-std(left);
+    left: 0;
+  }
+
+  @media screen and (min-width: $screen-lg) {
+    width: 30%;
+    display: table-cell;
+    vertical-align: top;
+    left: 0;
+  }
+
+  @media screen and (min-width: $screen-xl) {
+    width: 20%;
+  }
+
+  a {
+    color: lighten($sidebar-text, 10%);
+
+    @include hover-focus-active {
+      color: lighten($sidebar-text, 20%);
+    }
+  }
+
+  .sidebar-top {
+    padding: ($spacer * .75) ($spacer * 2) ($spacer * .75) $spacer;
+    border-bottom: 1px solid lighten($sidebar-background, 5%);
+
+    .sidebar-toggle {
+      position: absolute;
+      top: ($spacer * .75);
+      right: ($spacer * .5);
+    }
+  }
+
+  .sidebar-form {
+    padding: $padding-sm;
+    border-left: 3px solid $sidebar-background;
+  }
+}
+
+#main {
+  width: 100%;
+
+  @media screen and (min-width: $screen-lg) {
+    display: table-cell;
+    vertical-align: top;
+    width: 70%;
+  }
+
+  @media screen and (min-width: $screen-xl) {
+    width: 80%;
+  }
+}
+
+//=========================================================
+// General layout styles
+
+.login-logo {
+  padding: ($spacer * 2) 0;
+
+  img {
+    max-width: 100%;
+  }
+}
+
+// Card styles
+.card-header {
+  font-weight: bold;
+}
+
+.card-sm {
+
+  .card-block,
+  .card-header,
+  .card-footer {
+    padding: $spacer * .5;
+  }
+}
+
+// Centerbox
+.centerbox {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+
+  @media screen and (min-width: $screen-md) {
+    max-width: 50%;
+  }
+}
+
+.centerbox-wrapper {
+  padding-left: $spacer;
+  padding-right: $spacer;
+}

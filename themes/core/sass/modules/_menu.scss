@@ -1,0 +1,101 @@
+//=========================================================
+// Menu
+//=========================================================
+
+$sidebar-background-light: lighten($sidebar-background, 5%);
+$sidebar-background-lighter: lighten($sidebar-background, 10%);
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: $spacer 0;
+
+  li {
+    width: 100%;
+
+    a {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      padding: $padding-sm;
+      font-size: 1rem;
+      border-left: 3px solid $sidebar-background;
+
+      &:hover {
+        background-color: $sidebar-background-light;
+        border-left: 3px solid $sidebar-background-light;
+      }
+    }
+
+    .fa {
+      margin-right: 1rem;
+    }
+
+    &.divider {
+      margin: 1rem 0;
+      border-bottom: 1px solid $sidebar-background-lighter;
+    }
+  }
+
+  .has-submenu {
+    background-color: $sidebar-background-light;
+    border-left: 3px solid $brand-primary;
+
+    &:hover {
+      border-left: 3px solid $brand-primary;
+    }
+
+    .menu-icon {
+      padding: $padding-sm;
+      margin-right: 0;
+
+      &::before {
+        content: "\f107";
+      }
+    }
+
+    &.collapsed {
+      background-color: $sidebar-background;
+      border-left: 3px solid $sidebar-background;
+
+      &:hover {
+        background-color: $sidebar-background-light;
+        border-left: 3px solid $sidebar-background-light;
+      }
+
+      .menu-icon::before {
+        content: "\f104";
+      }
+
+      + .submenu {
+        border-left: 3px solid $sidebar-background-light;
+      }
+    }
+  }
+
+  .submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: $sidebar-background-light;
+    border-left: 3px solid $brand-primary;
+
+    li {
+      padding: 0;
+    }
+
+    a {
+      font-size: .85rem;
+      padding: $padding-sm $padding-sm + 2rem;
+      border-left: 0;
+
+      &:hover {
+        background-color: $sidebar-background-lighter;
+      }
+    }
+
+    .divider {
+      margin: ($spacer * .3) 0;
+    }
+  }
+}

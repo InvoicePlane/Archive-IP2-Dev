@@ -18,13 +18,19 @@ module.exports = function (grunt) {
           compass: true,
           sourcemap: false
         },
-        files: {
-          'themes/InvoicePlane/css/app.min.css': 'themes/InvoicePlane/app.scss',
-          'themes/InvoicePlane/css/basic.min.css': 'themes/InvoicePlane/basic.scss',
-          'themes/InvoicePlane/css/monospace.min.css': 'themes/InvoicePlane/monospace.scss',
-          'themes/InvoicePlane/css/reports.min.css': 'themes/InvoicePlane/reports.scss',
-          'themes/InvoicePlane/css/template.min.css': 'themes/InvoicePlane/templates.scss'
-        }
+        files: [
+          {
+            expand: true,
+            cwd: 'themes/InvoicePlane/',
+            src: [
+              '**/*.scss',
+              '!**/*scsslint*.scss'
+            ],
+            dest: 'themes/InvoicePlane/css/',
+            ext: '.min.css',
+            extDot: 'first'
+          }
+        ]
       }
     },
     autoprefixer: {
@@ -41,6 +47,7 @@ module.exports = function (grunt) {
     scsslint: {
       allFiles: [
         'themes/core/sass/*.scss',
+        'themes/core/sass/modules/*.scss',
         'themes/InvoicePlane/*.scss'
       ],
       options: {
@@ -91,9 +98,10 @@ module.exports = function (grunt) {
         files: [
           'themes/core/sass/*.scss',
           'themes/core/sass/modules/*.scss',
-          'themes/InvoicePlane/*.scss'
+          'themes/InvoicePlane/*.scss',
+          '!**/*scsslint*.scss'
         ],
-        tasks: ['sass']
+        tasks: ['scsslint', 'sass']
       },
       js: {
         files: [

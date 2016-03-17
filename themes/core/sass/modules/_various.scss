@@ -1,0 +1,58 @@
+//=========================================================
+// Various other styles and helpers
+//=========================================================
+
+.hidden {
+  display: none;
+}
+
+.input-group-addon {
+
+  &.with-button {
+    padding: 0;
+    border: 0;
+    background: none;
+
+    .btn {
+      border-left: 0;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.btn-block-md {
+  @media screen and (min-width: $screen-md) {
+    display: block;
+    width: 100%;
+  }
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.table-inside {
+  padding: $spacer * .5;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  //width: 1rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: $gray-lightest;
+  border-left: 1px solid $gray-lighter;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: darken($gray-lighter, 10%);
+}

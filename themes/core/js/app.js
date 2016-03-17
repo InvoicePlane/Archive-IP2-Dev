@@ -231,11 +231,11 @@ function reload_notes(siteUrl, type, type_id) {
  * Loader handling
  */
 function show_loader() {
-  $('#loader').fadeIn(200);
+  $('#loader').slideDown(200);
 }
 
 function hide_loader() {
-  $('#loader').fadeOut(200);
+  $('#loader').delay(1000).slideUp(200);
 }
 
 // Delay function that only continues after a predefined time
@@ -296,8 +296,9 @@ $(document).ready(function () {
    * Loader initialization
    */
   $('*[type="submit"], .show-loader').bind('click', function () {
-    $('#loader').fadeIn(200);
+    $('#loader').slideDown(200);
     $('#loader-error').delay(10000).fadeIn(200);
+    $('#loader-indicator').delay(10000).slideUp(200);
   });
 
   /*

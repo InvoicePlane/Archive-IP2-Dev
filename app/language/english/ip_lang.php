@@ -233,6 +233,7 @@ $lang = array(
     'last_quarter'                                 => 'Last Quarter',
     'last_year'                                    => 'Last Year',
     'left_pad'                                     => 'Left Pad',
+    'loading'                                	   => 'Loading',
     'loading_error'                                => 'It seems that the application stuck because of an error.',
     'loading_error_help'                           => 'Get Help',
     'login'                                        => 'Login',

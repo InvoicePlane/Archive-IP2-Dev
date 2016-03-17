@@ -5,13 +5,3 @@
 @mixin transition-std ($transition, $time: .2s) {
   transition: $transition $time ease-out;
 }
-
-
-//=========================================================
-// Functions
-//=========================================================
-
-// Convert px values to rem
-@function to-rem($value) {
-  @return ($value / $rem-base);
-}
