@@ -131,7 +131,7 @@ class Clients extends User_Controller
 
         $this->layout->set('custom_fields', $this->mdl_custom_fields->by_table('custom_client')->get()->result());
         $this->layout->set('countries', get_country_list(lang('cldr')));
-        $this->layout->set('selected_country', $this->mdl_clients->form_value('client_country') ?:
+        $this->layout->set('selected_country', $this->mdl_clients->form_value('country') ?:
             $this->mdl_settings->setting('default_country'));
 
         $this->layout->buffer('content', 'clients/form');
@@ -144,6 +144,8 @@ class Clients extends User_Controller
      */
     public function view($client_id)
     {
+        $this->load->helper('country');
+
         $this->load->model('notes/mdl_notes');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('quotes/mdl_quotes');

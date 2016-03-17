@@ -33,7 +33,7 @@
                         <span class="input-group-addon" id="basic-addon1">
                             <?php echo lang('active_client'); ?>&nbsp;
                             <input id="is_active" name="is_active" type="checkbox" value="1"
-                                <?php if ($this->mdl_clients->form_value('active')) : ?>
+                                <?php if ($this->mdl_clients->form_value('is_active')) : ?>
                                     checked="checked"
                                 <?php endif; ?>>
                         </span>
@@ -91,7 +91,7 @@
                                 <?php if ($selected_country == $cldr) : ?>
                                     selected="selected"
                                 <?php endif; ?>>
-                                <?php echo $country ?>
+                                <?php echo $country . ' ('.$this->mdl_clients->form_value('country').')';?>
                             </option>
                         <?php endforeach; ?>
                     </select>

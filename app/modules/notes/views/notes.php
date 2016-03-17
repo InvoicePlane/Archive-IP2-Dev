@@ -10,7 +10,7 @@
             <div class="input-group">
                 <textarea id="note-content" class="form-control" rows="2"></textarea>
                 <div class="input-group-addon with-button" id="basic-addon2">
-                    <button id="save-note" class="btn btn-primary btn-sm show-loader match-parent-height"
+                    <button id="save-note" class="btn btn-primary btn-sm match-parent-height"
                             data-type="<?php echo $type; ?>" data-id="<?php echo $type_id; ?>">
                         <i class="fa fa-plus fa-margin-right"></i><?php echo lang('add_note'); ?>
                     </button>

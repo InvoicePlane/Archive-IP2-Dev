@@ -55,7 +55,7 @@
                     <?php echo ($client->city) ? $client->city : ''; ?>
                     <?php echo ($client->state) ? $client->state : ''; ?>
                     <?php echo ($client->zip) ? $client->zip : ''; ?>
-                    <?php echo ($client->country) ? '<br>' . $client->country : ''; ?>
+                    <?php echo ($client->country) ? '<br>' . get_country_name(lang('cldr'), $client->country) : ''; ?>
                 </p>
             </div>
             <div class="col-xs-12 col-md-6 col-lg-4">
