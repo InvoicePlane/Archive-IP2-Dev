@@ -3,6 +3,7 @@
 module.exports = function (grunt) {
 
   // load grunt tasks
+  require('time-grunt')(grunt);
   require('load-grunt-tasks')(grunt);
 
   grunt.initConfig({
@@ -12,12 +13,11 @@ module.exports = function (grunt) {
       dest: 'themes/InvoicePlane'
     },
     sass: {
+      options: {
+        outputStyle: 'compact',
+        sourceMap: true
+      },
       dist: {
-        options: {
-          style: 'compressed',
-          compass: true,
-          sourcemap: false
-        },
         files: [
           {
             expand: true,
