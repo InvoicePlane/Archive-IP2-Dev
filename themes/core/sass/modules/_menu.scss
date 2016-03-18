@@ -86,11 +86,13 @@ $sidebar-background-lighter: lighten($sidebar-background, 10%);
 
     a {
       font-size: .85rem;
-      padding: $padding-sm $padding-sm + 2rem;
+      padding: $padding-sm;
+      padding-left: $padding-sm-x + 2rem;
       border-left: 0;
 
       &:hover {
         background-color: $sidebar-background-lighter;
+        border-left: 0;
       }
     }
 

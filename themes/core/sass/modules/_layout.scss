@@ -6,6 +6,8 @@ $bar-with-button-height: ($spacer * .5) + $font-size-base;
 $bar-with-button-padding: ($spacer * .5) ($spacer - ($btn-padding-y-sm * 2));
 
 $padding-sm: ($spacer * .3) ($spacer * .6);
+$padding-sm-x: ($spacer * .6);
+$padding-sm-y: ($spacer * .3);
 
 html {
   height: 100%;

@@ -8,3 +8,11 @@ select {
   appearance: none;
   cursor: pointer;
 }
+
+.input-group-addon {
+
+  label {
+    margin: 0;
+    padding: $padding-sm;
+  }
+}
