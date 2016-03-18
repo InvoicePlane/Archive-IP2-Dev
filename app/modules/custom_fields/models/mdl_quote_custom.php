@@ -26,7 +26,7 @@ class Mdl_Quote_Custom extends MY_Model
         $quote_custom = $this->where('quote_id', $quote_id)->get();
 
         if ($quote_custom->num_rows()) {
-            $quote_custom_id = $quote_custom->row()->quote_custom_id;
+            $quote_custom_id = $quote_custom->row()->id;
         }
 
         parent::save($quote_custom_id, $db_array);

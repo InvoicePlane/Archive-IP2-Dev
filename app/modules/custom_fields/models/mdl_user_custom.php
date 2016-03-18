@@ -26,7 +26,7 @@ class Mdl_User_Custom extends MY_Model
         $user_custom = $this->where('user_id', $user_id)->get();
 
         if ($user_custom->num_rows()) {
-            $user_custom_id = $user_custom->row()->user_custom_id;
+            $user_custom_id = $user_custom->row()->id;
         }
 
         parent::save($user_custom_id, $db_array);

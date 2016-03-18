@@ -6,6 +6,11 @@ if (!defined('BASEPATH')) {
 /**
  * Class Custom_Fields
  * @package Modules\CustomFields\Controllers
+ *
+ * @property CI_Input $input
+ * @property CI_Loader $load
+ * @property Layout $layout
+ * @property Mdl_Custom_Fields $mdl_custom_fields
  */
 class Custom_Fields extends User_Controller
 {
@@ -50,7 +55,7 @@ class Custom_Fields extends User_Controller
             redirect('custom_fields');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
+        if ($id && !$this->input->post('btn_submit')) {
             if (!$this->mdl_custom_fields->prep_form($id)) {
                 show_404();
             }
@@ -68,8 +73,13 @@ class Custom_Fields extends User_Controller
      */
     public function delete($id)
     {
-        $this->mdl_custom_fields->delete($id);
-        redirect('custom_fields');
+        if ($this->mdl_custom_fields->delete($id)) {
+            set_alert('success', lang('custom_field_deleted'));
+            redirect('custom_fields');
+        } else {
+            set_alert('danger', lang('custom_field_has_data'));
+            redirect('custom_fields');
+        }
     }
 
 }

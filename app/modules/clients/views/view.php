@@ -161,12 +161,21 @@
 
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered">
-                            <?php foreach ($custom_fields as $custom_field) : ?>
-                                <tr>
-                                    <th><?php echo $custom_field->custom_field_label ?></th>
-                                    <td><?php echo nl2br($client->{$custom_field->custom_field_column}); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
+                            <?php foreach ($custom_fields as $custom_field) :
+                                if (!empty($client->{$custom_field->column})) : ?>
+                                    <tr>
+                                        <th class="custom-field-label"><?php echo $custom_field->label ?></th>
+                                        <td>
+                                            <?php
+                                            echo $this->mdl_custom_fields->format_field_value(
+                                                $custom_field,
+                                                $client->{$custom_field->column}
+                                            );
+                                            ?>
+                                        </td>
+                                    </tr>
+                                <?php endif;
+                            endforeach; ?>
                         </table>
                     </div>
                 </div>

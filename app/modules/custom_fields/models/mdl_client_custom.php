@@ -26,7 +26,7 @@ class Mdl_Client_Custom extends MY_Model
         $client_custom = $this->where('client_id', $client_id)->get();
 
         if ($client_custom->num_rows()) {
-            $client_custom_id = $client_custom->row()->client_custom_id;
+            $client_custom_id = $client_custom->row()->id;
         }
 
         parent::save($client_custom_id, $db_array);

@@ -51,8 +51,8 @@ CREATE TABLE `custom_fields` (
   `id`     INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `table`  VARCHAR(50)      NOT NULL DEFAULT '',
   `type`   VARCHAR(100)     NOT NULL DEFAULT '',
-  `label`  VARCHAR(10)      NOT NULL DEFAULT '',
-  `column` VARCHAR(100)     NOT NULL DEFAULT '',
+  `label`  VARCHAR(200)     NOT NULL DEFAULT '',
+  `column` VARCHAR(200)     NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -75,6 +75,17 @@ CREATE TABLE `custom_invoice` (
 CREATE TABLE `custom_payment` (
   `id`         INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `payment_id` INT(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+# custom_project
+# ------------------------------------------------------------
+
+CREATE TABLE `custom_project` (
+  `id`         INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `project_id` INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB

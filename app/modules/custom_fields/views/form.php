@@ -1,54 +1,49 @@
 <form method="post" class="form-horizontal">
 
     <div id="headerbar">
-        <h1 class="pull-left"><?php echo lang('custom_field_form'); ?></h1>
-        <?php $this->layout->load_view('layout/header_buttons'); ?>
+        <h1 class="pull-left"><?php echo lang('add_custom_field'); ?></h1>
+        <?php $this->layout->load_view('layout/includes/header_buttons'); ?>
     </div>
 
     <div id="content">
 
-        <?php $this->layout->load_view('layout/alerts'); ?>
+        <?php $this->layout->load_view('layout/includes/alerts'); ?>
 
-        <div class="form-group">
-            <label class="col-xs-12 col-sm-1 control-label" for="custom_field_table">
-                <?php echo lang('table'); ?>:
-            </label>
+        <div class="row">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-group">
+                    <label for="table"><?php echo lang('table'); ?></label>
+                    <select name="table" id="table"
+                            class="form-control">
+                        <?php foreach ($custom_field_tables as $table => $label) { ?>
+                            <option value="<?php echo $table; ?>"
+                                    <?php if ($this->mdl_custom_fields->form_value('table') == $table) { ?>selected="selected"<?php } ?>>
+                                <?php echo lang($label); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
 
-            <div class="col-xs-12 col-sm-8 col-md-6">
-                <select name="custom_field_table" id="custom_field_table"
-                        class="form-control">
-                    <option value=""></option>
-                    <?php foreach ($custom_field_tables as $table => $label) { ?>
-                        <option value="<?php echo $table; ?>"
-                                <?php if ($this->mdl_custom_fields->form_value('custom_field_table') == $table) { ?>selected="selected"<?php } ?>><?php echo lang($label); ?></option>
-                    <?php } ?>
-                </select>
-            </div>
-        </div>
+                <div class="form-group">
+                    <label for="type"><?php echo lang('type'); ?></label>
 
-        <div class="form-group">
-            <label class="col-xs-12 col-sm-1 control-label" for="custom_field_type">
-                <?php echo lang('type'); ?>:
-            </label>
+                    <select name="type" id="type"
+                            class="form-control">
+                        <?php foreach ($custom_field_types as $type => $label) { ?>
+                            <option value="<?php echo $type; ?>"
+                                    <?php if ($this->mdl_custom_fields->form_value('type') == $type) { ?>selected="selected"<?php } ?>>
+                                <?php echo lang($label); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
 
-            <div class="col-xs-12 col-sm-8 col-md-6">
-                <select name="custom_field_type" id="custom_field_type"
-                        class="form-control">
-                    <option value=""></option>
-                    <?php foreach ($custom_field_types as $type => $label) { ?>
-                        <option value="<?php echo $type; ?>"
-                                <?php if ($this->mdl_custom_fields->form_value('custom_field_type') == $type) { ?>selected="selected"<?php } ?>><?php echo lang($label); ?></option>
-                    <?php } ?>
-                </select>
-            </div>
-        </div>
+                <div class="form-group">
+                    <label for="label"><?php echo lang('label'); ?></label>
 
-        <div class="form-group">
-            <label class="col-xs-12 col-sm-1 control-label"><?php echo lang('label'); ?>: </label>
-
-            <div class="col-xs-12 col-sm-8 col-md-6">
-                <input type="text" name="custom_field_label" id="custom_field_label" class="form-control"
-                       value="<?php echo $this->mdl_custom_fields->form_value('custom_field_label'); ?>">
+                    <input type="text" name="label" id="label" class="form-control"
+                           value="<?php echo $this->mdl_custom_fields->form_value('label'); ?>">
+                </div>
             </div>
         </div>
 

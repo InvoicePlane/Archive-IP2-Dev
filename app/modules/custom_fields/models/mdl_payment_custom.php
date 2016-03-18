@@ -27,7 +27,7 @@ class Mdl_Payment_Custom extends MY_Model
         $payment_custom = $this->where('payment_id', $payment_id)->get();
 
         if ($payment_custom->num_rows()) {
-            $payment_custom_id = $payment_custom->row()->payment_custom_id;
+            $payment_custom_id = $payment_custom->row()->id;
         }
 
         parent::save($payment_custom_id, $db_array);

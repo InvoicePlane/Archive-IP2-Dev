@@ -29,14 +29,16 @@
                 <h4><?php echo lang('personal_information'); ?></h4>
 
                 <div class="form-group">
+                    <label for="name"><?php echo lang('client_name'); ?></label>
                     <div class="input-group">
-                        <span class="input-group-addon" id="basic-addon1">
-                            <?php echo lang('active_client'); ?>&nbsp;
-                            <input id="is_active" name="is_active" type="checkbox" value="1"
-                                <?php if ($this->mdl_clients->form_value('is_active')) : ?>
-                                    checked="checked"
-                                <?php endif; ?>>
-                        </span>
+                        <div class="input-group-addon" id="basic-addon1">
+                            <label for="is_active"><?php echo lang('active_client'); ?>&nbsp;
+                                <input id="is_active" name="is_active" type="checkbox" value="1"
+                                    <?php if ($this->mdl_clients->form_value('is_active')) : ?>
+                                        checked="checked"
+                                    <?php endif; ?>>
+                            </label>
+                        </div>
                         <input id="name" name="name" type="text" class="form-control"
                                placeholder="<?php echo lang('name'); ?>"
                                value="<?php echo $this->mdl_clients->form_value('name', true); ?>">
@@ -91,7 +93,7 @@
                                 <?php if ($selected_country == $cldr) : ?>
                                     selected="selected"
                                 <?php endif; ?>>
-                                <?php echo $country . ' ('.$this->mdl_clients->form_value('country').')';?>
+                                <?php echo $country;?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -161,37 +163,27 @@
 
         <?php if ($custom_fields) : ?>
 
-            <h4><?php echo lang('custom_fields'); ?></h4>
+            <div class="row">
 
-            <?php foreach ($custom_fields as $custom_field) : ?>
+                <div class="col-md-6">
 
-                <div class="form-group">
-                    <label for="custom[<?php echo $custom_field->custom_field_column; ?>]">
-                        <?php echo $custom_field->custom_field_label; ?>
-                    </label>
+                    <legend><?php echo lang('custom_fields'); ?></legend>
 
-                    <?php switch ($custom_field->custom_field_type) {
-                        case 'input':
-                            $column = $custom_field->custom_field_column;
+                    <?php foreach ($custom_fields as $custom_field) : ?>
+
+                        <div class="form-group">
+                            <?php
+                            $column = $custom_field->column;
                             $value = $this->mdl_clients->form_value('custom[' . $column . ']', true);
+                            echo $this->mdl_custom_fields->get_field_input($custom_field, $column, $value);
                             ?>
-                            <input type="text" class="form-control"
-                                   name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                                   id="<?php echo $custom_field->custom_field_column; ?>"
-                                   value="<?php echo $value; ?>">
-                            <?php break;
-                        case 'textarea':
-                            $column = $custom_field->custom_field_column;
-                            $value = $this->mdl_clients->form_value('custom[' . $column . ']', true);
-                            ?>
-                            <textarea name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                                      id="<?php echo $custom_field->custom_field_column; ?>"
-                                      class="form-control"><?php echo $value; ?></textarea>
-                            <?php break;
-                    } ?>
+                        </div>
+
+                    <?php endforeach; ?>
+
                 </div>
 
-            <?php endforeach; ?>
+            </div>
 
         <?php endif; ?>
     </div>

@@ -26,7 +26,7 @@ class Mdl_Invoice_Custom extends MY_Model
         $invoice_custom = $this->where('invoice_id', $invoice_id)->get();
 
         if ($invoice_custom->num_rows()) {
-            $invoice_custom_id = $invoice_custom->row()->invoice_custom_id;
+            $invoice_custom_id = $invoice_custom->row()->id;
         }
 
         parent::save($invoice_custom_id, $db_array);
