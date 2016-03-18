@@ -32,7 +32,7 @@ class Mdl_Clients extends Response_Model
      */
     public function default_join()
     {
-        $this->db->join('custom_client', 'custom_client.id = clients.id', 'left');
+        $this->db->join('custom_client', 'custom_client.client_id = clients.id', 'left');
     }
 
     /**
