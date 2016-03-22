@@ -31,6 +31,61 @@ class Mdl_Invoice_Groups extends Response_Model
     }
 
     /**
+     * Returns the formatted voucher ID
+     * @param int $next_id
+     * @param int $left_pad
+     * @return string
+     */
+    public function format_id($next_id, $left_pad = 0) {
+        return str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Returns all available template tags
+     * @return array
+     */
+    public function template_tags() {
+        return [
+            'year' => [
+                'lang' => 'current_year',
+                'formatting' => date('Y'),
+            ],
+            'year-short' => [
+                'lang' => 'current_year_short',
+                'formatting' => date('y'),
+            ],
+            'month' => [
+                'lang' => 'current_month',
+                'formatting' => date('m'),
+            ],
+            'month-short' => [
+                'lang' => 'current_month_short',
+                'formatting' => date('n'),
+            ],
+            'day' => [
+                'lang' => 'current_day',
+                'formatting' => date('d'),
+            ],
+            'day-short' => [
+                'lang' => 'current_day_short',
+                'formatting' => date('j'),
+            ],
+            'day-of-year' => [
+                'lang' => 'current_day_of_year',
+                'formatting' => date('z'),
+            ],
+            'week' => [
+                'lang' => 'current_week',
+                'formatting' => date('W'),
+            ],
+            'random' => [
+                'lang' => 'random_number',
+                'formatting' => sprintf('%04d', mt_rand(100, 10000)),
+            ],
+        ];
+    }
+
+    /**
      * Returns the validation rules for invoice groups
      * @return array
      */
@@ -45,17 +100,17 @@ class Mdl_Invoice_Groups extends Response_Model
             'identifier_format' => array(
                 'field' => 'identifier_format',
                 'label' => lang('identifier_format'),
-                'rules' => 'required'
+                'rules' => 'required|regex_match[/{{{(id)}}}/i]'
             ),
             'next_id' => array(
                 'field' => 'next_id',
                 'label' => lang('next_id'),
-                'rules' => 'required'
+                'rules' => 'required|integer'
             ),
             'left_pad' => array(
                 'field' => 'left_pad',
                 'label' => lang('left_pad'),
-                'rules' => 'required'
+                'rules' => 'required|integer'
             )
         );
     }
@@ -85,30 +140,23 @@ class Mdl_Invoice_Groups extends Response_Model
 
     /**
      * Returns the parsed format for the invoice number
-     * @param $identifier_format
-     * @param $next_id
-     * @param $left_pad
-     * @return string
+     * @param string $identifier_format
+     * @param int $next_id
+     * @param int $left_pad
+     * @return mixed
      */
-    private function parse_identifier_format($identifier_format, $next_id, $left_pad)
+    private function parse_identifier_format($identifier_format, $next_id, $left_pad = 0)
     {
         if (preg_match_all('/{{{([^{|}]*)}}}/', $identifier_format, $template_vars)) {
+            $tags = $this->template_tags();
             foreach ($template_vars[1] as $var) {
-                switch ($var) {
-                    case 'year':
-                        $replace = date('Y');
-                        break;
-                    case 'month':
-                        $replace = date('m');
-                        break;
-                    case 'day':
-                        $replace = date('d');
-                        break;
-                    case 'id':
-                        $replace = str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
-                        break;
-                    default:
-                        $replace = '';
+
+                $replace = $var;
+
+                if ($var = 'id') {
+                    $replace = $this->format_id($next_id, $left_pad);
+                } elseif (isset($tags[$var])) {
+                    $replace = $tags[$var]['formatting'];
                 }
 
                 $identifier_format = str_replace('{{{' . $var . '}}}', $replace, $identifier_format);
@@ -124,8 +172,8 @@ class Mdl_Invoice_Groups extends Response_Model
      */
     public function set_next_invoice_number($invoice_group_id)
     {
-        $this->db->where($this->primary_key, $invoice_group_id);
-        $this->db->set('next_id', 'next_id+1', false);
-        $this->db->update($this->table);
+        $this->db->where($this->primary_key, $invoice_group_id)
+            ->set('next_id', 'next_id+1', false)
+            ->update($this->table);
     }
 }

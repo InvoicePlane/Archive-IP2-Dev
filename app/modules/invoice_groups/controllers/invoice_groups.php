@@ -57,8 +57,8 @@ class Invoice_Groups extends Admin_Controller
                 show_404();
             }
         } elseif (!$id) {
-            $this->mdl_invoice_groups->set_form_value('invoice_group_left_pad', 0);
-            $this->mdl_invoice_groups->set_form_value('invoice_group_next_id', 1);
+            $this->mdl_invoice_groups->set_form_value('left_pad', 0);
+            $this->mdl_invoice_groups->set_form_value('next_id', 1);
         }
 
         $this->layout->buffer('content', 'invoice_groups/form');
@@ -71,6 +71,15 @@ class Invoice_Groups extends Admin_Controller
      */
     public function delete($id)
     {
+        // Check if this invoice group can be deleted
+        $invoice_groups = $this->mdl_invoice_groups->get()->result();
+        
+        // If there is only one invoice group left, throw an error
+        if (count($invoice_groups) === 1) {
+            set_alert('danger', lang('invoice_group_delete_error'));
+            redirect('invoice_groups');
+        }
+        
         $this->mdl_invoice_groups->delete($id);
         redirect('invoice_groups');
     }

@@ -117,7 +117,7 @@ class Mdl_Setup extends CI_Model
         // Save the standard invoice group
         $this->db->insert('invoice_groups', array(
                 'name' => 'Invoice Default',
-                'identifier_format' => 'I-{{{ID}}}',
+                'identifier_format' => 'I-{{{id}}}',
                 'next_id' => 1,
                 'left_pad' => 3,
             )
@@ -126,7 +126,7 @@ class Mdl_Setup extends CI_Model
         // Save the standard quote invoice group
         $this->db->insert('invoice_groups', array(
             'name' => 'Quote Default',
-            'identifier_format' => 'Q-{{{ID}}}',
+            'identifier_format' => 'Q-{{{id}}}',
             'next_id' => 1,
             'left_pad' => 3,
         ));
