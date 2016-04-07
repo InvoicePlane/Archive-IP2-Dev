@@ -114,6 +114,9 @@ class Mdl_Setup extends CI_Model
      */
     public function install_default_data()
     {
+        /*
+         * Invoice groups
+         */
         // Save the standard invoice group
         $this->db->insert('invoice_groups', array(
                 'name' => 'Invoice Default',
@@ -131,6 +134,9 @@ class Mdl_Setup extends CI_Model
             'left_pad' => 3,
         ));
 
+        /*
+         * User roles
+         */
         // @TODO IP-366 - User roles (set permissions)
         // Save the system admin user role
         $this->db->insert('user_roles', array(
@@ -155,6 +161,69 @@ class Mdl_Setup extends CI_Model
         $this->db->insert('user_roles', array(
             'name' => 'client',
             'permissions' => json_encode(array('all')),
+        ));
+
+        /*
+         * Quote statuses
+         */
+        $this->db->insert('statuses', array(
+            'status_name' => 'quote_draft',
+            'color' => '#999',
+            'type' => 'quote_draft',
+        ));
+        $this->db->insert('statuses', array(
+            'status_name' => 'quote_sent',
+            'color' => '#3a87ad',
+            'type' => 'quote_open',
+        ));
+        $this->db->insert('statuses', array(
+            'status_name' => 'quote_viewed',
+            'color' => '#f89406',
+            'type' => 'quote_open',
+        ));
+        $this->db->insert('statuses', array(
+            'status_name' => 'quote_approved',
+            'color' => '#468847',
+            'type' => 'quote_open',
+        ));
+        $this->db->insert('statuses', array(
+            'status_name' => 'quote_rejected',
+            'color' => '#b94a48',
+            'type' => 'quote_closed',
+        ));
+        $this->db->insert('statuses', array(
+            'status_name' => 'quote_canceled',
+            'color' => '#333',
+            'type' => 'quote_closed',
+        ));
+
+        /*
+         * Invoice statuses
+         */
+        $this->db->insert('statuses', array(
+            'status_name' => 'invoice_draft',
+            'color' => '#999',
+            'type' => 'invoice_draft',
+        ));
+        $this->db->insert('statuses', array(
+            'status_name' => 'invoice_sent',
+            'color' => '#3a87ad',
+            'type' => 'invoice_open',
+        ));
+        $this->db->insert('statuses', array(
+            'status_name' => 'invoice_viewed',
+            'color' => '#f89406',
+            'type' => 'invoice_open',
+        ));
+        $this->db->insert('statuses', array(
+            'status_name' => 'invoice_overdue',
+            'color' => '#b94a48',
+            'type' => 'invoice_open',
+        ));
+        $this->db->insert('statuses', array(
+            'status_name' => 'invoice_paid',
+            'color' => '#468847',
+            'type' => 'invoice_closed',
         ));
     }
 

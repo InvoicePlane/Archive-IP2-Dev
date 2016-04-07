@@ -506,7 +506,7 @@ CREATE TABLE `statuses` (
   `id`          INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `status_name` VARCHAR(100)     NOT NULL DEFAULT '',
   `color`       VARCHAR(7)       NOT NULL DEFAULT '#111111',
-  `type`        INT(11)          NOT NULL,
+  `type`        VARCHAR(100)     NOT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
