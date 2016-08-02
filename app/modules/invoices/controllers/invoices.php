@@ -72,11 +72,11 @@ class Invoices extends Admin_Controller
         $this->layout->set(
             array(
                 'invoices' => $invoices,
+                'statuses' => $this->mdl_invoices->statuses(),
                 'status' => $status,
                 'filter_display' => true,
                 'filter_placeholder' => lang('filter_invoices'),
                 'filter_method' => 'filter_invoices',
-                'invoice_statuses' => $this->mdl_invoices->statuses()
             )
         );
 
@@ -90,7 +90,7 @@ class Invoices extends Admin_Controller
     public function archive()
     {
         $invoice_array = array();
-        
+
         if (isset($_POST['invoice_number'])) {
             $invoiceNumber = $_POST['invoice_number'];
             $invoice_array = glob('./uploads/archive/*' . '_' . $invoiceNumber . '.pdf');

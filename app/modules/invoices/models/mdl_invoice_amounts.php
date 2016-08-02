@@ -333,7 +333,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         switch ($period) {
             default:
             case 'this-month':
-                $results = $this->db->query("
+                $invoices = $this->db->query("
 					SELECT invoices.status_id, (CASE invoices.status_id WHEN 4 THEN SUM(invoice_amounts.paid) ELSE SUM(invoice_amounts.balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM invoice_amounts
 					JOIN invoices ON invoices.id = invoice_amounts.invoice_id
@@ -342,7 +342,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 					GROUP BY invoices.status_id")->result_array();
                 break;
             case 'last-month':
-                $results = $this->db->query("
+                $invoices = $this->db->query("
 					SELECT status_id, (CASE invoices.status_id WHEN 4 THEN SUM(paid) ELSE SUM(balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM invoice_amounts
 					JOIN invoices ON invoices.id = invoice_amounts.invoice_id
@@ -351,7 +351,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 					GROUP BY invoices.status_id")->result_array();
                 break;
             case 'this-quarter':
-                $results = $this->db->query("
+                $invoices = $this->db->query("
 					SELECT status_id, (CASE invoices.status_id WHEN 4 THEN SUM(invoice_amounts.paid) ELSE SUM(invoice_amounts.balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM invoice_amounts
 					JOIN invoices ON invoices.id = invoice_amounts.invoice_id
@@ -360,7 +360,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 					GROUP BY invoices.status_id")->result_array();
                 break;
             case 'last-quarter':
-                $results = $this->db->query("
+                $invoices = $this->db->query("
 					SELECT status_id, (CASE invoices.status_id WHEN 4 THEN SUM(paid) ELSE SUM(balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM invoice_amounts
 					JOIN invoices ON invoices.id = invoice_amounts.invoice_id
@@ -369,7 +369,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 					GROUP BY invoices.status_id")->result_array();
                 break;
             case 'this-year':
-                $results = $this->db->query("
+                $invoices = $this->db->query("
 					SELECT status_id, (CASE invoices.status_id WHEN 4 THEN SUM(invoice_amounts.paid) ELSE SUM(invoice_amounts.balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM invoice_amounts
 					JOIN invoices ON invoices.id = invoice_amounts.invoice_id
@@ -377,7 +377,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 					GROUP BY invoices.status_id")->result_array();
                 break;
             case 'last-year':
-                $results = $this->db->query("
+                $invoices = $this->db->query("
 					SELECT status_id, (CASE invoices.status_id WHEN 4 THEN SUM(paid) ELSE SUM(balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM invoice_amounts
 					JOIN invoices ON invoices.id = invoice_amounts.invoice_id
@@ -386,23 +386,21 @@ class Mdl_Invoice_Amounts extends CI_Model
                 break;
         }
 
-        $return = array();
+        $output = [];
 
         foreach ($this->mdl_invoices->statuses() as $key => $status) {
-            $return[$key] = array(
-                'status_id' => $key,
+            $output[$key] = array(
                 'class' => $status['class'],
-                'label' => $status['label'],
                 'href' => $status['href'],
                 'sum_total' => 0,
                 'num_total' => 0
             );
         }
 
-        foreach ($results as $result) {
-            $return[$result['status_id']] = array_merge($return[$result['status_id']], $result);
+        foreach ($invoices as $invoice) {
+            $output[$invoice['status_id']] = array_merge($output[$invoice['status_id']], $invoice);
         }
 
-        return $return;
+        return $output;
     }
 }

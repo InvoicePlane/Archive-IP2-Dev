@@ -14,6 +14,7 @@ if (!defined('BASEPATH')) {
  * @property Mdl_Invoice_Groups $mdl_invoice_groups
  * @property Mdl_Invoice_Tax_Rates $mdl_invoice_tax_rates
  * @property Mdl_Items $mdl_items
+ * @property Mdl_Statuses $mdl_statuses
  */
 class Mdl_Invoices extends Response_Model
 {
@@ -23,34 +24,22 @@ class Mdl_Invoices extends Response_Model
     public $date_modified_field = 'date_modified';
 
     /**
+     * Mdl_Invoices constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('statuses/mdl_statuses');
+    }
+
+    /**
      * Returns an array that holds all available status codes with
      * their label, class and href
      * @return array
      */
     public function statuses()
     {
-        return array(
-            '1' => array(
-                'label' => lang('draft'),
-                'class' => 'draft',
-                'href' => 'invoices/status/draft'
-            ),
-            '2' => array(
-                'label' => lang('sent'),
-                'class' => 'sent',
-                'href' => 'invoices/status/sent'
-            ),
-            '3' => array(
-                'label' => lang('viewed'),
-                'class' => 'viewed',
-                'href' => 'invoices/status/viewed'
-            ),
-            '4' => array(
-                'label' => lang('paid'),
-                'class' => 'paid',
-                'href' => 'invoices/status/paid'
-            )
-        );
+        return $this->mdl_statuses->get_invoice_statuses();
     }
 
     /**
@@ -59,7 +48,8 @@ class Mdl_Invoices extends Response_Model
     public function default_select()
     {
         $this->db->select("
-            SQL_CALC_FOUND_ROWS custom_invoice.*,
+            clients.*,
+            custom_invoice.*,
             custom_client.*,
             custom_user.*,
             users.name,
@@ -77,7 +67,6 @@ class Mdl_Invoices extends Response_Model
 			users.web,
 			users.vat_id,
 			users.tax_code,
-			clients.*,
 			invoice_amounts.id,
 			IFNULL(invoice_amounts.item_subtotal, '0.00') AS item_subtotal,
 			IFNULL(invoice_amounts.tax_total, '0.00') AS tax_total,
@@ -107,6 +96,7 @@ class Mdl_Invoices extends Response_Model
     {
         $this->db->join('clients', 'clients.id = invoices.client_id');
         $this->db->join('users', 'users.id = invoices.user_id');
+        $this->db->join('statuses', 'statuses.id = invoices.status_id');
         $this->db->join('invoice_amounts', 'invoice_amounts.invoice_id = invoices.id', 'left');
         $this->db->join('custom_client', 'custom_client.client_id = clients.id', 'left');
         $this->db->join('custom_user', 'custom_user.user_id = users.id', 'left');
@@ -120,17 +110,14 @@ class Mdl_Invoices extends Response_Model
     public function validation_rules()
     {
         return array(
-            'client_name' => array(
-                'field' => 'client_name',
+            'user_id' => array(
+                'field' => 'user_id',
+                'label' => lang('user'),
+                'rules' => 'required'
+            ),
+            'client_id' => array(
+                'field' => 'client_id',
                 'label' => lang('client'),
-                'rules' => 'required'
-            ),
-            'date_created' => array(
-                'field' => 'date_created',
-                'label' => lang('invoice_date'),
-                'rules' => 'required'
-            ),
-            'invoice_time_created' => array(
                 'rules' => 'required'
             ),
             'invoice_group_id' => array(
@@ -138,18 +125,18 @@ class Mdl_Invoices extends Response_Model
                 'label' => lang('invoice_group'),
                 'rules' => 'required'
             ),
-            'invoice_password' => array(
-                'field' => 'invoice_password',
+            'password' => array(
+                'field' => 'pdf_password',
                 'label' => lang('invoice_password')
             ),
-            'user_id' => array(
-                'field' => 'user_id',
-                'label' => lang('user'),
-                'rule' => 'required'
-            ),
-            'payment_method' => array(
+            'payment_method_id' => array(
                 'field' => 'payment_method',
                 'label' => lang('payment_method')
+            ),
+            'date_created' => array(
+                'field' => 'date_created',
+                'label' => lang('invoice_date'),
+                'rules' => 'required'
             ),
         );
     }
@@ -163,7 +150,7 @@ class Mdl_Invoices extends Response_Model
         return array(
             'invoice_number' => array(
                 'field' => 'invoice_number',
-                'label' => lang('invoice') . ' #',
+                'label' => lang('invoice_number'),
                 'rules' => 'required|is_unique[invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
             ),
             'date_created' => array(
@@ -197,14 +184,12 @@ class Mdl_Invoices extends Response_Model
         $invoice_id = parent::save(null, $db_array);
 
         // Create an invoice amount record
-        $db_array = array(
-            'invoice_id' => $invoice_id
-        );
+        $this->db->insert('invoice_amounts', [
+            'invoice_id' => $invoice_id,
+        ]);
 
-        $this->db->insert('invoice_amounts', $db_array);
-
+        // Create the default invoice tax record if applicable
         if ($include_invoice_tax_rates) {
-            // Create the default invoice tax record if applicable
             if ($this->mdl_settings->setting('default_invoice_tax_rate')) {
                 $db_array = array(
                     'invoice_id' => $invoice_id,
@@ -332,19 +317,25 @@ class Mdl_Invoices extends Response_Model
     {
         $db_array = parent::db_array();
 
-        // Get the client id for the submitted invoice
-        $this->load->model('clients/mdl_clients');
-        $db_array['client_id'] = $this->mdl_clients->client_lookup($db_array['client_name']);
-        unset($db_array['client_name']);
-
         $db_array['date_created'] = date_to_mysql($db_array['date_created']);
         $db_array['date_due'] = $this->get_date_due($db_array['date_created']);
-        $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
         $db_array['terms'] = $this->mdl_settings->setting('default_terms');
 
-        if (!isset($db_array['status_id'])) {
-            $db_array['status_id'] = 1;
+        // Set the correct invoice status id
+        if (isset($db_array['status_id'])) {
+            $status = $this->mdl_statuses->where('id', $db_array['status_id'])->get()->row();
+        } else {
+            $status = $this->mdl_statuses->where('type', 'invoice_draft')->get()->row();
+            $db_array['status_id'] = $status->id;
         }
+
+        // Create an invoice number if the status is not draft
+        if ($status->type = 'invoice_draft') {
+            $db_array['invoice_number'] = '';
+        } else {
+            $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
+        }
+
 
         // Generate the unique url key
         $db_array['url_key'] = $this->get_url_key();

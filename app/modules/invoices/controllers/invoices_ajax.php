@@ -38,7 +38,7 @@ class Invoices_Ajax extends Admin_Controller
      * @uses $_POST['invoice_password']
      * @uses $_POST['payment_method']
      * @uses $_POST['invoice_custom']
-     * @see Mdl_Items::validation_rules()
+     * @see  Mdl_Items::validation_rules()
      */
     public function save()
     {
@@ -193,18 +193,17 @@ class Invoices_Ajax extends Admin_Controller
 
     /**
      * Creates a new invoice to the database that can be used to store items
-     * @uses $_POST['client_name']
+     * @uses $_POST['client_id']
      * @uses $_POST['invoice_date_created']
-     * @uses $_POST['invoice_time_created']
      * @uses $_POST['invoice_group_id']
      * @uses $_POST['invoice_password']
-     * @uses $_POST['user_id']
-     * @uses $_POST['payment_method']
      * @see Mdl_Invoices::validation_rules()
      */
     public function create()
     {
         $this->load->model('invoices/mdl_invoices');
+
+        $_POST['user_id'] = $this->session->user['id'];
 
         if ($this->mdl_invoices->run_validation()) {
             $invoice_id = $this->mdl_invoices->create();
@@ -232,7 +231,7 @@ class Invoices_Ajax extends Admin_Controller
      * @uses $_POST['recur_frequency']
      * @uses $_POST['recur_invoices_due_after']
      * @uses $_POST['recur_email_invoice_template']
-     * @see Mdl_Invoices_Recurring::validation_rules()
+     * @see  Mdl_Invoices_Recurring::validation_rules()
      */
     public function create_recurring()
     {
@@ -407,7 +406,7 @@ class Invoices_Ajax extends Admin_Controller
     /**
      * Creates a duplicate / copy of a given invoice and returns the result
      * @uses $_POST['invoice_id']
-     * @see Mdl_Invoices::validation_rules()
+     * @see  Mdl_Invoices::validation_rules()
      */
     public function copy_invoice()
     {
@@ -439,7 +438,7 @@ class Invoices_Ajax extends Admin_Controller
     /**
      * Returns the modal that can be used to create a credit invoice from an invoice
      * @uses $_POST['invoice_id']
-     * @see Mdl_Invoices::validation_rules()
+     * @see  Mdl_Invoices::validation_rules()
      */
     public function modal_create_credit()
     {
@@ -463,9 +462,9 @@ class Invoices_Ajax extends Admin_Controller
     /**
      * Creates a credit invoice for a given invoice and returns the result
      * @uses $_POST['invoice_id']
-     * @see Mdl_Invoices::validation_rules()
-     * @see Mdl_Items::validation_rules()
-     * @see Mdl_Invoice_Tax_Rates::validation_rules()
+     * @see  Mdl_Invoices::validation_rules()
+     * @see  Mdl_Items::validation_rules()
+     * @see  Mdl_Invoice_Tax_Rates::validation_rules()
      */
     public function create_credit()
     {

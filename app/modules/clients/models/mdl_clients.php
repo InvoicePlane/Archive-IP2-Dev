@@ -23,8 +23,8 @@ class Mdl_Clients extends Response_Model
      */
     public function default_select()
     {
+        $this->db->select('custom_client.*, clients.*', false);
         $this->db->where('date_deleted', null);
-        $this->db->select('SQL_CALC_FOUND_ROWS custom_client.*, clients.*', false);
     }
 
     /**

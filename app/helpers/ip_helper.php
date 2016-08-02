@@ -44,3 +44,20 @@ function generate_api_key()
 {
     return substr(hash('md5', microtime()), 0, 20);
 }
+
+/**
+ * Redirects the user back to the last page
+ * @return void
+ */
+function redirect_back()
+{
+    $this->load->library('user_agent');
+
+    if ($this->agent->is_referral()) {
+        $referrer = $this->agent->referrer();
+    } else {
+        $referrer = '/';
+    }
+
+    redirect($referrer);
+}

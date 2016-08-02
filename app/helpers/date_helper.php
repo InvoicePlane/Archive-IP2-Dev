@@ -69,6 +69,9 @@ function date_formats()
  */
 function date_from_mysql($date, $ignore_post_check = false)
 {
+    $CI = &get_instance();
+    return date($CI->mdl_settings->setting('date_format'), strtotime($date));
+
     if ($date <> '0000-00-00') {
         if (!$_POST or $ignore_post_check) {
             $CI = &get_instance();
@@ -125,10 +128,7 @@ function date_from_timestamp($timestamp)
  */
 function date_to_mysql($date)
 {
-    $CI = &get_instance();
-
-    $date = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
-    return $date->format('Y-m-d');
+    return date('Y-m-d H:i:s', strtotime($date));
 }
 
 /**

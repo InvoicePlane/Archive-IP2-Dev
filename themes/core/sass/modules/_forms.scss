@@ -16,3 +16,28 @@ select {
     padding: $padding-sm;
   }
 }
+
+
+.select2-container {
+
+  .select2-selection--single {
+    min-height: ($font-size-base * $line-height) + (2 * $padding-sm-y);
+
+    .select2-selection {
+
+      &__rendered {
+        line-height: $line-height;
+        padding: $padding-sm;
+      }
+
+      &__arrow {
+        height: 100%;
+      }
+    }
+  }
+
+  *:focus {
+    outline: 0;
+    border-color: $brand-primary;
+  }
+}

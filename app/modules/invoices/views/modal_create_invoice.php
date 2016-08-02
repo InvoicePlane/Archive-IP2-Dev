@@ -1,54 +1,45 @@
-<script type="text/javascript">
-    $(function () {
-        // Display the create invoice modal
-        $('#create-invoice').modal('show');
-
-        $('#create-invoice').on('shown', function () {
-            $("#client_name").focus();
-        });
-
-        $().ready(function () {
-            $("[name='client_name']").select2({
-                createSearchChoice: function (term, data) {
-                    if ($(data).filter(function () {
-                            return this.text.localeCompare(term) === 0;
-                        }).length === 0) {
-                        return {id: term, text: term};
-                    }
-                },
-                multiple: false,
-                allowClear: true,
-                data: [
-                    <?php
-                    $i=0;
-                    foreach ($clients as $client){
-                        echo "{
-                        id: '".str_replace("'","\'",$client->client_name)."',
-                        text: '".str_replace("'","\'",$client->client_name)."'
-                        }";
-                        if (($i+1) != count($clients)) {echo ',';}
-                        $i++;
-                    }
-                    ?>
-                ]
+<script>
+    $(document).ready(function () {
+        $('#create-invoice').modal('show').on('shown.bs.modal', function () {
+            $("#client_id").select2({
+                language: '<?php //echo lang('cldr'); ?>de',
+                ajax: {
+                    method: 'post',
+                    url: '<?php echo site_url('clients/clients_ajax/name_query'); ?>',
+                    dataType: 'json',
+                    delay: 300,
+                    data: function (params) {
+                        return {
+                            client_name: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
-            $("#client_name").focus();
         });
+
 
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
-            // Posts the data to validate and create the invoice;
-            // will create the new client if necessar
-            $.post("<?php echo site_url('invoices/ajax/create'); ?>", {
-                    client_name: $('#client_name').val(),
-                    invoice_date_created: $('#invoice_date_created').val(),
+            // Posts the data to validate and create the invoice
+            $.post("<?php echo site_url('invoices/invoices_ajax/create'); ?>", {
+                    client_id: $('#client_id').val(),
+                    date_created: $('#date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
-                    invoice_time_created: '<?php echo date('H:i:s') ?>',
-                    invoice_password: $('#invoice_password').val(),
-                    user_id: '<?php echo $this->session->user['id']; ?>',
-                    payment_method: $('#payment_method_id').val()
+                    pdf_password: $('#pdf_password').val()
                 },
                 function (data) {
+                    console.log(data);
                     var response = JSON.parse(data);
                     if (response.success == '1') {
                         // The validation was successful and invoice was created
@@ -56,89 +47,86 @@
                     }
                     else {
                         // The validation was not successful
-                        $('.control-group').removeClass('has-error');
+                        $('.form-group').removeClass('has-danger');
                         for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('has-error');
+                            $('#' + key).parent().addClass('has-danger');
                         }
                     }
                 });
         });
     });
-
 </script>
 
-<div id="create-invoice" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
-     role="dialog" aria-labelledby="modal_create_invoice" aria-hidden="true">
-    <form class="modal-content">
-        <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
+<div id="create-invoice" class="modal fade" role="dialog" aria-labelledby="modal_create_invoice" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form class="modal-content">
 
-            <h3><?php echo lang('create_invoice'); ?></h3>
-        </div>
-        <div class="modal-body">
+            <div class="modal-header">
 
-            <input class="hidden" id="payment_method_id"
-                   value="<?php echo $this->mdl_settings->setting('invoice_default_payment_method'); ?>">
+                <button type="button" class="close" data-dismiss="modal">
+                    <i class="fa fa-close"></i>
+                </button>
+                <h4 class="modal-title"><?php echo lang('create_invoice'); ?></h4>
 
-            <div class="form-group">
-                <label for="client_name"><?php echo lang('client'); ?></label>
-                <input type="text" name="client_name" id="client_name" class="form-control"
-                       autofocus="autofocus"
-                    <?php if ($client_name) {
-                        echo 'value="' . html_escape($client_name) . '"';
-                    } ?>>
             </div>
+            <div class="modal-body">
 
-            <div class="form-group has-feedback">
-                <label><?php echo lang('invoice_date'); ?></label>
+                <input class="hidden" id="payment_method_id"
+                       value="<?php echo $this->mdl_settings->setting('default_payment_method'); ?>">
 
-                <div class="input-group">
-                    <input name="invoice_date_created" id="invoice_date_created"
-                           class="form-control datepicker"
-                           value="<?php echo date(date_format_setting()); ?>">
-                <span class="input-group-addon">
-                    <i class="fa fa-calendar fa-fw"></i>
-                </span>
+                <div class="form-group">
+                    <label for="client_id"><?php echo lang('client'); ?></label>
+                    <select name="client_id" id="client_id" class="form-control" width="100%">
+                        <?php if (isset($client)) {
+                            echo '<option value="' . $client['id'] . '">' . html_escape($client['name']) . '</option>';
+                        } ?>
+                    </select>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="invoice_password"><?php echo lang('invoice_password'); ?></label>
-                <input type="text" name="invoice_password" id="invoice_password" class="form-control"
-                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == '') {
-                           echo '';
-                       } else {
-                           echo $this->mdl_settings->setting('invoice_pre_password');
-                       } ?>" style="margin: 0 auto;" autocomplete="off">
-            </div>
+                <div class="form-group">
+                    <label for="date_created"><?php echo lang('date'); ?></label>
+                    <input type="date" name="date_created" id="date_created"
+                           class="form-control datepicker">
+                </div>
 
-            <div class="form-group">
-                <label><?php echo lang('invoice_group'); ?></label>
-
-                <div class="controls">
+                <div class="form-group">
+                    <label for="invoice_group_id"><?php echo lang('invoice_group'); ?></label>
                     <select name="invoice_group_id" id="invoice_group_id" class="form-control">
-                        <option value=""></option>
-                        <?php foreach ($invoice_groups as $invoice_group) { ?>
-                            <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                                    <?php if ($this->mdl_settings->setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
+                        <?php foreach ($invoice_groups as $group) { ?>
+                            <option value="<?php echo $group->id; ?>"
+                                    <?php
+                                    $invoice_group = $this->mdl_settings->setting('invoices.default_invoice_group');
+                                    if ($invoice_group == $group->id) { ?>selected="selected"<?php } ?>>
+                                <?php echo $group->name; ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="pdf_password"><?php echo lang('pdf_password'); ?></label>
+                    <input type="text" name="pdf_password" id="pdf_password" class="form-control"
+                           value="<?php
+                           $pdf_password = $this->mdl_settings->setting('pre_password');
+                           if ($pdf_password) {
+                               echo $pdf_password;
+                           } ?>" autocomplete="off">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+                <div class="btn-group">
+                    <button class="btn btn-danger" type="button" data-dismiss="modal">
+                        <i class="fa fa-times fa-margin-right"></i> <?php echo lang('cancel'); ?>
+                    </button>
+                    <button class="btn btn-success ajax-loader" id="invoice_create_confirm" type="button">
+                        <i class="fa fa-check fa-margin-right"></i> <?php echo lang('submit'); ?>
+                    </button>
+                </div>
+
             </div>
 
-        </div>
-
-        <div class="modal-footer">
-            <div class="btn-group">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
-                </button>
-                <button class="btn btn-success ajax-loader" id="invoice_create_confirm" type="button">
-                    <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
-                </button>
-            </div>
-        </div>
-
-    </form>
-
+        </form>
+    </div>
 </div>

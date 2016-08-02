@@ -14,8 +14,8 @@ if (!defined('BASEPATH')) {
  */
 class Mdl_Statuses extends Response_Model
 {
-    public $table = 'invoices';
-    public $primary_key = 'invoices.id';
+    public $table = 'statuses';
+    public $primary_key = 'statuses.id';
 
     public $status_types = [
         'quotes' => [
@@ -60,5 +60,26 @@ class Mdl_Statuses extends Response_Model
                 'rules' => 'required'
             ),
         );
+    }
+
+    /**
+     * Returns the prepared array with all invoice statuses
+     * @return array
+     */
+    public function get_invoice_statuses() {
+        $statuses = $this->like('status_name', 'invoice_', 'after')->get()->result_array();
+
+        $new_statuses = [];
+
+        if (count($statuses) > 0) {
+            foreach ($statuses as $status) {
+                $id = $status['id'];
+                $new_statuses[$id] = $status;
+                $new_statuses[$id]['href'] = 'invoices/status/' . str_replace('invoice_', '', $status['status_name']);
+                $new_statuses[$id]['class'] = str_replace('invoice_', '', $status['status_name']);
+            }
+        }
+
+        return $new_statuses;
     }
 }

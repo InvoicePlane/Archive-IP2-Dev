@@ -22,56 +22,59 @@
 <?php } ?>
 
 <script src="<?php echo base_url(); ?>themes/core/js/dependencies.min.js"></script>
+<script src="<?php echo base_url(); ?>themes/core/js/dependencies.min.js"></script>
 <script src="<?php echo base_url(); ?>themes/core/js/app.min.js"></script>
 
 <script>
-    $('.create-invoice').click(function () {
-        $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>");
-    });
-
-    $('.create-quote').click(function () {
-        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>");
-    });
-
-    $('#btn_quote_to_invoice').click(function () {
-        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_quote_to_invoice'); ?>/" + $(this).data('quote-id'));
-    });
-
-    $('#btn_copy_invoice').click(function () {
-        $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {
-            invoice_id: $(this).data('invoice-id')
+    $(document).ready(function () {
+        $('.create-invoice').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('invoices/invoices_ajax/modal_create_invoice'); ?>");
         });
-    });
 
-    $('#btn_create_credit').click(function () {
-        $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_credit'); ?>", {
-            invoice_id: $(this).data('invoice-id')
+        $('.client-create-invoice').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('invoices/invoices_ajax/modal_create_invoice'); ?>", {
+                client_name: $(this).data('client-name')
+            });
         });
-    });
 
-    $('#btn_copy_quote').click(function () {
-        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_copy_quote'); ?>", {
-            quote_id: $(this).data('quote-id')
+        $('.create-quote').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>");
         });
-    });
 
-    $('.client-create-invoice').click(function () {
-        $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>", {
-            client_name: $(this).data('client-name')
+        $('#btn_quote_to_invoice').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_quote_to_invoice'); ?>/" + $(this).data('quote-id'));
         });
-    });
 
-    $('.client-create-quote').click(function () {
-        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>", {
-            client_name: $(this).data('client-name')
+        $('#btn_copy_invoice').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {
+                invoice_id: $(this).data('invoice-id')
+            });
         });
-    });
 
-    $(document).on('click', '.invoice-add-payment', function () {
-        $('#modal-placeholder').load("<?php echo site_url('payments/ajax/modal_add_payment'); ?>", {
-            invoice_id: $(this).data('invoice-id'),
-            invoice_balance: $(this).data('invoice-balance'),
-            invoice_payment_method: $(this).data('invoice-payment-method')
+        $('#btn_create_credit').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_credit'); ?>", {
+                invoice_id: $(this).data('invoice-id')
+            });
+        });
+
+        $('#btn_copy_quote').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_copy_quote'); ?>", {
+                quote_id: $(this).data('quote-id')
+            });
+        });
+
+        $('.client-create-quote').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>", {
+                client_name: $(this).data('client-name')
+            });
+        });
+
+        $(document).on('click', '.invoice-add-payment', function () {
+            $('#modal-placeholder').load("<?php echo site_url('payments/ajax/modal_add_payment'); ?>", {
+                invoice_id: $(this).data('invoice-id'),
+                invoice_balance: $(this).data('invoice-balance'),
+                invoice_payment_method: $(this).data('invoice-payment-method')
+            });
         });
     });
 </script>

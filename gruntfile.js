@@ -135,4 +135,11 @@ module.exports = function (grunt) {
     'watch'
   ]);
 
+  grunt.registerTask('debug', [
+    'clean',
+    'sass',
+    'autoprefixer:main',
+    'uglify'
+  ]);
+
 };

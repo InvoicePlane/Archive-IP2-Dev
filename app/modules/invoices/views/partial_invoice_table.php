@@ -8,8 +8,8 @@
             <th><?php echo lang('created'); ?></th>
             <th><?php echo lang('due_date'); ?></th>
             <th><?php echo lang('client_name'); ?></th>
-            <th style="text-align: right;"><?php echo lang('amount'); ?></th>
-            <th style="text-align: right;"><?php echo lang('balance'); ?></th>
+            <th class="amount"><?php echo lang('amount'); ?></th>
+            <th class="amount"><?php echo lang('balance'); ?></th>
             <th><?php echo lang('options'); ?></th>
         </tr>
         </thead>
@@ -22,8 +22,9 @@
             ?>
             <tr>
                 <td>
-                    <span class="label <?php echo $invoice_statuses[$invoice->status_id]['class']; ?>">
-                        <?php echo $invoice_statuses[$invoice->status_id]['label'];
+                    <?php var_dump($invoice);?>
+                    <span class="label <?php echo $statuses[$invoice->status_id]['class']; ?>">
+                        <?php echo $statuses[$invoice->status_id]['status_name'];
                         if ($invoice->sign == '-1') { ?>
                             &nbsp;<i class="fa fa-credit-invoice"
                                      title="<?php echo lang('credit_invoice') ?>"></i>
@@ -38,7 +39,7 @@
                 <td>
                     <a href="<?php echo site_url('invoices/view/' . $invoice->id); ?>"
                        title="<?php echo lang('edit'); ?>">
-                        <?php echo $invoice->number; ?>
+                        <?php echo $invoice->invoice_number; ?>
                     </a>
                 </td>
 

@@ -10,7 +10,6 @@ if (!defined('BASEPATH')) {
  * @property CI_Loader $load
  * @property Layout $layout
  * @property Mdl_Clients $mdl_clients
- * @property Mdl_Client_Notes $mdl_client_notes
  */
 class Clients_Ajax extends User_Controller
 {
@@ -18,27 +17,30 @@ class Clients_Ajax extends User_Controller
 
     /**
      * Returns all clients that match the given client name
-     * @uses $_POST['query']
+     * @uses $_POST['client_name']
      */
     public function name_query()
     {
         // Load the model
         $this->load->model('clients/mdl_clients');
 
-        // Get the post input
-        $query = $this->input->post('query');
+        $client_name = $this->input->post('client_name');
 
-        $clients = $this->mdl_clients->select('client_name')
-            ->like('client_name', $query)
-            ->order_by('client_name')
-            ->get(array(), false)->result();
-
-        $response = array();
-
-        foreach ($clients as $client) {
-            $response[] = $client->client_name;
+        if (!$client_name) {
+            echo json_encode([]);
+            exit;
         }
 
-        echo json_encode($response);
+        $clients = $this->mdl_clients
+            ->select('clients.id, clients.name')
+            ->like('clients.name', $client_name)
+            ->get()->result_array();
+
+        if (empty($clients)) {
+            echo json_encode([]);
+            exit;
+        }
+
+        echo json_encode($clients);
     }
 }

@@ -5,41 +5,12 @@
  */
 
 // Insert text into textarea at Caret Position
-function insert_at_caret(areaId, text) {
-  var txtarea = document.getElementById(areaId),
-    scrollPos = txtarea.scrollTop,
-    strPos = 0,
-    br = ((txtarea.selectionStart || txtarea.selectionStart === '0') ?
-      'ff' : (document.selection ? 'ie' : false)),
-    range;
+function insert_at_caret(element, text) {
+  element = $(element);
+  var caretPos = element[0].selectionStart,
+    currentValue = element.val();
 
-  if (br === 'ie') {
-    txtarea.focus();
-    range = document.selection.createRange();
-    range.moveStart('character', -txtarea.value.length);
-    strPos = range.text.length;
-  } else if (br === 'ff') {
-    strPos = txtarea.selectionStart;
-  }
-
-  var front = (txtarea.value).substring(0, strPos),
-    back = (txtarea.value).substring(strPos, txtarea.value.length);
-
-  txtarea.value = front + text + back;
-  strPos = strPos + text.length;
-  if (br === 'ie') {
-    txtarea.focus();
-    range = document.selection.createRange();
-    range.moveStart('character', -txtarea.value.length);
-    range.moveStart('character', strPos);
-    range.moveEnd('character', 0);
-    range.select();
-  } else if (br === 'ff') {
-    txtarea.selectionStart = strPos;
-    txtarea.selectionEnd = strPos;
-    txtarea.focus();
-  }
-  txtarea.scrollTop = scrollPos;
+  element.val(currentValue.substring(0, caretPos) + text + currentValue.substring(caretPos));
 }
 
 function update_email_template_preview() {
@@ -319,24 +290,29 @@ $(document).ready(function () {
     $(this).height($(this).parent().height());
   });
 
+  /**
+   * Template tag handling
+   * Example tag
+   * <a href="#" data-target="#input_field" data-tag="{{{client_name}}}">Client Name</a>
+   */
+  $('[data-tag]').bind('click', function () {
+    insert_at_caret($(this).data('target'), $(this).data('tag'));
+    return false;
+  });
+
   /*
-   * Email Templatew form handling
+   * Email Template form handling
    * Handle click event for Email Template Tags insertion
    * Example Usage
    * <a href='#' class='text-tag' data-tag='{{{client_name}}}'>Client Name</a>
+   *
+   * @TODO Needs refactoring!
    */
   if ($('#email-template')) {
 
-    var lastTaggableClicked;
-    $('.text-tag').bind('click', function () {
-      var templateTag = this.getAttribute('data-tag');
-      insert_at_caret(lastTaggableClicked.id, templateTag);
-      return false;
-    });
-
     // Keep track of the last 'taggable' input/textarea
     $('.taggable').on('focus', function () {
-      lastTaggableClicked = this;
+      // var lastTaggableClicked = this;
     });
 
     // HTML tags to email templates textarea
