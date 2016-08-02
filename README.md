@@ -1,10 +1,14 @@
+### :warning: This is an archived development version!
+
+---
+
 ![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
 #### _Version 2.0.0-dev_
 
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or take a look at the __[demo](https://demo.invoiceplane.com)__
 
-#### :warning: This version of InvoicePlane is still in development!
+#### This is the archived development version of InvoicePlane 2 which should be based on CodeIgniter 3. This version may be broken and should not be used in any production environment.
 
 ### Support / Development / Chat
 
